@@ -1,7 +1,12 @@
 const Router = require('koa-router')
-const userController = require('../controller/user').registry
+const userController = require('../controller/user')
 
-const chlidRouter = new Router()
-chlidRouter.post('/register', userController)
+const childRouter = new Router()
 
-module.exports = chlidRouter
+// 注册api
+childRouter.post('/register', userController.registry)
+//登陆api
+childRouter.post('/login',userController.login )
+
+
+module.exports = childRouter
