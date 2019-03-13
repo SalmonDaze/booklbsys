@@ -36,7 +36,7 @@ const l_findAllUser = async () => {
 module.exports.registry = async (ctx) => {
     let { username, password } = ctx.request.body
     let userCount = await l_findAllUser()
-    password = cryptPwd(password, SECRET)
+    password = cryptPwd(String(password), SECRET)
     if ( !username || username.length > 18 ) {
         ctx.body = {
             code: 1,

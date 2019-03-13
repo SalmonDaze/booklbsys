@@ -16,6 +16,10 @@ const userSchema = new Schema({
         type: Boolean,
         default: false
     },
+    isBanned: {
+        type: Boolean,
+        default: false
+    },
     avatar_key: {
         type: String,
         default: 'defaultAvatar'
@@ -38,6 +42,10 @@ const bookSchema = new Schema({
     cover: {
         type: String,
         default: ''
+    },
+    borrowCycle: {
+        type: String,
+        default: '7'
     },
     seq: {
         type: Number,

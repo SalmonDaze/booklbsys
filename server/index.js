@@ -3,6 +3,7 @@ const app = new Koa()
 const Router = require('koa-router')
 const router = new Router()
 const userRouter = require('./routes/user')
+const adminRouter = require('./routes/admin')
 const bodyParser = require('koa-bodyparser')
 const cors = require('koa2-cors')
 const jwt = require('jsonwebtoken')
@@ -24,24 +25,35 @@ app.use(bodyParser())
 // 路由拦截判定token有效限
 app.use( async (ctx, next) => {
     const authUrl = ['/api/login', '/api/register']
-    let token = ctx.header
+    let token = ctx.header.accesstoken
+    console.log(token)
     let url = authUrl.find( url => url === ctx.url)
     if( url ) {
         await next()
+        console.log('1')
     } else {
-        jwt.verify(token, config.SECRET, async (err, decoded) => {
-            if( err ) {
-                ctx.body = {
-                    code: 400,
-                    msg: 'token失效'
+        let anext = await new Promise((resolve, reject) => {
+            jwt.verify(token, config.SECRET, async (err, decoded) => {
+                if( err ) {
+                    resolve({
+                        code: 1,
+                        msg: 'token已失效'
+                    })
+                }else {
+                    resolve(next)
+                    console.log('3')
                 }
-            }else {
-                await next()
-            }
+            })
         })
+        if( typeof anext === 'function') {
+            await anext()
+        } else {
+            ctx.body = anext
+        }
     }
 })
 router.use('/api', userRouter.routes(), userRouter.allowedMethods())
+router.use('/admin', adminRouter.routes(), adminRouter.allowedMethods())
 app.use(router.routes()).use(router.allowedMethods())
 
 
