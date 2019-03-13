@@ -7,6 +7,7 @@ mongoose.connect('mongodb://localhost:27017/bookSystem', {useNewUrlParser:true})
 const userSchema = new Schema({
     username: String,
     password: String,
+    UID: Number,
     create_at: {
         type: Date,
         default: Date.now()

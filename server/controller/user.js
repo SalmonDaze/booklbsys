@@ -1,6 +1,21 @@
 const Model = require('../database/module')
 const jwt = require('jsonwebtoken')
 const SECRET = require('../config/default').SECRET
+const crypto = require('crypto')
+
+function cryptPwd(password, key) {
+    const cipher = crypto.createCipher('aes192', key);
+    var crypted = cipher.update(password, 'utf8', 'hex');
+    crypted += cipher.final('hex');
+    return crypted;
+}
+
+function dpPwd(password, key) {
+    const decipher = crypto.createDecipher('aes192', key);
+    var decrypted = decipher.update(password, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+}
 
 const l_findUser = async (username) => {
     return new Promise((resolve, reject) => {
@@ -10,8 +25,18 @@ const l_findUser = async (username) => {
     })
 }
 
+const l_findAllUser = async () => {
+    return new Promise ((resolve, reject) => {
+        Model.user.find({}).then( (doc) => {
+            resolve(doc)
+        })
+    })
+}
+
 module.exports.registry = async (ctx) => {
     let { username, password } = ctx.request.body
+    let userCount = await l_findAllUser()
+    password = cryptPwd(password, SECRET)
     if ( !username || username.length > 18 ) {
         ctx.body = {
             code: 1,
@@ -19,8 +44,7 @@ module.exports.registry = async (ctx) => {
             msg: '用户名格式错误! '
         }
     }
-    console.log(username, password)
-    let doc = await l_findUser('salmon')
+    let doc = await l_findUser(username)
     if( doc ) {
         ctx.status = 200
         ctx.body = {
@@ -29,7 +53,7 @@ module.exports.registry = async (ctx) => {
             msg: '用户已被注册！'
         }
     }else {
-        await Model.user.create({username: 'salmon', password: '123'}).then(() => {
+        await Model.user.create({username: username, password: password, UID: userCount.length + 1}).then(() => {
             ctx.status = 200
             ctx.body = {
                 code: 200,
@@ -43,7 +67,7 @@ module.exports.registry = async (ctx) => {
 module.exports.login = async (ctx) => {
     let { username, password } = ctx.request.body
     let user = await l_findUser(username)
-    console.log(user)
+    user.password = dpPwd(user.password, SECRET)
     if( !user || user.password !== password) {
         ctx.status = 200
         ctx.body = {
@@ -57,16 +81,11 @@ module.exports.login = async (ctx) => {
         let token = jwt.sign({username: username}, SECRET, {
             expiresIn : 60*60*24// 授权时效24小时
         });
-        console.log(username)
-        ctx.cookies.set(
-            'token', token, {
-                maxAge: 60 * 60 * 1000 * 24
-            }
-        )
         ctx.status = 200
         ctx.body = {
             code: 200,
             success: true,
+            token: token,
             msg: '登陆成功！'
         }
     }
