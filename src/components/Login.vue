@@ -9,9 +9,9 @@
           ref="ruleForm2"
           label-width="100px"
           class="demo-ruleForm">
-          <el-form-item label="用户名"
-            prop="username">
-            <el-input v-model.number="ruleForm2.username"></el-input>
+          <el-form-item label="手机号"
+            prop="phone">
+            <el-input v-model.number="ruleForm2.phone"></el-input>
           </el-form-item>
           <el-form-item label="密码"
             prop="pass">
@@ -19,17 +19,13 @@
               v-model="ruleForm2.pass"
               autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="确认密码"
-            prop="checkPass">
-            <el-input type="password"
-              v-model="ruleForm2.checkPass"
-              autocomplete="off"></el-input>
-          </el-form-item>
           <router-link class='register'
             :to="{path:'/register'}">立即注册</router-link>
+          <router-link
+            :to="{path:'/homepage'}">首页</router-link>
           <el-form-item>
             <el-button type="primary"
-              @click="login">提交</el-button>
+              @click="login">登录</el-button>
             <el-button @click="resetForm('ruleForm2')">重置</el-button>
           </el-form-item>
         </el-form>
@@ -41,47 +37,43 @@
 <script>
 export default {
   data() {
-    var checkuserName = (rule, value, callback) => {
+    var checkPhone = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error('用户名不能为空'));
-      }else {
-          callback();
+        return callback(new Error('手机号不能为空'));
       }
+      setTimeout(() => {
+        if (!Number.isInteger(value)) {
+          callback(new Error('请输入数字值'));
+        } else {
+          const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
+          if (reg.test(value)) {
+            callback();
+          } else {
+            return callback(new Error('请输入正确的手机号'));
+          }
+        }
+      }, 1000);
     };
     var validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'));
-      } else {
-        if (this.ruleForm2.checkPass !== '') {
-          this.$refs.ruleForm2.validateField('checkPass');
-        }
-        callback();
-      }
-    };
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码'));
-      } else if (value !== this.ruleForm2.pass) {
-        callback(new Error('两次输入密码不一致!'));
       } else {
         callback();
       }
     };
     return {
       ruleForm2: {
+        // 手机号
+        phone: '',
+        // 密码
         pass: '',
-        checkPass: '',
-        username: ''
       },
       rules2: {
+        phone: [
+          { validator: checkPhone, trigger: 'blur' },
+        ],
         pass: [
           { validator: validatePass, trigger: 'blur' }
-        ],
-        checkPass: [
-          { validator: validatePass2, trigger: 'blur' }
-        ],
-        username: [
-          { validator: checkuserName, trigger: 'blur' }
         ]
       }
     };
@@ -97,26 +89,18 @@ export default {
         }
       });
     },
-    registry() {
-      this.$ajax({
-        method: 'post',
-        url: 'http://192.168.2.73:3000/api/register',
-        data: {
-          username: '123',
-          password: '123'
-        }
-      }).then(res => console.log(res))
-    },
+    // 登录
     login() {
       this.$ajax({
         method: 'post',
-        url:'http://192.168.2.73:3000/api/login',
-        data : {
+        url: 'http://192.168.2.73:3000/api/login',
+        data: {
           username: this.ruleForm2.username,
           password: this.ruleForm2.pass
         }
       }).then(res => console.log(res))
     },
+    // 重置
     resetForm(formName) {
       this.$refs[formName].resetFields();
     }
@@ -126,6 +110,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.login{
+  text-align: center;
+}
 .bg-login {
   width: 100%;
   height: 940px;
@@ -143,22 +130,24 @@ export default {
   bottom: 0px;
   left: 0px;
   width: 400px;
-  height: 360px;
+  height: 300px;
   margin: auto;
-  padding: 30px 80px 0px 30px;
+  padding: 30px 60px 0px 10px;
   background: #ffffff;
   border-radius: 15px;
 }
 .login h1 {
-  font-family: "微软雅黑";
+  margin-bottom: 20px;
+  font-family: "宋体";
   font-size: 28px;
   line-height: 60px;
 }
-.register {
+.login .register {
   position: relative;
   bottom: 20px;
-  left: 160px;
-  color: #2e3c50;
+  left: 180px;
+  color: rgb(199, 192, 192);
+  font-size: 13px;
   text-decoration: none;
 }
 .el-button + .el-button {

@@ -13,6 +13,11 @@
             prop="username">
             <el-input v-model.number="ruleForm2.username"></el-input>
           </el-form-item>
+          <el-form-item label="手机号"
+            prop="phone">
+            <el-input v-model.number="ruleForm2.phone"></el-input>
+          </el-form-item>
+          </el-form-item>
           <el-form-item label="密码"
             prop="pass">
             <el-input type="password"
@@ -27,7 +32,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary"
-              @click="registry">提交</el-button>
+              @click="registry">注册</el-button>
             <el-button @click="resetForm('ruleForm2')">重置</el-button>
           </el-form-item>
         </el-form>
@@ -43,11 +48,21 @@ export default {
       if (!value) {
         return callback(new Error('用户名不能为空'));
       }
+    };
+    var checkPhone = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('手机号不能为空'));
+      }
       setTimeout(() => {
         if (!Number.isInteger(value)) {
           callback(new Error('请输入数字值'));
         } else {
-          callback();
+          const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
+          if (reg.test(value)) {
+            callback();
+          } else {
+            return callback(new Error('请输入正确的手机号'));
+          }
         }
       }, 1000);
     };
@@ -72,20 +87,28 @@ export default {
     };
     return {
       ruleForm2: {
+        // 用户名
+        username: '',
+        // 手机号
+        phone: '',
+        // 密码
         pass: '',
+        // 确认密码
         checkPass: '',
-        username: ''
       },
       rules2: {
+        username: [
+          { validator: checkuserName, trigger: 'blur' }
+        ],
+        phone: [
+          { validator: checkPhone, trigger: 'blur' },
+        ],
         pass: [
           { validator: validatePass, trigger: 'blur' }
         ],
         checkPass: [
           { validator: validatePass2, trigger: 'blur' }
         ],
-        username: [
-          { validator: checkuserName, trigger: 'blur' }
-        ]
       }
     };
   },
@@ -119,6 +142,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.register{
+  text-align: center;
+}
 .bg-register {
   width: 100%;
   height: 940px;
@@ -150,18 +176,19 @@ export default {
   bottom: 0px;
   left: 0px;
   width: 400px;
-  height: 360px;
+  height: 390px;
   margin: auto;
   padding: 30px 80px 0px 30px;
   background: #ffffff;
   border-radius: 15px;
 }
-.register h1{
-  font-family: "华文行楷";
+.register h1 {
+  padding-bottom: 10px;
+  font-family: "宋体";
   font-size: 28px;
   line-height: 60px;
 }
-.el-button+.el-button {
-    margin-left: 50px;
+.el-button + .el-button {
+  margin-left: 50px;
 }
 </style>
