@@ -1,42 +1,42 @@
 <template>
   <div class="register">
-    <div class="bg-register">
-      <div class="form-register">
-        <h1>REGISTER</h1>
-        <el-form :model="ruleForm2"
-          status-icon
-          :rules="rules2"
-          ref="ruleForm2"
-          label-width="100px"
-          class="demo-ruleForm">
-          <el-form-item label="用户名"
-            prop="username">
-            <el-input v-model.number="ruleForm2.username"></el-input>
-          </el-form-item>
-          <el-form-item label="手机号"
-            prop="phone">
-            <el-input v-model.number="ruleForm2.phone"></el-input>
-          </el-form-item>
-          </el-form-item>
-          <el-form-item label="密码"
-            prop="pass">
-            <el-input type="password"
-              v-model="ruleForm2.pass"
-              autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="确认密码"
-            prop="checkPass">
-            <el-input type="password"
-              v-model="ruleForm2.checkPass"
-              autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary"
-              @click="registry">注册</el-button>
-            <el-button @click="resetForm('ruleForm2')">重置</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
+    <div class="form-register">
+      <p class="register-close"
+        @click="register_close">X</p>
+      <h1>REGISTER</h1>
+      <el-form :model="ruleForm2"
+        status-icon
+        :rules="rules2"
+        ref="ruleForm2"
+        label-width="100px"
+        class="demo-ruleForm">
+        <el-form-item label="用户名"
+          prop="username">
+          <el-input v-model.number="ruleForm2.username"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号"
+          prop="phone">
+          <el-input v-model.number="ruleForm2.phone"></el-input>
+        </el-form-item>
+        </el-form-item>
+        <el-form-item label="密码"
+          prop="pass">
+          <el-input type="password"
+            v-model="ruleForm2.pass"
+            autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码"
+          prop="checkPass">
+          <el-input type="password"
+            v-model="ruleForm2.checkPass"
+            autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary"
+            @click="registry">注册</el-button>
+          <el-button @click="resetForm('ruleForm2')">重置</el-button>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
@@ -113,6 +113,9 @@ export default {
     };
   },
   methods: {
+    register_close(){
+      this.$emit('loginClose', '子组件的参数内容');
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -142,35 +145,25 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.register{
+.register {
   text-align: center;
 }
-.bg-register {
-  width: 100%;
-  height: 940px;
-  background: url("./../assets/bg_register.jpg") no-repeat 0;
-  /* ie8兼容background-size属性 */
-  filter: progid:DXImusernameTransform.Microsoft.AlphaImusernameLoader(
-    src="./../assets/bg_register.jpg",
-    sizingMethod='scale');
-  background-size: 100% 100%;
-}
-.form-register::before {
-  content: "";
+.register .register-close {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  filter: blur(10px) contrast(0.8);
-  z-index: -1;
+  left: 475px;
+  top: 20px;
+  font-size: 19px;
+  color: rgb(202, 199, 199);
+  cursor: pointer;
 }
-.bg-register,
-.form-register::before {
-  background: url("./../assets/bg_register.jpg") 0 / cover fixed;
+.register .register-close:hover {
+  position: absolute;
+  left: 477px;
+  color: red;
 }
 .form-register {
   position: fixed;
+  z-index: 999;
   top: 0px;
   right: 0px;
   bottom: 0px;
@@ -180,6 +173,7 @@ export default {
   margin: auto;
   padding: 30px 80px 0px 30px;
   background: #ffffff;
+  border: 1px solid #e0e0e0;
   border-radius: 15px;
 }
 .register h1 {
