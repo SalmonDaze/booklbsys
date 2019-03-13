@@ -25,10 +25,11 @@
               v-model="ruleForm2.checkPass"
               autocomplete="off"></el-input>
           </el-form-item>
-          <a class="register" href="">立即注册</a>
+          <router-link class='register'
+            :to="{path:'/register'}">立即注册</router-link>
           <el-form-item>
             <el-button type="primary"
-              @click="registry">提交</el-button>
+              @click="login">提交</el-button>
             <el-button @click="resetForm('ruleForm2')">重置</el-button>
           </el-form-item>
         </el-form>
@@ -43,14 +44,9 @@ export default {
     var checkuserName = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('用户名不能为空'));
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error('请输入数字值'));
-        } else {
+      }else {
           callback();
-        }
-      }, 1000);
+      }
     };
     var validatePass = (rule, value, callback) => {
       if (value === '') {
@@ -111,6 +107,16 @@ export default {
         }
       }).then(res => console.log(res))
     },
+    login() {
+      this.$ajax({
+        method: 'post',
+        url:'http://192.168.2.73:3000/api/login',
+        data : {
+          username: this.ruleForm2.username,
+          password: this.ruleForm2.pass
+        }
+      }).then(res => console.log(res))
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     }
@@ -130,20 +136,6 @@ export default {
     sizingMethod='scale');
   background-size: 100% 100%;
 }
-.form-login::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  filter: blur(10px) contrast(0.8);
-  z-index: -1;
-}
-.bg-login,
-.form-login::before {
-  background: url("./../assets/bg_login.jpg") 0 / cover fixed;
-}
 .form-login {
   position: fixed;
   top: 0px;
@@ -154,20 +146,22 @@ export default {
   height: 360px;
   margin: auto;
   padding: 30px 80px 0px 30px;
+  background: #ffffff;
+  border-radius: 15px;
 }
-.login h1{
-  font-family: "华文行楷";
+.login h1 {
+  font-family: "微软雅黑";
   font-size: 28px;
-  line-height: 50px;
+  line-height: 60px;
 }
-.register{
+.register {
   position: relative;
   bottom: 20px;
   left: 160px;
-  color: #2E3C50;
-  text-decoration:none; 
+  color: #2e3c50;
+  text-decoration: none;
 }
-.el-button+.el-button {
-    margin-left: 50px;
+.el-button + .el-button {
+  margin-left: 50px;
 }
 </style>
