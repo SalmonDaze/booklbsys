@@ -8,7 +8,7 @@ const cors = require('koa2-cors');
 
 app.use(cors({
     origin: function (ctx) {
-        return 'http://192.168.2.144:8081';
+        return '*';
     },
     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
     maxAge: 5,

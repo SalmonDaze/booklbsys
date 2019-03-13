@@ -1,4 +1,6 @@
 const Model = require('../database/module')
+const jwt = require('jsonwebtoken')
+const SECRET = require('../config/default').SECRET
 
 const l_findUser = async (username) => {
     return new Promise((resolve, reject) => {
@@ -52,6 +54,15 @@ module.exports.login = async (ctx) => {
         return
     }
     if( user.password === password ) {
+        let token = jwt.sign({username: username}, SECRET, {
+            expiresIn : 60*60*24// 授权时效24小时
+        });
+        console.log(username)
+        ctx.cookies.set(
+            'token', token, {
+                maxAge: 60 * 60 * 1000 * 24
+            }
+        )
         ctx.status = 200
         ctx.body = {
             code: 200,
