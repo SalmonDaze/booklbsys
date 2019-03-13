@@ -1,35 +1,33 @@
 <template>
   <div class="login">
-    <div class="bg-login">
-      <div class="form-login">
-        <h1>LOGIN</h1>
-        <el-form :model="ruleForm2"
-          status-icon
-          :rules="rules2"
-          ref="ruleForm2"
-          label-width="100px"
-          class="demo-ruleForm">
-          <el-form-item label="手机号"
-            prop="phone">
-            <el-input v-model.number="ruleForm2.phone"></el-input>
-          </el-form-item>
-          <el-form-item label="密码"
-            prop="pass">
-            <el-input type="password"
-              v-model="ruleForm2.pass"
-              autocomplete="off"></el-input>
-          </el-form-item>
-          <router-link class='register'
-            :to="{path:'/register'}">立即注册</router-link>
-          <router-link
-            :to="{path:'/homepage'}">首页</router-link>
-          <el-form-item>
-            <el-button type="primary"
-              @click="login">登录</el-button>
-            <el-button @click="resetForm('ruleForm2')">重置</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
+    <div class="form-login">
+      <p class="login-close" @click="login_close">X</p>
+      <h1>LOGIN</h1>
+      <el-form :model="ruleForm2"
+        status-icon
+        :rules="rules2"
+        ref="ruleForm2"
+        label-width="100px"
+        class="demo-ruleForm">
+        <el-form-item label="手机号"
+          prop="phone">
+          <el-input v-model.number="ruleForm2.phone"></el-input>
+        </el-form-item>
+        <el-form-item label="密码"
+          prop="pass">
+          <el-input type="password"
+            v-model="ruleForm2.pass"
+            autocomplete="off"></el-input>
+        </el-form-item>
+        <router-link class='register'
+          :to="{path:'/register'}">立即注册</router-link>
+        <router-link :to="{path:'/homepage'}">首页</router-link>
+        <el-form-item>
+          <el-button type="primary"
+            @click="login">登录</el-button>
+          <el-button @click="resetForm('ruleForm2')">重置</el-button>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
@@ -79,6 +77,9 @@ export default {
     };
   },
   methods: {
+    login_close(){
+      this.$emit('loginClose', '子组件的参数内容');
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -110,21 +111,26 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.login{
+.login {
   text-align: center;
 }
-.bg-login {
-  width: 100%;
-  height: 940px;
-  background: url("./../assets/bg_login.jpg") no-repeat 0;
-  /* ie8兼容background-size属性 */
-  filter: progid:DXImusernameTransform.Microsoft.AlphaImusernameLoader(
-    src="./../assets/bg_login.jpg",
-    sizingMethod='scale');
-  background-size: 100% 100%;
+.login .login-close{
+  position: absolute;
+  left: 425px;
+  top: 20px;
+  font-size: 19px;
+  color: rgb(202, 199, 199);
+  cursor: pointer;
+
+}
+.login .login-close:hover{
+  position: absolute;
+  left: 427px;
+  color: red;
 }
 .form-login {
   position: fixed;
+  z-index: 999;
   top: 0px;
   right: 0px;
   bottom: 0px;
@@ -134,6 +140,7 @@ export default {
   margin: auto;
   padding: 30px 60px 0px 10px;
   background: #ffffff;
+  border: 1px solid #E0E0E0;
   border-radius: 15px;
 }
 .login h1 {

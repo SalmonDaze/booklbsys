@@ -1,6 +1,4 @@
 <template>
-  <el-row class="tac">
-    <el-col :span="12">
       <el-menu default-active="2"
         class="el-menu-vertical-demo"
         @open="handleOpen"
@@ -36,8 +34,6 @@
           <span slot="title">导航四</span>
         </el-menu-item>
       </el-menu>
-    </el-col>
-  </el-row>
 </template>
 
 <script>
