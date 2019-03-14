@@ -18,13 +18,13 @@
             v-model="ruleForm2.pass"
             autocomplete="off"></el-input>
         </el-form-item>
-        <a class='register' @click="jump_register">立即注册</a>
-        <router-link :to="{path:'/homepage'}">首页</router-link>
+        <a class='jump-register'
+          @click="jump_register">立即注册</a>
         <el-form-item>
           <el-button type="primary"
             @click="login">登录</el-button>
-          <el-button @click="resetForm('ruleForm2')">重置</el-button>
         </el-form-item>
+
       </el-form>
     </div>
   </div>
@@ -74,47 +74,46 @@ export default {
       }
     };
   },
+  // 从首页后退时，清空token，重新登录
+  mounted() {
+    this.$store.dispatch('logout');
+  },
   methods: {
-    login_close(){
+    login_close() {
       this.$emit('loginClose', '子组件的参数内容');
     },
-    jump_register(){
-      this.$emit('jumpRegister','');
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!');
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
+    jump_register() {
+      this.$emit('jumpRegister', '');
     },
     // 登录
     login() {
       console.log(this.ruleForm2.phone, this.ruleForm2.pass)
-      this.$ajax({
-        method: 'post',
-        url: 'http://192.168.2.73:3000/api/login',
-        data: {
-          username: this.ruleForm2.phone,
-          password: this.ruleForm2.pass
-        }
-      }).then((res) => {
-        let { success, token } = res.data
-        if( success ) {
-          localStorage.setItem('accessToken', token);
-
-        } else {
-          console.log('登录失败')
-        }
-      })
+      const reg = /^1[0-9]{10}$/;
+        if (!reg.test(this.ruleForm2.phone)) {
+          console.log('wsss')
+          return false
+        }else{
+          this.$ajax({
+            method: 'post',
+            url: '/api/login',
+            data: {
+              phone: this.ruleForm2.phone,
+              password: this.ruleForm2.pass
+            }
+          }).then((res) => {
+            console.log(res)
+            let { success, token } = res.data
+            if (success) {
+              // 更新store.js里loginAsync方法的token
+              this.$store.dispatch('loginAsync', token);
+              // 跳转首页
+              this.$router.push('/homepage')
+            } else {
+              alert(res.data.msg);
+            }
+          })
+      }
     },
-    // 重置
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    }
   }
 }
 </script>
@@ -136,15 +135,16 @@ export default {
   margin: auto;
   padding: 30px 60px 0px 10px;
   background: #ffffff;
-  border: 1px solid #E0E0E0;
-  border-radius: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
 }
 .login h1 {
   margin-bottom: 20px;
+  margin-left: 50px;
   font-size: 28px;
   line-height: 60px;
 }
-.login .register {
+.login .jump-register {
   position: relative;
   bottom: 20px;
   left: 180px;
@@ -152,7 +152,10 @@ export default {
   font-size: 13px;
   text-decoration: none;
 }
-.el-button + .el-button {
-  margin-left: 50px;
+.login .el-button {
+  position: relative;
+  right: 20px;
+  width: 240px;
+  letter-spacing: 10px;
 }
 </style>

@@ -14,8 +14,8 @@
             <span>借阅记录</span>
           </template>
           <el-menu-item index="1-1">7天内</el-menu-item>
-          <el-menu-item index="1-2">30天内</el-menu-item>
-          <el-menu-item index="1-3">即将到期</el-menu-item>
+          <el-menu-item index="1-2">即将到期</el-menu-item>
+          <el-menu-item index="1-3">未借出</el-menu-item>
           <el-submenu index="1-4">
             <template slot="title">未归还</template>
             <el-menu-item index="1-4-1">未归还名单</el-menu-item>
@@ -36,8 +36,12 @@
         </el-menu-item>
       </el-menu>
     </div>
-    <div class="content">
-      <v-aweek></v-aweek>
+    <div class="content tab-box">
+      <div class="tab-con">
+        <div class="tab-list">
+          <v-aweek></v-aweek>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -60,7 +64,6 @@ export default {
 </script>
 <style>
 .homepage .header {
-  width: 100%;
   height: 100px;
   background: linear-gradient(to top right, #accff4, #edf4fd);
 }
@@ -70,9 +73,8 @@ export default {
   border-right: 1px solid #e0e0e0;
 }
 .homepage .header p {
-  position: relative;
-  top: 30px;
-  left: 60px;
+  padding-top: 30px;
+  padding-left: 60px;
   font-family: "宋体";
   font-size: 30px;
   letter-spacing: 10px;
@@ -89,7 +91,22 @@ export default {
   z-index: 999;
 }
 .homepage .content{
-  position: absolute;
-  
+  position: relative;
+  bottom: 980px;
+  left: 250px;
+}
+.homepage .tab-box{
+  width: 1000px;
+}
+.homepage .tab-con{
+  position: relative;
+  width: 1000px;
+  height: 900px;
+  /* overflow: hidden; */
+}
+.homepage .tab_xx{
+  position: relative;
+  width: 1000px;
+  height: 2000px;
 }
 </style>
