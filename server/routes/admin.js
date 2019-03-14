@@ -11,5 +11,8 @@ adminRouter.post('/checkAllUser', adminController.userInfoCheck)
 adminRouter.post('/uploadCover', upload.single('file'), adminController.uploadCover)
 // 上传书本信息
 adminRouter.post('/uploadBook', adminController.uploadBook)
-
+// 封禁用户
+adminRouter.post('/banUser', adminController.banUser)
+// 查询用户信息
+adminRouter.post('/getUserInfo', adminController.getUserInfo)
 module.exports = adminRouter

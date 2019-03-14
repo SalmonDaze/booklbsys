@@ -48,6 +48,18 @@ const bookSchema = new Schema({
         type: String,
         default: '7'
     },
+    isLending: {
+        type: Boolean,
+        default: false,
+    },
+    borrowTime: {
+        type: Date,
+        default: ''
+    },
+    borrowUser: {
+        type: String,
+        default: ''
+    }
 })
 
 let Model = {

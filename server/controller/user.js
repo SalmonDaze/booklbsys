@@ -41,6 +41,22 @@ const l_findAllUser = async () => {
     })
 }
 
+const l_findAllBook = async () => {
+    return new Promise ((resolve, reject) => {
+        Model.book.find({}).then( doc => {
+            resolve(doc)
+        })
+    })
+}
+
+const l_findBook = async (_id) => {
+    return new Promise ((resolve, reject) => {
+        Model.book.findOne({_id}).then( doc => {
+            resolve(doc)
+        })
+    })
+}
+
 module.exports.registry = async (ctx) => {
     let { username, password, phone } = ctx.request.body
     let userCount = await l_findAllUser()
@@ -75,21 +91,21 @@ module.exports.registry = async (ctx) => {
 }
 
 module.exports.login = async (ctx) => {
-    let { username, password } = ctx.request.body
-    let user = await l_findUser(username)
+    let { phone, password } = ctx.request.body
+    let user = await l_findPhone(phone)
     user.password = dpPwd(user.password, SECRET)
     if( !user || user.password !== password) {
         ctx.status = 200
         ctx.body = {
             success: false,
             code: 1,
-            msg: '用户名或者密码错误！'
+            msg: '手机号或者密码错误！'
         }
         return
     }
     if( user.password === password ) {
-        let token = jwt.sign({username: username}, SECRET, {
-            expiresIn : 60*60*24// 授权时效24小时
+        let token = jwt.sign({phone: phone}, SECRET, {
+            expiresIn : '1d'// 授权时效24小时
         });
         ctx.status = 200
         ctx.body = {
@@ -99,4 +115,53 @@ module.exports.login = async (ctx) => {
             msg: '登陆成功！'
         }
     }
+}
+
+module.exports.getAllBook = async (ctx) => {
+    let bookList = await l_findAllBook()
+    ctx.status = 200
+    ctx.body = {
+        code: 200,
+        success: true,
+        msg: '查询成功！',
+        data: bookList
+    }
+}
+
+module.exports.borrowBook = async (ctx) => {
+    let { _id, phone } = ctx.request.body
+    
+    let anext = async () => {
+        return new Promise((resolve, reject ) => {
+            if ( !_id || !phone ) {
+                resolve({
+                    code: 1,
+                    success: false,
+                    msg: '操作失败'
+                })
+            }
+            Model.book.updateOne({ _id }, {isLending: true, borrowTime: Date.now(), borrowUser: phone}, (err, doc) => {
+                if(err) {
+                    resolve({
+                        code: 1,
+                        success: false,
+                        msg: '操作失败'
+                    })
+                }
+                Model.user.findOne({ phone }).then( doc => {
+                    doc.borrow_list.push(_id)
+                    doc.save()
+                }).then(() => {
+                    resolve({
+                        code: 200,
+                        success: true,
+                        msg: '操作成功'
+                    })
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
 }

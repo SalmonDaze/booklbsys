@@ -9,4 +9,9 @@ childRouter.post('/register', userController.registry)
 childRouter.post('/login', userController.login )
 //查询所有用户
 
+// 查询所有书
+childRouter.post('/getAllBook', userController.getAllBook)
+
+// 借书
+childRouter.post('/borrowBook', userController.borrowBook)
 module.exports = childRouter
