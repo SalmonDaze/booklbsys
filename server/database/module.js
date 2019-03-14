@@ -59,6 +59,10 @@ const bookSchema = new Schema({
     borrowUser: {
         type: Schema.Types.String,
         ref: 'user',
+    },
+    returnTime: {
+        type: Date,
+        default: ''
     }
 })
 
