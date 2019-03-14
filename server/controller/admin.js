@@ -104,10 +104,11 @@ module.exports.banUser = async (ctx) => {
     ctx.body = result
 }
 
-module.exports.getUserInfo = async () => {
+module.exports.getUserInfo = async (ctx) => {
     let anext = async () => {
         return new Promise((resolve, reject) => {
             Model.user.find({}).populate({path: 'borrow_list'}).exec((err, doc) => {
+                console.log(err, doc)
                 if(err) {
                     resolve({
                         code: 1,

@@ -141,6 +141,7 @@ module.exports.borrowBook = async (ctx) => {
                 })
             }
             Model.book.updateOne({ _id }, {isLending: true, borrowTime: Date.now(), borrowUser: phone}, (err, doc) => {
+                console.log(err, doc)
                 if(err) {
                     resolve({
                         code: 1,

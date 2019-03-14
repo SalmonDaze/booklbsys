@@ -25,10 +25,10 @@ const userSchema = new Schema({
         type: String,
         default: 'defaultAvatar'
     },
-    borrow_list: {
-        type: Array,
-        default: []
-    }
+    borrow_list: [{
+        type: Schema.Types.ObjectId,
+        ref: 'book',
+    }]
 })
 
 const bookSchema = new Schema({
@@ -57,8 +57,8 @@ const bookSchema = new Schema({
         default: ''
     },
     borrowUser: {
-        type: String,
-        default: ''
+        type: Schema.Types.String,
+        ref: 'user',
     }
 })
 
