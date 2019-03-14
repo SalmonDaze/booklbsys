@@ -26,11 +26,9 @@ app.use(bodyParser())
 app.use( async (ctx, next) => {
     const authUrl = ['/api/login', '/api/register']
     let token = ctx.header.accesstoken
-    console.log(token)
     let url = authUrl.find( url => url === ctx.url)
     if( url ) {
         await next()
-        console.log('1')
     } else {
         let anext = await new Promise((resolve, reject) => {
             jwt.verify(token, config.SECRET, async (err, decoded) => {
@@ -41,7 +39,6 @@ app.use( async (ctx, next) => {
                     })
                 }else {
                     resolve(next)
-                    console.log('3')
                 }
             })
         })
