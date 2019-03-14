@@ -20,12 +20,10 @@
         </el-form-item>
         <a class='jump-register'
           @click="jump_register">立即注册</a>
-        <router-link :to="{path:'/homepage'}">
-          <el-form-item>
-            <el-button type="primary"
-              @click="login">登录</el-button>
-          </el-form-item>
-        </router-link>
+        <el-form-item>
+          <el-button type="primary"
+            @click="login">登录</el-button>
+        </el-form-item>
 
       </el-form>
     </div>
@@ -76,6 +74,10 @@ export default {
       }
     };
   },
+  // 从首页后退时，清空token，重新登录
+  mounted() {
+    this.$store.dispatch('logout');
+  },
   methods: {
     login_close() {
       this.$emit('loginClose', '子组件的参数内容');
@@ -83,36 +85,34 @@ export default {
     jump_register() {
       this.$emit('jumpRegister', '');
     },
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!');
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
-    },
     // 登录
     login() {
       console.log(this.ruleForm2.phone, this.ruleForm2.pass)
-      this.$ajax({
-        method: 'post',
-        url: '/api/login',
-        data: {
-          phone: this.ruleForm2.phone,
-          password: this.ruleForm2.pass
-        }
-      }).then((res) => {
-        console.log(res)
-        let { success, token } = res.data
-        if (success) {
-          // 更新store.js里loginAsync方法的token
-          this.$store.dispatch('loginAsync', token);
-        } else {
-          console.log('登录失败')
-        }
-      })
+      const reg = /^1[0-9]{10}$/;
+        if (!reg.test(this.ruleForm2.phone)) {
+          console.log('wsss')
+          return false
+        }else{
+          this.$ajax({
+            method: 'post',
+            url: '/api/login',
+            data: {
+              phone: this.ruleForm2.phone,
+              password: this.ruleForm2.pass
+            }
+          }).then((res) => {
+            console.log(res)
+            let { success, token } = res.data
+            if (success) {
+              // 更新store.js里loginAsync方法的token
+              this.$store.dispatch('loginAsync', token);
+              // 跳转首页
+              this.$router.push('/homepage')
+            } else {
+              alert(res.data.msg);
+            }
+          })
+      }
     },
   }
 }
