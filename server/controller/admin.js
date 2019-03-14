@@ -2,6 +2,10 @@ const Model = require('../database/module')
 const jwt = require('jsonwebtoken')
 const SECRET = require('../config/default').SECRET
 const crypto = require('crypto')
+const path = require('path')
+const fs = require('fs')
+const upload = require('../utils/upload')
+const multer = require('koa-multer')
 
 const l_findAllUser = async () => {
     return new Promise ((resolve, reject) => {
@@ -28,5 +32,12 @@ module.exports.userInfoCheck = async (ctx, next) => {
             success: false,
             msg: '无用户数据',
         }
+    }
+}
+
+module.exports.uploadCover = async (ctx, next) => {
+    console.log(ctx.req.file)
+    ctx.body = {
+        filename: ctx.req.file
     }
 }

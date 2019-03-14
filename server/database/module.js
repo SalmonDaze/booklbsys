@@ -8,6 +8,7 @@ const userSchema = new Schema({
     username: String,
     password: String,
     UID: Number,
+    phone: String,
     create_at: {
         type: Date,
         default: Date.now()
@@ -47,10 +48,6 @@ const bookSchema = new Schema({
         type: String,
         default: '7'
     },
-    seq: {
-        type: Number,
-        default: 0
-    }
 })
 
 let Model = {
