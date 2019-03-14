@@ -8,6 +8,7 @@ const bodyParser = require('koa-bodyparser')
 const cors = require('koa2-cors')
 const jwt = require('jsonwebtoken')
 const config = require('./config/default')
+const multer = require('koa-multer')
 
 app.use(cors({
     origin: function (ctx) {

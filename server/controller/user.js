@@ -25,6 +25,14 @@ const l_findUser = async (username) => {
     })
 }
 
+const l_findPhone = async (phone) => {
+    return new Promise((resolve, reject) => {
+        Model.user.findOne({phone: phone}).then( (doc) => {
+            resolve(doc)
+        })
+    })
+}
+
 const l_findAllUser = async () => {
     return new Promise ((resolve, reject) => {
         Model.user.find({}).then( (doc) => {
@@ -34,30 +42,32 @@ const l_findAllUser = async () => {
 }
 
 module.exports.registry = async (ctx) => {
-    let { username, password } = ctx.request.body
+    let { username, password, phone } = ctx.request.body
     let userCount = await l_findAllUser()
     password = cryptPwd(String(password), SECRET)
-    if ( !username || username.length > 18 ) {
-        ctx.body = {
+    let nameReg = /^1[0-9]{10}$/
+    if ( !nameReg.test(phone) ) {
+        ctx.status = 200
+        return ctx.body = {
             code: 1,
             success: false,
-            msg: '用户名格式错误! '
+            msg: '手机号码格式错误! '
         }
     }
-    let doc = await l_findUser(username)
+    let doc = await l_findPhone(phone)
     if( doc ) {
         ctx.status = 200
         ctx.body = {
             code: 1,
             success: false,
-            msg: '用户已被注册！'
+            msg: '手机号已被注册！'
         }
     }else {
-        await Model.user.create({username: username, password: password, UID: userCount.length + 1}).then(() => {
+        await Model.user.create({username: username, password: password, UID: userCount.length + 1, phone: phone}).then(() => {
             ctx.status = 200
             ctx.body = {
                 code: 200,
-                success: false,
+                success: true,
                 msg: '注册成功！'
             }
         })
@@ -90,4 +100,3 @@ module.exports.login = async (ctx) => {
         }
     }
 }
-
