@@ -18,12 +18,12 @@
             v-model="ruleForm2.pass"
             autocomplete="off"></el-input>
         </el-form-item>
-        <a class='register' @click="jump_register">立即注册</a>
+        <a class='jump-register'
+          @click="jump_register">立即注册</a>
         <router-link :to="{path:'/homepage'}">首页</router-link>
         <el-form-item>
           <el-button type="primary"
             @click="login">登录</el-button>
-          <el-button @click="resetForm('ruleForm2')">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -75,11 +75,11 @@ export default {
     };
   },
   methods: {
-    login_close(){
+    login_close() {
       this.$emit('loginClose', '子组件的参数内容');
     },
-    jump_register(){
-      this.$emit('jumpRegister','');
+    jump_register() {
+      this.$emit('jumpRegister', '');
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -103,7 +103,7 @@ export default {
         }
       }).then((res) => {
         let { success, token } = res.data
-        if( success ) {
+        if (success) {
           localStorage.setItem('accessToken', token);
 
         } else {
@@ -111,10 +111,6 @@ export default {
         }
       })
     },
-    // 重置
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    }
   }
 }
 </script>
@@ -136,15 +132,16 @@ export default {
   margin: auto;
   padding: 30px 60px 0px 10px;
   background: #ffffff;
-  border: 1px solid #E0E0E0;
-  border-radius: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
 }
 .login h1 {
   margin-bottom: 20px;
+  margin-left: 50px;
   font-size: 28px;
   line-height: 60px;
 }
-.login .register {
+.login .jump-register {
   position: relative;
   bottom: 20px;
   left: 180px;
@@ -152,7 +149,10 @@ export default {
   font-size: 13px;
   text-decoration: none;
 }
-.el-button + .el-button {
-  margin-left: 50px;
+.login .el-button{
+  position: relative;
+  right: 20px;
+  width: 240px;
+  letter-spacing: 10px;
 }
 </style>

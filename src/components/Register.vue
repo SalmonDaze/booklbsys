@@ -31,10 +31,11 @@
             v-model="ruleForm2.checkPass"
             autocomplete="off"></el-input>
         </el-form-item>
+        <a class='return-login'
+          @click="return_login">已有账号，立即登录</a>
         <el-form-item>
           <el-button type="primary"
             @click="registry">注册</el-button>
-          <el-button @click="resetForm('ruleForm2')">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -116,6 +117,9 @@ export default {
     register_close(){
       this.$emit('loginClose', '子组件的参数内容');
     },
+    return_login(){
+      this.$emit('returnLogin','');
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -135,9 +139,6 @@ export default {
           password: '123'
         }
       }).then(res => console.log(res))
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
     }
   }
 }
@@ -169,19 +170,34 @@ export default {
   bottom: 0px;
   left: 0px;
   width: 400px;
-  height: 390px;
+  height: 440px;
   margin: auto;
   padding: 30px 80px 0px 30px;
   background: #ffffff;
   border: 1px solid #e0e0e0;
-  border-radius: 15px;
+  border-radius: 10px;
 }
 .register h1 {
   padding-bottom: 10px;
+  margin-left: 50px;
   font-size: 28px;
   line-height: 60px;
 }
-.el-button + .el-button {
-  margin-left: 50px;
+.return-login{
+  position: relative;
+  bottom: 15px;
+  left: 140px;
+  color: rgb(199, 192, 192);
+  font-size: 13px;
+  text-decoration: none;
+}
+.register .el-form-item{
+  margin-top: 10px;
+}
+.register .el-button{
+  position: relative;
+  right: 30px;
+  width: 240px;
+  letter-spacing: 10px;
 }
 </style>

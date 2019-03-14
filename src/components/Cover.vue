@@ -5,7 +5,7 @@
       v-on:jumpRegister="closeLogin(),showRegister()"></v-login>
     <v-register ref="register"
       v-if='show2'
-      v-on:loginClose="closeRegister"></v-register>
+      v-on:loginClose="closeRegister" v-on:returnLogin="closeRegister(),showLogin()"></v-register>
     <div class="title">图书借阅系统</div>
   </div>
 </template>
