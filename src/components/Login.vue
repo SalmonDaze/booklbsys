@@ -1,8 +1,7 @@
 <template>
   <div class="login">
     <div class="form-login">
-      <p class="login-close" @click="login_close">X</p>
-      <h1>LOGIN</h1>
+      <h1>登录</h1>
       <el-form :model="ruleForm2"
         status-icon
         :rules="rules2"
@@ -19,8 +18,7 @@
             v-model="ruleForm2.pass"
             autocomplete="off"></el-input>
         </el-form-item>
-        <router-link class='register'
-          :to="{path:'/register'}">立即注册</router-link>
+        <a class='register' @click="jump_register">立即注册</a>
         <router-link :to="{path:'/homepage'}">首页</router-link>
         <el-form-item>
           <el-button type="primary"
@@ -80,6 +78,9 @@ export default {
     login_close(){
       this.$emit('loginClose', '子组件的参数内容');
     },
+    jump_register(){
+      this.$emit('jumpRegister','');
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -92,14 +93,23 @@ export default {
     },
     // 登录
     login() {
+      console.log(this.ruleForm2.phone, this.ruleForm2.pass)
       this.$ajax({
         method: 'post',
         url: 'http://192.168.2.73:3000/api/login',
         data: {
-          username: this.ruleForm2.username,
+          username: this.ruleForm2.phone,
           password: this.ruleForm2.pass
         }
-      }).then(res => console.log(res))
+      }).then((res) => {
+        let { success, token } = res.data
+        if( success ) {
+          localStorage.setItem('accessToken', token);
+
+        } else {
+          console.log('登录失败')
+        }
+      })
     },
     // 重置
     resetForm(formName) {
@@ -113,20 +123,6 @@ export default {
 <style scoped>
 .login {
   text-align: center;
-}
-.login .login-close{
-  position: absolute;
-  left: 425px;
-  top: 20px;
-  font-size: 19px;
-  color: rgb(202, 199, 199);
-  cursor: pointer;
-
-}
-.login .login-close:hover{
-  position: absolute;
-  left: 427px;
-  color: red;
 }
 .form-login {
   position: fixed;
@@ -145,7 +141,6 @@ export default {
 }
 .login h1 {
   margin-bottom: 20px;
-  font-family: "宋体";
   font-size: 28px;
   line-height: 60px;
 }

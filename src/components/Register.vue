@@ -3,7 +3,7 @@
     <div class="form-register">
       <p class="register-close"
         @click="register_close">X</p>
-      <h1>REGISTER</h1>
+      <h1>注册</h1>
       <el-form :model="ruleForm2"
         status-icon
         :rules="rules2"
@@ -178,7 +178,6 @@ export default {
 }
 .register h1 {
   padding-bottom: 10px;
-  font-family: "宋体";
   font-size: 28px;
   line-height: 60px;
 }

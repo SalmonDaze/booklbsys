@@ -1,14 +1,8 @@
 <template>
   <div class="cover">
-    <div class="header">
-      <a class="login"
-        @click="showLogin">登录</a>
-      <a class="register"
-        @click="showRegister">注册</a>
-    </div>
     <v-login ref="login"
       v-if='show1'
-      v-on:loginClose="closeLogin"></v-login>
+      v-on:jumpRegister="closeLogin(),showRegister()"></v-login>
     <v-register ref="register"
       v-if='show2'
       v-on:loginClose="closeRegister"></v-register>
@@ -25,7 +19,7 @@ export default {
   },
   data() {
     return {
-      show1: false,   // 是否显示模态框
+      show1: true,   // 是否显示模态框
       show2: false
     }
   },
@@ -41,6 +35,7 @@ export default {
     },
     closeRegister: function () {
       this.show2 = false;
+      this.show1 = true;
     },
   }
 }
@@ -56,38 +51,21 @@ export default {
     sizingMethod='scale');
   background-size: 100% 100%;
 }
-.cover .header {
-  position: absolute;
-  z-index: 1;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  left: 350px;
-  width: 200px;
-  height: 20px;
-  padding-top: 20px;
-  margin: auto;
-  font-size: 20px;
-}
 .cover .login,
 .cover .register {
-  margin-left: 40px;
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
+  margin-left: 30px;
 }
 .cover .title {
   position: absolute;
   z-index: 0;
-  top: 0px;
+  top: 200px;
   right: 0px;
-  bottom: 0px;
   left: 0px;
-  width: 600px;
+  width: 360px;
   height: 300px;
   margin: auto;
-  font-family: "华文行楷";
-  font-size: 100px;
+  font-family: "微软雅黑";
+  font-size: 60px;
 }
 </style>
 
