@@ -20,11 +20,13 @@
         </el-form-item>
         <a class='jump-register'
           @click="jump_register">立即注册</a>
-        <router-link :to="{path:'/homepage'}">首页</router-link>
-        <el-form-item>
-          <el-button type="primary"
-            @click="login">登录</el-button>
-        </el-form-item>
+        <router-link :to="{path:'/homepage'}">
+          <el-form-item>
+            <el-button type="primary"
+              @click="login">登录</el-button>
+          </el-form-item>
+        </router-link>
+
       </el-form>
     </div>
   </div>
@@ -96,16 +98,17 @@ export default {
       console.log(this.ruleForm2.phone, this.ruleForm2.pass)
       this.$ajax({
         method: 'post',
-        url: 'http://192.168.2.73:3000/api/login',
+        url: '/api/login',
         data: {
-          username: this.ruleForm2.phone,
+          phone: this.ruleForm2.phone,
           password: this.ruleForm2.pass
         }
       }).then((res) => {
+        console.log(res)
         let { success, token } = res.data
         if (success) {
-          localStorage.setItem('accessToken', token);
-
+          // 更新store.js里loginAsync方法的token
+          this.$store.dispatch('loginAsync', token);
         } else {
           console.log('登录失败')
         }
@@ -149,7 +152,7 @@ export default {
   font-size: 13px;
   text-decoration: none;
 }
-.login .el-button{
+.login .el-button {
   position: relative;
   right: 20px;
   width: 240px;

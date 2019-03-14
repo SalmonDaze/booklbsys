@@ -4,10 +4,16 @@ import Cover from '@/components/Cover.vue'
 import Login from './components/Login.vue'
 import Register from "./components/Register.vue";
 import Homepage from "./homepage/Homepage.vue";
+import store from "./store";
 
 Vue.use(Router)
 
-export default new Router({
+// 异步操作
+// localStorage持久化本地储存
+// localStorage.getItem(key) 获取指定key本地存储的值
+store.dispatch('loginAsync', localStorage.getItem('token'))
+
+let router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -29,7 +35,32 @@ export default new Router({
     {
       path: '/homepage',
       name: 'homepage',
-      component: Homepage
+      component: Homepage,
+      meta: { requiresAuth: true }
     },
   ]
+});
+
+// 导航守卫
+// 使用 router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    console.log(store.token)
+    if (!store.state.token) {
+      next({
+        path: '/',
+        query: { redirect: to.fullPath }
+      })
+    } else {
+      next()
+    }
+  } else {
+    next() // 确保一定要调用 next()
+  }
 })
+
+// 使用export default 向外暴露的成员
+export default router
+
