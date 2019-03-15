@@ -111,7 +111,7 @@ export default {
               // 跳转首页
               this.$router.push('/homepage')
             } else {
-              alert(res.data.msg);
+              this.$message.error(res.data.msg);
             }
           })
       }

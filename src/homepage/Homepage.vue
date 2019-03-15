@@ -14,11 +14,14 @@
             <i class="el-icon-location"></i>
             <span>借阅记录</span>
           </template>
-          <el-menu-item index="1-1"
-            @click="aweek_show">7天内</el-menu-item>
-          <el-menu-item index="1-2"
-            @click="abouttoexpire_show">即将到期</el-menu-item>
-          <el-menu-item index="1-3">已归还</el-menu-item>
+          <router-link to="/homepage/Aweek">
+            <el-menu-item index="1-1">7天内</el-menu-item>
+          </router-link>
+          <router-link to="/homepage/Abouttoexpire">
+            <el-menu-item index="1-2">即将到期</el-menu-item>
+          </router-link>
+          <el-menu-item index="1-3"
+            @click="giveback_show">已归还</el-menu-item>
           <el-submenu index="1-4">
             <template slot="title">未归还</template>
             <el-menu-item index="1-4-1">未归还名单</el-menu-item>
@@ -37,25 +40,30 @@
           <i class="el-icon-setting"></i>
           <span slot="title">书籍管理</span>
         </el-menu-item>
+        <el-menu-item index="5" v-if="!$store.state.user.isAdmin">
+          <i class="el-icon-upload2"></i>
+          <span slot="title">书籍上架</span>
+        </el-menu-item>
       </el-menu>
     </div>
-    <v-aweek v-if="show"></v-aweek>
-    <v-abouttoexpire v-if="show1"></v-abouttoexpire>
+    <router-view>
+    </router-view>
   </div>
 </template>
 
 <script>
+import vRecordtitle from "../content/record_title.vue"
 import vAweek from "../content/Aweek.vue"
-import vAbouttoexpire from "../content/About_to_expire.vue"
 export default {
   components: {
+    vRecordtitle,
     vAweek,
-    vAbouttoexpire
   },
   data() {
     return {
       show: false,
-      show1: false
+      show1: false,
+      show2: false
     }
   },
   methods: {
@@ -65,13 +73,23 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     },
+    // 7天内
     aweek_show() {
       this.show = true;
       this.show1 = false;
+      this.show2 = false;
     },
+    // 即将到期
     abouttoexpire_show() {
       this.show = false;
       this.show1 = true;
+      this.show2 = false;
+    },
+    // 已归还
+    giveback_show() {
+      this.show = false;
+      this.show1 = false;
+      this.show2 = true;
     }
   }
 }
