@@ -51,6 +51,11 @@ let router = new Router({
           path: "abouttoexpire",
           name: "abouttoexpire",
           component: Abouttoexpire
+        },
+        {
+          path: 'uploadBook',
+          name: 'uploadBook',
+          component: () => import('./content/uploadBook.vue')
         }
       ]
     }

@@ -187,20 +187,25 @@ module.exports.sevenDaysExpire = async (ctx) => {
 
 module.exports.sevenDaysBorrow = async (ctx) => {
     let books = await l_findAllBook()
-    let anext = async () => {
+    let getDoc = async (_id) => {
         return new Promise((resolve, reject) => {
+            Model.book.findOne({ _id }).populate({path: 'borrowUser'}).exec((err, doc) => {
+                resolve(doc)
+            })
+        })
+    }
+    let anext = async () => {
+        return new Promise(async (resolve, reject) => {
             let bookList = new Array()
             for(const book of books) {
                 if( book.isLending ) {
                     let start = Number(book.borrowTime)
                     if( moment().diff(start, 'days') <= 7) {
-                        Model.book.findOne({ _id: book._id}).populate({path: 'borrowUser'}).exec((err, doc) => {
-                            bookList.push(doc)
-                        })
+                        let doc = await getDoc(book._id)
+                        bookList.push(doc)
                     }
                 }
             }
-            console.log(bookList)
             resolve(bookList)
         })
     }

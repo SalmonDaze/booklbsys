@@ -157,7 +157,8 @@ module.exports.borrowBook = async (ctx) => {
                 isLending: true, 
                 borrowTime: moment(), 
                 borrowUser: _userId, 
-                returnTime: moment(Date.now()).add(borrowCycle, 'days')
+                returnTime: moment(Date.now()).add(borrowCycle, 'days'),
+                $inc : {borrowCount: 1}
             }, (err, doc) => {
                 if(err) {
                     resolve({

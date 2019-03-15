@@ -40,10 +40,12 @@
           <i class="el-icon-setting"></i>
           <span slot="title">书籍管理</span>
         </el-menu-item>
-        <el-menu-item index="5" v-if="!$store.state.user.isAdmin">
-          <i class="el-icon-upload2"></i>
-          <span slot="title">书籍上架</span>
-        </el-menu-item>
+        <router-link :to="{path: '/homepage/uploadBook'}">
+          <el-menu-item index="5" v-if="!$store.state.user.isAdmin">
+            <i class="el-icon-upload2"></i>
+            <span slot="title">书籍上架</span>
+          </el-menu-item>
+        </router-link>
       </el-menu>
     </div>
     <router-view>

@@ -63,6 +63,10 @@ const bookSchema = new Schema({
     returnTime: {
         type: String,
         default: ''
+    },
+    borrowCount: {
+        type: Number,
+        default: 0,
     }
 })
 
