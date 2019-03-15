@@ -4,31 +4,31 @@
       <p class="register-close"
         @click="register_close">X</p>
       <h1>注册</h1>
-      <el-form :model="ruleForm2"
+      <el-form :model="ruleForm1"
         status-icon
         :rules="rules2"
-        ref="ruleForm2"
+        ref="ruleForm1"
         label-width="100px"
         class="demo-ruleForm">
         <el-form-item label="用户名"
           prop="username">
-          <el-input v-model.number="ruleForm2.username"></el-input>
+          <el-input v-model.number="ruleForm1.username"></el-input>
         </el-form-item>
         <el-form-item label="手机号"
           prop="phone">
-          <el-input v-model.number="ruleForm2.phone"></el-input>
+          <el-input v-model.number="ruleForm1.phone"></el-input>
         </el-form-item>
         </el-form-item>
         <el-form-item label="密码"
           prop="pass">
           <el-input type="password"
-            v-model="ruleForm2.pass"
+            v-model="ruleForm1.pass"
             autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="确认密码"
           prop="checkPass">
           <el-input type="password"
-            v-model="ruleForm2.checkPass"
+            v-model="ruleForm1.checkPass"
             autocomplete="off"></el-input>
         </el-form-item>
         <a class='return-login'
@@ -71,8 +71,8 @@ export default {
       if (value === '') {
         callback(new Error('请输入密码'));
       } else {
-        if (this.ruleForm2.checkPass !== '') {
-          this.$refs.ruleForm2.validateField('checkPass');
+        if (this.ruleForm1.checkPass !== '') {
+          this.$refs.ruleForm1.validateField('checkPass');
         }
         callback();
       }
@@ -80,14 +80,14 @@ export default {
     var validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'));
-      } else if (value !== this.ruleForm2.pass) {
+      } else if (value !== this.ruleForm1.pass) {
         callback(new Error('两次输入密码不一致!'));
       } else {
         callback();
       }
     };
     return {
-      ruleForm2: {
+      ruleForm1: {
         // 用户名
         username: '',
         // 手机号
@@ -114,11 +114,11 @@ export default {
     };
   },
   methods: {
-    register_close(){
+    register_close() {
       this.$emit('loginClose', '子组件的参数内容');
     },
-    return_login(){
-      this.$emit('returnLogin','');
+    return_login() {
+      this.$emit('returnLogin', '');
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -132,29 +132,28 @@ export default {
     },
     registry() {
       const reg = /^1[0-9]{10}$/;
-        if (!reg.test(this.ruleForm2.phone)) {
-          console.log('wsss')
-          return false
-        }else{
-          this.$ajax({
-            method: 'post',
-            url: '/api/register',
-            data: {
-              phone: this.ruleForm2.phone,
-              password: this.ruleForm2.pass
-            }
-          }).then((res) => {
-            console.log(res)
-            let { success, token } = res.data
-            if (success) {
-              // 更新store.js里loginAsync方法的token
-              this.$store.dispatch('loginAsync', token);
-              // 跳转首页
-              this.register_close();
-            } else {
-              alert(res.data.msg);
-            }
-          })
+      if (!this.ruleForm1.username || !reg.test(this.ruleForm1.phone) || !this.ruleForm1.pass || !this.ruleForm1.checkPass || this.ruleForm1.pass !== this.ruleForm1.checkPass) {
+        return false
+      } else {
+        this.$ajax({
+          method: 'post',
+          url: '/api/register',
+          data: {
+            phone: this.ruleForm1.phone,
+            password: this.ruleForm1.pass
+          }
+        }).then((res) => {
+          console.log(res)
+          let { success, token } = res.data
+          if (success) {
+            // 更新store.js里loginAsync方法的token
+            this.$store.dispatch('loginAsync', token);
+            // 跳转首页
+            this.register_close();
+          } else {
+            alert(res.data.msg);
+          }
+        })
       }
     },
   }
@@ -200,7 +199,7 @@ export default {
   font-size: 28px;
   line-height: 60px;
 }
-.return-login{
+.return-login {
   position: relative;
   bottom: 15px;
   left: 140px;
@@ -208,10 +207,10 @@ export default {
   font-size: 13px;
   text-decoration: none;
 }
-.register .el-form-item{
+.register .el-form-item {
   margin-top: 10px;
 }
-.register .el-button{
+.register .el-button {
   position: relative;
   right: 30px;
   width: 240px;

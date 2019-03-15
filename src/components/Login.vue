@@ -89,8 +89,7 @@ export default {
     login() {
       console.log(this.ruleForm2.phone, this.ruleForm2.pass)
       const reg = /^1[0-9]{10}$/;
-        if (!reg.test(this.ruleForm2.phone)) {
-          console.log('wsss')
+        if (!reg.test(this.ruleForm2.phone)||!this.ruleForm2.phone||!this.ruleForm2.pass) {
           return false
         }else{
           this.$ajax({
