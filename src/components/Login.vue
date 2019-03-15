@@ -102,10 +102,10 @@ export default {
             }
           }).then((res) => {
             console.log(res)
-            let { success, token } = res.data
+            let { success, data, token } = res.data
             if (success) {
               // 更新store.js里loginAsync方法的token
-              this.$store.dispatch('loginAsync', token);
+              this.$store.dispatch('loginAsync', token, data);
               // 跳转首页
               this.$router.push('/homepage')
             } else {

@@ -35,7 +35,7 @@
           @click="return_login">已有账号，立即登录</a>
         <el-form-item>
           <el-button type="primary"
-            @click="registry">注册</el-button>
+            @click="{registry,register_close}">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -131,15 +131,32 @@ export default {
       });
     },
     registry() {
-      this.$ajax({
-        method: 'post',
-        url: 'http://192.168.2.73:3000/api/register',
-        data: {
-          username: '123',
-          password: '123'
-        }
-      }).then(res => console.log(res))
-    }
+      const reg = /^1[0-9]{10}$/;
+        if (!reg.test(this.ruleForm2.phone)) {
+          console.log('wsss')
+          return false
+        }else{
+          this.$ajax({
+            method: 'post',
+            url: '/api/register',
+            data: {
+              phone: this.ruleForm2.phone,
+              password: this.ruleForm2.pass
+            }
+          }).then((res) => {
+            console.log(res)
+            let { success, token } = res.data
+            if (success) {
+              // 更新store.js里loginAsync方法的token
+              this.$store.dispatch('loginAsync', token);
+              // 跳转首页
+              this.$router.push('/');
+            } else {
+              alert(res.data.msg);
+            }
+          })
+      }
+    },
   }
 }
 </script>

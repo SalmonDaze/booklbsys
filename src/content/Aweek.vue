@@ -6,31 +6,49 @@
         prefix-icon="el-icon-search"
         v-model="input21">
       </el-input>
-      <el-input placeholder="上架时间"
-        suffix-icon="el-icon-date"
-        v-model="input2">
-      </el-input>
+      <el-date-picker type="dates"
+        v-model="value14"
+        placeholder="请选择借书时间">
+      </el-date-picker>
       <el-button type="primary"
         plain>查询</el-button>
     </div>
-    <div class="table">
-      <el-pagination @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[10, 20, 50, 100]"
-        :page-size="pagesize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="data.length">
-      </el-pagination>
-      <el-table :data="data.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-        stripe
-        style="width: 100%">
-      </el-table>
-      <el-table-column prop="id"
-        label="序号"
-        align="center">
-      </el-table-column>
+    <div style="margin-top: 20px">
+      <el-button @click="toggleSelection()">续借</el-button>
+      <el-button @click="toggleSelection()">归还</el-button>
     </div>
+    <el-table ref="multipleTable"
+      :data="tableData3"
+      tooltip-effect="dark"
+      style="width: 100%"
+      @selection-change="handleSelectionChange">
+      <el-table-column type="selection"
+        width="55">
+      </el-table-column>
+      <el-table-column label="借出日期"
+        width="120">
+        <template slot-scope="scope">{{ scope.row.date }}</template>
+      </el-table-column>
+      <el-table-column prop="bookname"
+        label="书名">
+      </el-table-column>
+      <el-table-column prop="can_days"
+        label="可借天数（天）"
+        show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column prop="remainder_days"
+        label="剩余天数（天）"
+        show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column prop="reader"
+        label="借阅人"
+        show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column prop="yn"
+        label="是否归还"
+        show-overflow-tooltip>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 <script>
@@ -38,18 +56,67 @@ export default {
   data() {
     return {
       input21: '',
-      input2: '',
-      data: [],
-      currentPage: 1,
-      pagesize: 20,
+      value14: '',
+      tableData3: [{
+        date: '2016-05-03',
+        bookname: 'C语言设计',
+        can_days: '30',
+        remainder_days:'10',
+        reader: '王江',
+        yn:'是'
+      }, {
+        date: '2016-05-02',
+        bookname: 'Windows程序设计',
+        can_days: '60',
+        remainder_days: '8',
+        reader:'珞珈',
+        yn:'否'
+      }, {
+        date: '2016-05-04',
+        bookname: 'Java编程语言',
+        can_days: '30',
+        remainder_days:'12',
+        reader:'周敏',
+        yn:'否'
+      }, {
+        date: '2016-05-03',
+        bookname: 'C语言设计',
+        can_days: '30',
+        remainder_days:'10',
+        reader:'珞珈',
+        yn:'否'
+      }, {
+        date: '2016-05-02',
+        bookname: 'Windows程序设计',
+        can_days: '60',
+        remainder_days: '8',
+        reader:'周敏',
+        yn:'否'
+      }, {
+        date: '2016-05-04',
+        bookname: 'Java编程语言',
+        can_days: '30',
+        remainder_days:'12',
+        reader:'周敏',
+        yn:'否'
+      },],
+      multipleSelection: []
     }
   },
   methods: {
-    handleSizeChange: function (size) {
-      this.pagesize = size;
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
     },
-    handleCurrentChange: function (currentPage) {
-      this.currentPage = currentPage;
+    // 保存勾选数据，type必须是selection
+    // 把勾选数据传到后台
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
     }
   }
 }

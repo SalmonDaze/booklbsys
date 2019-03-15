@@ -1,7 +1,7 @@
 <template>
   <div class="homepage">
     <div class="header">
-      <p><strong>图书管理</strong></p>
+      <p><img src="../../public/logo.png" class="logo" /><strong>  图书管理</strong></p>
     </div>
     <div class="navigation-bar">
       <el-menu default-active="2"
@@ -63,9 +63,14 @@ export default {
 }
 </script>
 <style>
+.homepage .logo{
+  width: 50px;
+  height: 50px;
+  vertical-align: middle;
+}
 .homepage .header {
   height: 100px;
-  background: linear-gradient(to top right, #accff4, #edf4fd);
+  border-bottom: 1px solid rgb(214, 214, 214);
 }
 .homepage .navigation-bar {
   width: 200px;
