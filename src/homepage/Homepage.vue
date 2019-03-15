@@ -20,27 +20,40 @@
           <router-link to="/homepage/Abouttoexpire">
             <el-menu-item index="1-2">即将到期</el-menu-item>
           </router-link>
-          <el-menu-item index="1-3"
-            @click="giveback_show">已归还</el-menu-item>
+          <router-link to="/homepage/giveback">
+            <el-menu-item index="1-3"
+              @click="giveback_show">已归还</el-menu-item>
+          </router-link>
           <el-submenu index="1-4">
             <template slot="title">未归还</template>
-            <el-menu-item index="1-4-1">未归还名单</el-menu-item>
-            <el-menu-item index="1-4-2">黑名单</el-menu-item>
+            <router-link to="/homepage/ungiveback">
+              <el-menu-item index="1-4-1">未归还名单</el-menu-item>
+            </router-link>
+            <router-link to="/homepage/blacklist">
+              <el-menu-item index="1-4-2">黑名单</el-menu-item>
+            </router-link>
           </el-submenu>
         </el-submenu>
-        <el-menu-item index="2">
-          <i class="el-icon-menu"></i>
-          <span slot="title">热门书籍</span>
-        </el-menu-item>
-        <el-menu-item index="3">
-          <i class="el-icon-document"></i>
-          <span slot="title">最新上架</span>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <i class="el-icon-setting"></i>
-          <span slot="title">书籍管理</span>
-        </el-menu-item>
-        <el-menu-item index="5" v-if="!$store.state.user.isAdmin">
+        <router-link to="/homepage/Hot">
+          <el-menu-item index="2">
+            <i class="el-icon-menu"></i>
+            <span slot="title">热门书籍</span>
+          </el-menu-item>
+        </router-link>
+        <router-link to="/homepage/newbooks">
+          <el-menu-item index="3">
+            <i class="el-icon-document"></i>
+            <span slot="title">最新上架</span>
+          </el-menu-item>
+        </router-link>
+        <router-link to="/homepage/setup">
+          <el-menu-item index="4">
+            <i class="el-icon-setting"></i>
+            <span slot="title">书籍管理</span>
+          </el-menu-item>
+        </router-link>
+        <el-menu-item index="5"
+          v-if="!$store.state.user.isAdmin">
           <i class="el-icon-upload2"></i>
           <span slot="title">书籍上架</span>
         </el-menu-item>
@@ -52,18 +65,11 @@
 </template>
 
 <script>
-import vRecordtitle from "../content/record_title.vue"
-import vAweek from "../content/Aweek.vue"
 export default {
   components: {
-    vRecordtitle,
-    vAweek,
   },
   data() {
     return {
-      show: false,
-      show1: false,
-      show2: false
     }
   },
   methods: {
@@ -73,24 +79,6 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     },
-    // 7天内
-    aweek_show() {
-      this.show = true;
-      this.show1 = false;
-      this.show2 = false;
-    },
-    // 即将到期
-    abouttoexpire_show() {
-      this.show = false;
-      this.show1 = true;
-      this.show2 = false;
-    },
-    // 已归还
-    giveback_show() {
-      this.show = false;
-      this.show1 = false;
-      this.show2 = true;
-    }
   }
 }
 </script>
