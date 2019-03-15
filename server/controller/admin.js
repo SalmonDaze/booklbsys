@@ -6,6 +6,7 @@ const path = require('path')
 const fs = require('fs')
 const upload = require('../utils/upload')
 const multer = require('koa-multer')
+const moment = require('moment')
 
 const l_findAllUser = async () => {
     return new Promise ((resolve, reject) => {
@@ -161,4 +162,54 @@ module.exports.getAllBook = async (ctx) => {
     let result = await anext()
     console.log(result)
     ctx.body = result
+}
+
+module.exports.sevenDaysExpire = async (ctx) => {
+    let bookList = await l_findAllBook()
+    let returnList = new Array()
+    for(const book of bookList) {
+        if( book.isLending) {
+            let start = Number(book.borrowTime)
+            let end = Number(book.returnTime)
+            if( moment(end).diff(start, 'days') <= 7 ) {
+                returnList.push(book)
+            }
+        }
+    }
+    ctx.status = 200
+    ctx.body = {
+        msg: '查询成功',
+        code: 200,
+        success: true,
+        data: returnList
+    }
+}
+
+module.exports.sevenDaysBorrow = async (ctx) => {
+    let books = await l_findAllBook()
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            let bookList = new Array()
+            for(const book of books) {
+                if( book.isLending ) {
+                    let start = Number(book.borrowTime)
+                    if( moment().diff(start, 'days') <= 7) {
+                        Model.book.findOne({ _id: book._id}).populate({path: 'borrowUser'}).exec((err, doc) => {
+                            bookList.push(doc)
+                        })
+                    }
+                }
+            }
+            console.log(bookList)
+            resolve(bookList)
+        })
+    }
+    let bookList = await anext()
+    ctx.status = 200
+    ctx.body = {
+        msg: '查询成功',
+        code: 200,
+        success: true,
+        data: bookList
+    }
 }

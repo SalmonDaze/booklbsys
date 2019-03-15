@@ -116,7 +116,7 @@ module.exports.login = async (ctx) => {
     }
     if( user.password === password ) {
         let token = jwt.sign({phone: phone}, SECRET, {
-            expiresIn : '1d'// 授权时效24小时
+            expiresIn : '10d'// 授权时效24小时
         });
         ctx.status = 200
         ctx.body = {
@@ -155,7 +155,7 @@ module.exports.borrowBook = async (ctx) => {
             }
             Model.book.updateOne({ _id }, {
                 isLending: true, 
-                borrowTime: Date.now(), 
+                borrowTime: moment(), 
                 borrowUser: _userId, 
                 returnTime: moment(Date.now()).add(borrowCycle, 'days')
             }, (err, doc) => {
@@ -227,9 +227,9 @@ module.exports.returnBook = async (ctx) => {
         return new Promise ( (resolve, reject ) => {
             Model.book.updateOne({ _id }, {
                 isLending: false,
-                borrowTime: null,
-                returnTime: null,
-                borrowUser: null,
+                borrowTime: '',
+                returnTime: '',
+                borrowUser: '',
             }, (err, doc) => {
                 if(err) {
                     resolve({

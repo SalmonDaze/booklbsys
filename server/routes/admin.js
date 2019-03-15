@@ -17,4 +17,8 @@ adminRouter.post('/banUser', adminController.banUser)
 adminRouter.post('/getUserInfo', adminController.getUserInfo)
 // 获得所有书本信息
 adminRouter.post('/getAllBook', adminController.getAllBook)
+// 即将到期书本名单
+adminRouter.post('/sevenDaysExpire', adminController.sevenDaysExpire)
+// 7天内借阅书本名单
+adminRouter.post('/sevenDaysBorrow', adminController.sevenDaysBorrow)
 module.exports = adminRouter

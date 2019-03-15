@@ -11,7 +11,8 @@ const config = require('./config/default')
 const multer = require('koa-multer')
 const moment = require('moment')
 
-console.log(moment('2019-03-14T08:51:54.586Z').add(7, 'days'))
+let t1 = '2031-04-11T01:53:02.807Z'
+let t2 = '2019-03-15T13:47:02.807'
 
 app.use(cors({
     origin: function (ctx) {

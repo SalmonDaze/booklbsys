@@ -53,7 +53,7 @@ const bookSchema = new Schema({
         default: false,
     },
     borrowTime: {
-        type: Date,
+        type: String,
         default: ''
     },
     borrowUser: {
@@ -61,7 +61,7 @@ const bookSchema = new Schema({
         ref: 'user',
     },
     returnTime: {
-        type: Date,
+        type: String,
         default: ''
     }
 })
