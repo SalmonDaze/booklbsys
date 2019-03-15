@@ -35,7 +35,7 @@
           @click="return_login">已有账号，立即登录</a>
         <el-form-item>
           <el-button type="primary"
-            @click="{registry,register_close}">注册</el-button>
+            @click="registry()">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -150,7 +150,7 @@ export default {
               // 更新store.js里loginAsync方法的token
               this.$store.dispatch('loginAsync', token);
               // 跳转首页
-              this.$router.push('/');
+              this.register_close();
             } else {
               alert(res.data.msg);
             }
