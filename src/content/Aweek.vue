@@ -17,6 +17,14 @@
       <el-button @click="toggleSelection()">续借</el-button>
       <el-button @click="toggleSelection()">归还</el-button>
     </div>
+    <el-pagination @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage4"
+      :page-sizes="[100, 200, 300, 400]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="400">
+    </el-pagination>
     <el-table ref="multipleTable"
       :data="tableData3"
       tooltip-effect="dark"
@@ -57,53 +65,66 @@ export default {
     return {
       input21: '',
       value14: '',
-      tableData3: [{
-        date: '2016-05-03',
-        bookname: 'C语言设计',
-        can_days: '30',
-        remainder_days:'10',
-        reader: '王江',
-        yn:'是'
-      }, {
-        date: '2016-05-02',
-        bookname: 'Windows程序设计',
-        can_days: '60',
-        remainder_days: '8',
-        reader:'珞珈',
-        yn:'否'
-      }, {
-        date: '2016-05-04',
-        bookname: 'Java编程语言',
-        can_days: '30',
-        remainder_days:'12',
-        reader:'周敏',
-        yn:'否'
-      }, {
-        date: '2016-05-03',
-        bookname: 'C语言设计',
-        can_days: '30',
-        remainder_days:'10',
-        reader:'珞珈',
-        yn:'否'
-      }, {
-        date: '2016-05-02',
-        bookname: 'Windows程序设计',
-        can_days: '60',
-        remainder_days: '8',
-        reader:'周敏',
-        yn:'否'
-      }, {
-        date: '2016-05-04',
-        bookname: 'Java编程语言',
-        can_days: '30',
-        remainder_days:'12',
-        reader:'周敏',
-        yn:'否'
-      },],
-      multipleSelection: []
+      tableData3: [
+        {
+          date: '2016-05-03',
+          bookname: 'C语言设计',
+          can_days: '30',
+          remainder_days: '10',
+          reader: '王江',
+          yn: '是'
+        }, {
+          date: '2016-05-02',
+          bookname: 'Windows程序设计',
+          can_days: '60',
+          remainder_days: '8',
+          reader: '珞珈',
+          yn: '否'
+        }, {
+          date: '2016-05-04',
+          bookname: 'Java编程语言',
+          can_days: '30',
+          remainder_days: '12',
+          reader: '周敏',
+          yn: '否'
+        }, {
+          date: '2016-05-03',
+          bookname: 'C语言设计',
+          can_days: '30',
+          remainder_days: '10',
+          reader: '珞珈',
+          yn: '否'
+        }, {
+          date: '2016-05-02',
+          bookname: 'Windows程序设计',
+          can_days: '60',
+          remainder_days: '8',
+          reader: '周敏',
+          yn: '否'
+        }, {
+          date: '2016-05-04',
+          bookname: 'Java编程语言',
+          can_days: '30',
+          remainder_days: '12',
+          reader: '周敏',
+          yn: '否'
+        },],
+      multipleSelection: [],
+      currentPage1: 5,
+      currentPage2: 5,
+      currentPage3: 5,
+      currentPage4: 4
     }
   },
   methods: {
+    // 分页
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+    },
+    // 勾选
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
@@ -122,6 +143,12 @@ export default {
 }
 </script>
 <style>
+.aweek{
+  position: absolute;
+  top: 140px;
+  left: 230px;;
+  height: 900px;
+}
 .aweek h3 {
   color: #2c3e50;
 }
