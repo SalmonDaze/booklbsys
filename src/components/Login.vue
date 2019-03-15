@@ -101,11 +101,14 @@ export default {
               password: this.ruleForm2.pass
             }
           }).then((res) => {
+            let { success, user, token } = res.data
             console.log(res)
-            let { success, data, token } = res.data
             if (success) {
               // 更新store.js里loginAsync方法的token
-              this.$store.dispatch('loginAsync', token, data);
+              this.$store.dispatch('loginAsync', {
+                token,
+                data: user
+              });
               // 跳转首页
               this.$router.push('/homepage')
             } else {

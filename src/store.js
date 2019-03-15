@@ -13,12 +13,11 @@ export default new Vuex.Store({
   localStorage.removeItem(key):删除指定key本地存储的值 */
   mutations: {
     // 进行状态更改
-    login: (state, token, data) => {
-      console.log(token)
+    login: (state, payload) => {
       // localStorage.setItem('token', token)：将token存储到token字符串
-      localStorage.setItem('token', token);
-      state.token = token;
-      state.user = data
+      localStorage.setItem('token', payload.token);
+      state.token = payload.token;
+      state.user = payload.data
     },
     logout: (state) => {
       localStorage.removeItem("token");
@@ -27,8 +26,9 @@ export default new Vuex.Store({
   },
   actions: {
     // 异步操作
-    loginAsync({ commit }, token, data) {
-      commit("login", token, data);
+    loginAsync({ commit }, payload) {
+      console.log(payload)
+      commit("login", payload);
     },
     logout({ commit }) {
       commit("logout");
