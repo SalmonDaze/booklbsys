@@ -123,7 +123,8 @@ module.exports.login = async (ctx) => {
             code: 200,
             success: true,
             token: token,
-            msg: '登陆成功！'
+            msg: '登陆成功！',
+            user: user
         }
         return
     }

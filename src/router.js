@@ -11,7 +11,9 @@ Vue.use(Router)
 // 异步操作
 // localStorage持久化本地储存
 // localStorage.getItem(key) 获取指定key本地存储的值
-store.dispatch('loginAsync', localStorage.getItem('token'))
+if( localStorage.getItem('token') ) {
+  store.dispatch('loginAsync', localStorage.getItem('token'))
+}
 
 let router = new Router({
   mode: 'history',
