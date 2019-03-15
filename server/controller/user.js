@@ -94,8 +94,18 @@ module.exports.registry = async (ctx) => {
 module.exports.login = async (ctx) => {
     let { phone, password } = ctx.request.body
     let user = await l_findPhone(phone)
+    const phoneReg = /^1[0-9]{10}$/
+    if( !user || !phoneReg.test(phone)) {
+        ctx.status = 200
+        ctx.body = {
+            success: false,
+            code: 1,
+            msg: '用户名或者密码错误'
+        }
+        return
+    }
     user.password = dpPwd(user.password, SECRET)
-    if( !user || user.password !== password) {
+    if( user.password !== password ) {
         ctx.status = 200
         ctx.body = {
             success: false,
@@ -115,6 +125,7 @@ module.exports.login = async (ctx) => {
             token: token,
             msg: '登陆成功！'
         }
+        return
     }
 }
 
@@ -130,11 +141,11 @@ module.exports.getAllBook = async (ctx) => {
 }
 
 module.exports.borrowBook = async (ctx) => {
-    let { _id, phone } = ctx.request.body
+    let { _id, phone, _userId } = ctx.request.body
     const { borrowCycle } = await l_findBook(_id)
     let anext = async () => {
         return new Promise((resolve, reject ) => {
-            if ( !_id || !phone ) {
+            if ( !_id || !phone || !_userId) {
                 resolve({
                     code: 1,
                     success: false,
@@ -144,7 +155,7 @@ module.exports.borrowBook = async (ctx) => {
             Model.book.updateOne({ _id }, {
                 isLending: true, 
                 borrowTime: Date.now(), 
-                borrowUser: phone, 
+                borrowUser: _userId, 
                 returnTime: moment(Date.now()).add(borrowCycle, 'days')
             }, (err, doc) => {
                 if(err) {
@@ -185,10 +196,11 @@ module.exports.borrowBook = async (ctx) => {
 }
 
 module.exports.bookBorrowContinue = async (ctx) => {
-    let { time } = ctx.request.body
+    let { time, _id } = ctx.request.body
+    let { returnTime } = await l_findBook(_id)
     let anext = async () => {
         return new Promise( (resolve, reject) => {
-            Model.book.updateOne({ _id }, {borrowCycle: borrowCycle += time}, (err, doc) => {
+            Model.book.updateOne({ _id }, {returnTime: moment(returnTime).add(time, 'days')}, (err, doc) => {
                 if(err) {
                     resolve({
                         code: 1,
@@ -204,5 +216,35 @@ module.exports.bookBorrowContinue = async (ctx) => {
             })
         })
     }
-    
+    let result = await anext()
+    ctx.body = result
+}
+
+module.exports.returnBook = async (ctx) => {
+    let { _id } = ctx.request.body
+    let anext = async () => {
+        return new Promise ( (resolve, reject ) => {
+            Model.book.updateOne({ _id }, {
+                isLending: false,
+                borrowTime: null,
+                returnTime: null,
+                borrowUser: null,
+            }, (err, doc) => {
+                if(err) {
+                    resolve({
+                        success: false,
+                        code: 1,
+                        msg: '操作失败'
+                    })
+                }
+                resolve({
+                    success: true,
+                    code: 200,
+                    msg: '归还成功！'
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.body = result
 }

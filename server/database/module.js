@@ -57,7 +57,7 @@ const bookSchema = new Schema({
         default: ''
     },
     borrowUser: {
-        type: Schema.Types.String,
+        type: Schema.Types.ObjectId,
         ref: 'user',
     },
     returnTime: {

@@ -11,7 +11,10 @@ childRouter.post('/login', userController.login )
 
 // 查询所有书
 childRouter.post('/getAllBook', userController.getAllBook)
-
+//续借书
+childRouter.post('/bookBorrowContinue', userController.bookBorrowContinue)
 // 借书
 childRouter.post('/borrowBook', userController.borrowBook)
+// 还书
+childRouter.post('/returnBook', userController.returnBook)
 module.exports = childRouter

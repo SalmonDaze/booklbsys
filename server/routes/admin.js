@@ -15,4 +15,6 @@ adminRouter.post('/uploadBook', adminController.uploadBook)
 adminRouter.post('/banUser', adminController.banUser)
 // 查询用户信息
 adminRouter.post('/getUserInfo', adminController.getUserInfo)
+// 获得所有书本信息
+adminRouter.post('/getAllBook', adminController.getAllBook)
 module.exports = adminRouter

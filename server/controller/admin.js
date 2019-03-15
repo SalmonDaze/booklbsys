@@ -23,6 +23,14 @@ const l_findUserByPhone = async (phone) => {
     })
 }
 
+const l_findAllBook = async () => {
+    return new Promise ((resolve, reject) => {
+        Model.book.find({}).then( (doc) => {
+            resolve(doc)
+        })
+    })
+}
+
 module.exports.userInfoCheck = async (ctx, next) => {
     let result = await l_findAllUser()
     if ( result ) {
@@ -83,7 +91,7 @@ module.exports.banUser = async (ctx) => {
     let doc = await l_findUserByPhone(phone)
     let anext = async () => {
         return new Promise ((resolve, reject) => {
-            Model.user.updateOne({phone: phone + '12'}, {isBanned: true}, (err, doc) => {
+            Model.user.updateOne({phone: phone}, {isBanned: true}, (err, doc) => {
                 if(err) {
                     resolve({
                         code: 1,
@@ -126,5 +134,31 @@ module.exports.getUserInfo = async (ctx) => {
     }
     let result = await anext()
     ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.getAllBook = async (ctx) => {
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.book.find({}).populate({path: 'borrowUser'}).exec((err, doc) => {
+                console.log(err, doc)
+                if (err) {
+                    resolve({
+                        msg: '查询失败',
+                        code: 1,
+                        success: false
+                    })
+                }
+                resolve({
+                    msg: '查询成功',
+                    code: 200,
+                    success: true,
+                    data: doc
+                })
+            })
+        })
+    }
+    let result = await anext()
+    console.log(result)
     ctx.body = result
 }
