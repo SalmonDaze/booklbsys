@@ -5,7 +5,13 @@ import Login from "./components/Login.vue";
 import Register from "./components/Register.vue";
 import Homepage from "./homepage/Homepage.vue";
 import Aweek from "./content/Aweek.vue";
-import Abouttoexpire from "./content/About_to_expire.vue"
+import Abouttoexpire from "./content/About_to_expire.vue";
+import Giveback from "./content/Give_back.vue";
+import Ungiveback from "./content/Ungive_back.vue";
+import Blacklist from "./content/Blacklist.vue";
+import Hot from "./content/Hot.vue";
+import Newbooks from "./content/Newbooks.vue";
+import Setup from "./content/Set_up.vue";
 import store from "./store";
 
 Vue.use(Router);
@@ -53,10 +59,42 @@ let router = new Router({
           component: Abouttoexpire
         },
         {
+<<<<<<< HEAD
           path: 'uploadBook',
           name: 'uploadBook',
           component: () => import('./content/uploadBook.vue')
         }
+=======
+          path: "giveback",
+          name: "giveback",
+          component: Giveback
+        },
+        {
+          path: "hot",
+          name: "hot",
+          component: Hot
+        },
+        {
+          path: "ungiveback",
+          name: "ungiveback",
+          component: Ungiveback
+        },
+        {
+          path: "blacklist",
+          name: "blacklist",
+          component: Blacklist
+        },
+        {
+          path: "newbooks",
+          name: "newbooks",
+          component: Newbooks
+        },
+        {
+          path: "setup",
+          name: "setup",
+          component: Setup
+        },
+>>>>>>> 78797433d74446b81faa31270f51a9c709516f55
       ]
     }
   ]
