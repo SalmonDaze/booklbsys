@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import axios from 'axios'
 
 Vue.use(Vuex);
 
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     login: (state, payload) => {
       // localStorage.setItem('token', token)：将token存储到token字符串
       localStorage.setItem('token', payload.token);
+      axios.defaults.headers.post['accessToken'] = payload.token
       state.token = payload.token;
       state.user = payload.data
     },

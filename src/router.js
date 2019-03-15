@@ -13,6 +13,7 @@ import Hot from "./content/Hot.vue";
 import Newbooks from "./content/Newbooks.vue";
 import Setup from "./content/Set_up.vue";
 import store from "./store";
+import axios from 'axios'
 
 Vue.use(Router);
 
@@ -59,12 +60,6 @@ let router = new Router({
           component: Abouttoexpire
         },
         {
-<<<<<<< HEAD
-          path: 'uploadBook',
-          name: 'uploadBook',
-          component: () => import('./content/uploadBook.vue')
-        }
-=======
           path: "giveback",
           name: "giveback",
           component: Giveback
@@ -94,7 +89,11 @@ let router = new Router({
           name: "setup",
           component: Setup
         },
->>>>>>> 78797433d74446b81faa31270f51a9c709516f55
+        {
+          path: 'uploadBook',
+          name: 'uploadBook',
+          component: () => import('./content/uploadBook.vue')
+        }
       ]
     }
   ]

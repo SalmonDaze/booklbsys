@@ -22,7 +22,7 @@ app.use(cors({
     maxAge: 5,
     credentials: true,
     allowMethods: ['GET', 'POST', 'DELETE'],
-    allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'accessToken'],
 }))
 
 app.use(bodyParser())

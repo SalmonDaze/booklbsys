@@ -34,26 +34,6 @@
             </router-link>
           </el-submenu>
         </el-submenu>
-<<<<<<< HEAD
-        <el-menu-item index="2">
-          <i class="el-icon-menu"></i>
-          <span slot="title">热门书籍</span>
-        </el-menu-item>
-        <el-menu-item index="3">
-          <i class="el-icon-document"></i>
-          <span slot="title">最新上架</span>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <i class="el-icon-setting"></i>
-          <span slot="title">书籍管理</span>
-        </el-menu-item>
-        <router-link :to="{path: '/homepage/uploadBook'}">
-          <el-menu-item index="5" v-if="!$store.state.user.isAdmin">
-            <i class="el-icon-upload2"></i>
-            <span slot="title">书籍上架</span>
-          </el-menu-item>
-        </router-link>
-=======
         <router-link to="/homepage/Hot">
           <el-menu-item index="2">
             <i class="el-icon-menu"></i>
@@ -72,12 +52,14 @@
             <span slot="title">书籍管理</span>
           </el-menu-item>
         </router-link>
-        <el-menu-item index="5"
-          v-if="!$store.state.user.isAdmin">
-          <i class="el-icon-upload2"></i>
-          <span slot="title">书籍上架</span>
-        </el-menu-item>
->>>>>>> 78797433d74446b81faa31270f51a9c709516f55
+        <router-link :to="{path:'/homepage/uploadBook'}">
+          <el-menu-item index="5"
+            v-if="!$store.state.user.isAdmin">
+            <i class="el-icon-upload2"></i>
+            <span slot="title">书籍上架</span>
+          </el-menu-item>
+        </router-link>
+        
       </el-menu>
     </div>
     <router-view>
