@@ -7,8 +7,6 @@ const childRouter = new Router()
 childRouter.post('/register', userController.registry)
 //登陆api
 childRouter.post('/login', userController.login )
-//查询所有用户
-
 // 查询所有书
 childRouter.post('/getAllBook', userController.getAllBook)
 //续借书

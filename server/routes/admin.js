@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 const adminController = require('../controller/admin')
-const upload = require('../utils/upload')
+const upload = require('../utils/upload').upload
 const adminRouter = new Router()
 const multer = require('koa-multer')
 const body = require('koa-better-body')
