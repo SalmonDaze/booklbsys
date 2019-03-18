@@ -13,6 +13,8 @@ adminRouter.post('/uploadCover', upload.single('file'), adminController.uploadCo
 adminRouter.post('/uploadBook', adminController.uploadBook)
 // 封禁用户
 adminRouter.post('/banUser', adminController.banUser)
+// 解封用户
+adminRouter.post('/unBanUser', adminController.unBanUser)
 // 查询用户信息
 adminRouter.post('/getUserInfo', adminController.getUserInfo)
 // 获得所有书本信息
@@ -21,4 +23,6 @@ adminRouter.post('/getAllBook', adminController.getAllBook)
 adminRouter.post('/sevenDaysExpire', adminController.sevenDaysExpire)
 // 7天内借阅书本名单
 adminRouter.post('/sevenDaysBorrow', adminController.sevenDaysBorrow)
+// 删除书信息
+adminRouter.post('/deleteBook', adminController.deleteBook)
 module.exports = adminRouter

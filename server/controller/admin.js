@@ -83,6 +83,7 @@ module.exports.uploadBook = async (ctx, next) => {
             })
         })
     }
+    
     let result = await anext()
     ctx.body = result
 }
@@ -104,6 +105,31 @@ module.exports.banUser = async (ctx) => {
                     code: 200,
                     msg: '封禁成功！',
                     success: true
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.unBanUser = async (ctx) => {
+    let { phone } = ctx.request.body
+    let anext = async () => {
+        return new Promise( (resolve, reject) => {
+            Model.user.updateOne({ phone: phone }, {isBanned: false}, (err, doc) => {
+                if(err) {
+                    resolve({
+                        code: 1,
+                        success: false,
+                        msg: '操作失败'
+                    })
+                }
+                resolve({
+                    code: 200,
+                    msg: '解除封禁成功！',
+                    success: true,
                 })
             })
         })
@@ -217,4 +243,29 @@ module.exports.sevenDaysBorrow = async (ctx) => {
         success: true,
         data: bookList
     }
+}
+
+module.exports.deleteBook = async (ctx) => {
+    let { _id } = ctx.request.body
+    let anext = async () => {
+        return new Promise( (resolve, reject) => {
+            Model.book.deleteOne({ _id }, (err) => {
+                if(err) {
+                    resolve({
+                        msg: '操作失败',
+                        code: 1,
+                        success: false
+                    })
+                }
+                resolve({
+                    msg: '删除成功',
+                    code: 200,
+                    success: true
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
 }
