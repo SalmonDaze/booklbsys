@@ -21,4 +21,8 @@ a {
 .router-link-active {
   text-decoration: none;
 }
+ol,
+ul {
+  list-style: none;
+}
 </style>

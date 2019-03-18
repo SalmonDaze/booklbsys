@@ -1,7 +1,7 @@
 <template>
   <div class="aweek">
     <div class="aweek1">
-      <v-recordtitle title="7天内借阅人员名单"></v-recordtitle>
+      <v-recordtitle title="7天内借阅的书籍" input_txt="请输入书名"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
