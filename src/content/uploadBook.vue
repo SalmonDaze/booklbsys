@@ -30,16 +30,13 @@
              console.log(e)
          },
          async uploadBook() {
-             let _this = this
+             let _this = this   
              let anext = async () => {
                  return new Promise((resolve, reject) => {
                     this.$ajax({
                     url: 'http://192.168.2.73:3000/admin/uploadCover',
                     method:'POST',
-                    data: this.data,
-                    headers: {
-                        'accessToken' : _this.$store.state.token,
-                    }
+                    data: this.data
                     }).then( res => {
                         resolve(res.data.path)
                     })

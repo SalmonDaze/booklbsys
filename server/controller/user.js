@@ -75,7 +75,7 @@ module.exports.registry = async (ctx) => {
     if( doc ) {
         ctx.status = 200
         ctx.body = {
-            code: 1,
+            cogde: 1,
             success: false,
             msg: '手机号已被注册！'
         }
