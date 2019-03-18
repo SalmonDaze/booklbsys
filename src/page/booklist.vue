@@ -72,19 +72,20 @@ export default {
   -moz-transform: translateY(175px);
   -ms-transform: translateY(175px);
   transform: translateY(175px);
-  -webkit-transition: all 335ms ease 230ms;
-  -moz-transition: all 335ms ease 230ms;
-  -ms-transition: all 335ms ease 230ms;
-  transition: all 335ms ease 230ms;
+  -webkit-transition: all 105ms ease 100ms;
+  -moz-transition: all 105ms ease 100ms;
+  -ms-transition: all 105ms ease 100ms;
+  transition: all 100ms ease 100ms;
 }
 .booklist .mask .synopsis {
   position: relative;
   top: 30px;
   left: 0px;
   right: 0px;
-  width: 140px;
+  width: 120px;
   margin: auto;
   line-height: 20px;
+  font-size: 14px;
   /* 多行文本显示省略号 */
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -96,10 +97,10 @@ export default {
   -moz-transform: translateY(139px);
   -ms-transform: translateY(139px);
   transform: translateY(139px);
-  -webkit-transition: all 240ms ease 145ms;
-  -moz-transition: all 240ms ease 145ms;
-  -ms-transition: all 240ms ease 145ms;
-  transition: all 240ms ease 145ms;
+  -webkit-transition: all 100ms ease 105ms;
+  -moz-transition: all 100ms ease 105ms;
+  -ms-transition: all 100ms ease 105ms;
+  transition: all 100ms ease 105ms;
 }
 .booklist .mask .el-button {
   margin-top: 50px;

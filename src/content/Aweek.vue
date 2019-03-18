@@ -58,6 +58,9 @@ export default {
   props: {
     title: String
   },
+  created(){
+    this.$ajax.post('/admin/sevenDaysBorrow').then(res=>console.log(res))
+  },
   data() {
     return {
       // 输入书名
