@@ -1,7 +1,7 @@
 <template>
   <div class="giveback">
     <div class="giveback1">
-      <v-recordtitle title="已归还人员名单"></v-recordtitle>
+      <v-recordtitle title="已归还书籍" :return_show="false" input_txt="请输入书名"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"

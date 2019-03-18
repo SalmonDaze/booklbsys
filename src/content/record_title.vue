@@ -3,7 +3,7 @@
   <div class="record-title1">
     <h3>{{title}}</h3>
     <div class="operate">
-      <el-input placeholder="请输入书名"
+      <el-input :placeholder="input_txt"
         prefix-icon="el-icon-search"
         v-model="input_bookname">
       </el-input>
@@ -16,7 +16,7 @@
     </div>
     <div style="margin-top: 20px">
       <el-button @click="toggleSelection()">续借</el-button>
-      <el-button @click="toggleSelection()">归还</el-button>
+      <el-button @click="toggleSelection()" v-if="return_show">归还</el-button>
     </div>
   </div>
 </div>
@@ -24,7 +24,12 @@
 <script>
 export default {
   props:{
-    title:String
+    title:String,
+    input_txt:String,
+    return_show:{
+      type:Boolean,
+      default:true
+    }
   },
   data() {
     return {

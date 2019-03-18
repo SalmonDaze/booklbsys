@@ -21,8 +21,7 @@
             <el-menu-item index="1-2">即将到期</el-menu-item>
           </router-link>
           <router-link to="/homepage/giveback">
-            <el-menu-item index="1-3"
-              @click="giveback_show">已归还</el-menu-item>
+            <el-menu-item index="1-3">已归还</el-menu-item>
           </router-link>
           <el-submenu index="1-4">
             <template slot="title">未归还</template>
