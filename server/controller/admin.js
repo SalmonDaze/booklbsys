@@ -66,7 +66,7 @@ module.exports.uploadBook = async (ctx, next) => {
     let { title, author, borrowCycle, cover } = ctx.request.body
     let anext = async function() {
         return new Promise((resolve, reject) => {
-            Model.book.create({ title, author, borrowCycle, cover}).then( (doc) => {
+            Model.book.create({ title, author, borrowCycle, cover, create_time: moment().unix() * 1000}).then( (doc) => {
                 if (!doc) {
                     resolve({
                         code: 1,
@@ -83,7 +83,7 @@ module.exports.uploadBook = async (ctx, next) => {
             })
         })
     }
-    
+
     let result = await anext()
     ctx.body = result
 }
