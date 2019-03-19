@@ -7,8 +7,6 @@ const childRouter = new Router()
 childRouter.post('/register', userController.registry)
 //登陆api
 childRouter.post('/login', userController.login )
-//查询所有用户
-
 // 查询所有书
 childRouter.post('/getAllBook', userController.getAllBook)
 //续借书
@@ -17,4 +15,8 @@ childRouter.post('/bookBorrowContinue', userController.bookBorrowContinue)
 childRouter.post('/borrowBook', userController.borrowBook)
 // 还书
 childRouter.post('/returnBook', userController.returnBook)
+// 查询热门书籍
+childRouter.post('/getHotBook', userController.getHotBook)
+// 查询最新上架
+childRouter.post('/getNewBook', userController.getNewBook)
 module.exports = childRouter

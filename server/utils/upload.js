@@ -13,4 +13,7 @@ let storage = multer.diskStorage({
 
 let upload = multer({storage: storage})
 
-module.exports = upload
+module.exports = {
+    upload,
+
+}

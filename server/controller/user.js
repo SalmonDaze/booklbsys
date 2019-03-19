@@ -155,7 +155,7 @@ module.exports.borrowBook = async (ctx) => {
             }
             Model.book.updateOne({ _id }, {
                 isLending: true, 
-                borrowTime: moment(), 
+                borrowTime: moment(),
                 borrowUser: _userId, 
                 returnTime: moment(Date.now()).add(borrowCycle, 'days'),
                 $inc : {borrowCount: 1}
@@ -248,5 +248,66 @@ module.exports.returnBook = async (ctx) => {
         })
     }
     let result = await anext()
+    ctx.body = result
+}
+
+module.exports.getHotBook = async (ctx) => {
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.book.find({}).then((doc) => {
+                let newArr = new Array()
+                let min = doc[0].borrowCount
+                let length = doc.length < 12 ? doc.length : 12
+                for(let i = 0 ; i < length ; i++) {
+                    newArr.push(doc[i])
+                    if( doc[i].borrowCount < min ) {
+                        min = doc[i].borrowBook
+                    }
+                }
+                if( length > 12 ) {
+                    for( let j = 12 ; j < length ; j++) {
+                        if (doc[j].borrowCount > min) {
+                            min = doc[j].borrowBook
+                            let index = newArr.findIndex( x => x.borrowBook === min )
+                            newArr[index] = doc[j]
+                        }
+                    }
+                }
+                resolve(newArr)
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = {
+        msg:'查询成功',
+        success: true,
+        code: 200,
+        data: result
+    }
+}
+
+module.exports.getNewBook = async (ctx) => {
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.book.find({}).sort({'create_time': -1}).limit(12).exec((err, doc) => {
+                if (err) {
+                    resolve({
+                        code: 1,
+                        msg: '查询失败',
+                        success: false,
+                    })
+                }
+                resolve({
+                    code: 200,
+                    msg: '查询成功',
+                    success: true,
+                    data: doc
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
     ctx.body = result
 }
