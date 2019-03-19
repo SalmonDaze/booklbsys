@@ -1,11 +1,12 @@
 <template>
   <div class="abouttoexpire">
     <div class="abouttoexpire1">
-      <v-recordtitle title="即将到期的书籍" input_txt="请输入书名"></v-recordtitle>
+      <v-recordtitle title="即将到期的书籍"
+        input_txt="请输入书名"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
-          :data="tableData3"
+          :data="tableData3.slice((pageNum-1)*pagesize,pageNum*pagesize)"
           tooltip-effect="dark"
           style="width: 100%"
           @selection-change="handleSelectionChange">
@@ -39,11 +40,11 @@
         <!-- 分页 -->
         <el-pagination @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage4"
-          :page-sizes="[10, 20, 300, 40]"
-          :page-size="10"
+          :current-page.sync="pageNum"
+          :page-sizes="[1, 20, 30, 40]"
+          :page-size="pagesize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400">
+          :total="vals">
         </el-pagination>
       </div>
     </div>
@@ -58,6 +59,20 @@ export default {
   props: {
     title: String
   },
+  created() {
+    this.$ajax.post('http://192.168.2.73:3000/admin/sevenDaysBorrow').then((res) => {
+      for (const book of res.data.data) {
+        let { title, borrowTime, borrowUser, borrowCycle, isLending } = book
+        this.tableData3.push({
+          date: borrowTime,
+          bookname: title,
+          reader: borrowUser.username,
+          can_days: borrowCycle,
+          yn: isLending ? '是' : '否'
+        })
+      }
+    })
+  },
   data() {
     return {
       // 输入书名
@@ -71,56 +86,29 @@ export default {
           can_days: '30',
           remainder_days: '10',
           reader: '王江',
-          yn: '是'
-        }, {
-          date: '2016-05-02',
-          bookname: 'Windows程序设计',
-          can_days: '60',
-          remainder_days: '8',
-          reader: '珞珈',
-          yn: '否'
-        }, {
-          date: '2016-05-04',
-          bookname: 'Java编程语言',
-          can_days: '30',
-          remainder_days: '12',
-          reader: '周敏',
-          yn: '否'
-        }, {
+          yn: true
+        },
+        {
           date: '2016-05-03',
           bookname: 'C语言设计',
           can_days: '30',
           remainder_days: '10',
-          reader: '珞珈',
-          yn: '否'
-        }, {
-          date: '2016-05-02',
-          bookname: 'Windows程序设计',
-          can_days: '60',
-          remainder_days: '8',
-          reader: '周敏',
-          yn: '否'
-        }, {
-          date: '2016-05-04',
-          bookname: 'Java编程语言',
-          can_days: '30',
-          remainder_days: '12',
-          reader: '周敏',
-          yn: '否'
+          reader: '江军',
+          yn: true
         },],
       multipleSelection: [],
-      currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 4
+      pageNum: 1,//默认开始页面
+      pagesize: 1,//每页的数据条数
     }
   },
   methods: {
     // 分页
     handleSizeChange(val) {
+      this.pagesize = val;
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
+      this.pageNum = val
       console.log(`当前页: ${val}`);
     },
     // 勾选
@@ -138,6 +126,16 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     }
+  },
+  computed: {
+    vals() {
+      /**
+       * 数组过滤
+       * es6
+       * 得到tableData3里面yn为true的数组的长度
+       *  */
+      return this.tableData3.filter(x => x).length
+    }
   }
 }
 </script>
@@ -151,7 +149,7 @@ export default {
 .abouttoexpire1 {
   width: 1200px;
 }
-.abouttoexpire .table{
+.abouttoexpire .table {
   position: absolute;
   top: 160px;
   width: 1200px;

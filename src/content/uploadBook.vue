@@ -9,9 +9,8 @@
         <div class='title'>
             <span>可借阅周期：</span><el-input v-model="borrowCycle" placeholder="请输入周期时间" class='input_box'></el-input>
         </div>
-        <input type="file" @change='uploadCover' ref='upload'/>
-        
-        <button @click='uploadBook'>上传</button>
+        <input type="file" @change='uploadCover' ref='upload' class="uploadfile"/>
+        <el-button type="primary" @click='uploadBook' class="unload">上传</el-button>
      </div>
  </template>
  <script>
@@ -84,8 +83,8 @@
     width: 800px;
     height: 600px;
     position: absolute;
-    top: 120px;
-    left: 220px;
+    top: 180px;
+    left: 260px;
  }
  .input_box {
      float: right;
@@ -126,6 +125,15 @@
     width: 178px;
     height: 178px;
     display: block;
+  }
+  .uploadfile{
+      position: relative;
+      top: 20px;
+      left: 200px;
+  }
+  .unload{
+      position: relative;
+      top: 80px
   }
  </style>
  

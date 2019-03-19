@@ -9,15 +9,15 @@
         class="el-menu-vertical-demo"
         @open="handleOpen"
         @close="handleClose">
-        <el-submenu index="1">
+        <el-submenu index="1" v-if="$store.state.user.isAdmin">
           <template slot="title">
             <i class="el-icon-location"></i>
-            <span>借阅记录</span>
+            <span>借阅记录（admin）</span>
           </template>
-          <router-link to="/homepage/Aweek">
+          <router-link to="/homepage/aweek">
             <el-menu-item index="1-1">7天内</el-menu-item>
           </router-link>
-          <router-link to="/homepage/Abouttoexpire">
+          <router-link to="/homepage/abouttoexpire">
             <el-menu-item index="1-2">即将到期</el-menu-item>
           </router-link>
           <router-link to="/homepage/giveback">
@@ -29,11 +29,17 @@
               <el-menu-item index="1-4-1">未归还名单</el-menu-item>
             </router-link>
             <router-link to="/homepage/blacklist">
-              <el-menu-item index="1-4-2">黑名单</el-menu-item>
+              <el-menu-item index="1-4-2">逾期</el-menu-item>
             </router-link>
           </el-submenu>
         </el-submenu>
-        <router-link to="/homepage/Hot">
+        <router-link to="/homepage/Userborrowingrecords">
+          <el-menu-item index="1" v-if="!$store.state.user.isAdmin">
+            <i class="el-icon-location"></i>
+            <span slot="title">借阅记录</span>
+          </el-menu-item>
+        </router-link>
+        <router-link to="/homepage/hot">
           <el-menu-item index="2">
             <i class="el-icon-menu"></i>
             <span slot="title">热门书籍</span>
@@ -45,15 +51,21 @@
             <span slot="title">最新上架</span>
           </el-menu-item>
         </router-link>
-        <router-link to="/homepage/setup">
-          <el-menu-item index="4">
+        <router-link to="/homepage/usersetup">
+          <el-menu-item index="4" v-if="!$store.state.user.isAdmin">
             <i class="el-icon-setting"></i>
             <span slot="title">书籍管理</span>
           </el-menu-item>
         </router-link>
+        <router-link to="/homepage/setup">
+          <el-menu-item index="4" v-if="$store.state.user.isAdmin">
+            <i class="el-icon-setting"></i>
+            <span slot="title">书籍管理（admin）</span>
+          </el-menu-item>
+        </router-link>
         <router-link :to="{path:'/homepage/uploadBook'}">
           <el-menu-item index="5"
-            v-if="!$store.state.user.isAdmin">
+            v-if="$store.state.user.isAdmin">
             <i class="el-icon-upload2"></i>
             <span slot="title">书籍上架</span>
           </el-menu-item>
@@ -82,6 +94,7 @@ export default {
       console.log(key, keyPath);
     },
   }
+  
 }
 </script>
 <style>

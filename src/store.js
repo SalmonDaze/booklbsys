@@ -15,6 +15,7 @@ export default new Vuex.Store({
   mutations: {
     // 进行状态更改
     login: (state, payload) => {
+      console.log(payload)
       // localStorage.setItem('token', token)：将token存储到token字符串
       localStorage.setItem('token', payload.token);
       axios.defaults.headers.post['accessToken'] = payload.token

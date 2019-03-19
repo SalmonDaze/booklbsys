@@ -1,11 +1,12 @@
 <template>
   <div class="aweek">
     <div class="aweek1">
-      <v-recordtitle title="7天内借阅的书籍" input_txt="请输入书名"></v-recordtitle>
+      <v-recordtitle title="7天内借阅的书籍"
+        input_txt="请输入书名"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
-          :data="tableData3"
+          :data="tableData3.slice((pageNum-1)*pagesize,pageNum*pagesize)"
           tooltip-effect="dark"
           style="width: 100%"
           @selection-change="handleSelectionChange">
@@ -39,11 +40,11 @@
         <!-- 分页 -->
         <el-pagination @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="currentPage4"
-          :page-sizes="[10, 20, 300, 40]"
-          :page-size="10"
+          :current-page.sync="pageNum"
+          :page-sizes="[1, 20, 30, 40]"
+          :page-size="pagesize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400">
+          :total="vals">
         </el-pagination>
       </div>
     </div>
@@ -51,6 +52,7 @@
 </template>
 <script>
 import vRecordtitle from "../content/record_title.vue";
+import { msToDate, getDate, remainTime, unixTranstoDate } from '../utils/formatDate.js'
 export default {
   components: {
     vRecordtitle
@@ -58,8 +60,34 @@ export default {
   props: {
     title: String
   },
-  created(){
-    this.$ajax.post('/admin/sevenDaysBorrow').then(res=>console.log(res))
+  /** 
+   * created模板渲染成HTML前调用
+   * mounted模板渲染成HTML后调用
+   */
+  created() {
+
+    this.$ajax.post('http://192.168.2.73:3000/admin/sevenDaysBorrow').then((res) => {
+      for (const book of res.data.data) {
+        /**
+         * title：书名
+         * borrowTime：借出时间
+         * borrowCycle：可借天数
+         * isLending：是否借出
+         * returnTime:剩余时间
+         */
+        if (borrowCycle-Math.ceil(remainTime(returnTime, getDate()))<7){
+          let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime } = book
+        this.tableData3.push({
+          date: unixTranstoDate(borrowTime).slice(0, 10),
+          bookname: title,
+          reader: borrowUser.username,
+          can_days: borrowCycle,
+          remainder_days: Math.ceil(remainTime(returnTime, getDate())),
+          yn: isLending ? '否' : '是'
+        })
+        }
+      }
+    })
   },
   data() {
     return {
@@ -71,59 +99,38 @@ export default {
         {
           date: '2016-05-03',
           bookname: 'C语言设计',
-          can_days: '30',
-          remainder_days: '10',
+          can_days: 30,
+          remainder_days: 10,
           reader: '王江',
-          yn: '是'
+          yn: true
         }, {
           date: '2016-05-02',
           bookname: 'Windows程序设计',
-          can_days: '60',
-          remainder_days: '8',
+          can_days: 60,
+          remainder_days: 8,
           reader: '珞珈',
-          yn: '否'
+          yn: false
         }, {
           date: '2016-05-04',
           bookname: 'Java编程语言',
-          can_days: '30',
-          remainder_days: '12',
+          can_days: 30,
+          remainder_days: 12,
           reader: '周敏',
-          yn: '否'
-        }, {
-          date: '2016-05-03',
-          bookname: 'C语言设计',
-          can_days: '30',
-          remainder_days: '10',
-          reader: '珞珈',
-          yn: '否'
-        }, {
-          date: '2016-05-02',
-          bookname: 'Windows程序设计',
-          can_days: '60',
-          remainder_days: '8',
-          reader: '周敏',
-          yn: '否'
-        }, {
-          date: '2016-05-04',
-          bookname: 'Java编程语言',
-          can_days: '30',
-          remainder_days: '12',
-          reader: '周敏',
-          yn: '否'
+          yn: true
         },],
       multipleSelection: [],
-      currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 4
+      pageNum: 1,//默认开始页面
+      pagesize: 1,//每页的数据条数
     }
   },
   methods: {
     // 分页
     handleSizeChange(val) {
+      this.pagesize = val;
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
+      this.pageNum = val
       console.log(`当前页: ${val}`);
     },
     // 勾选
@@ -141,6 +148,16 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     }
+  },
+  computed: {
+    vals() {
+      /**
+       * 数组过滤
+       * es6
+       * 得到tableData3里面yn为true的数组的长度
+       *  */
+      return this.tableData3.filter(x => x).length
+    }
   }
 }
 </script>
@@ -154,7 +171,7 @@ export default {
 .aweek1 {
   width: 1200px;
 }
-.aweek .table{
+.aweek .table {
   position: absolute;
   top: 160px;
   width: 1200px;

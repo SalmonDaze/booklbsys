@@ -88,10 +88,6 @@ export default {
 .hot1 {
   width: 1200px;
 }
-ol,
-ul {
-  list-style: none;
-}
 .hot .book{
   display: inline-block;
 }

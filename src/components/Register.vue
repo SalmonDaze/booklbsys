@@ -132,22 +132,27 @@ export default {
     },
     registry() {
       const reg = /^1[0-9]{10}$/;
-      if (!this.ruleForm1.username || !reg.test(this.ruleForm1.phone) || !this.ruleForm1.pass || !this.ruleForm1.checkPass || this.ruleForm1.pass !== this.ruleForm1.checkPass) {
+      if (!this.ruleForm1.username || !reg.test(this.ruleForm1.phone)) {
+        this.$message({ message: "用户名和手机号不能为空", type: 'warning' });
         return false
-      } else {
+      } else if (!this.ruleForm1.pass || !this.ruleForm1.checkPass) {
+        this.$message("请输入密码");
+      } else if (this.ruleForm1.pass !== this.ruleForm1.checkPass) {
+        this.$message.error("两次输入密码不一致");
+      }
+      else {
         this.$ajax({
           method: 'post',
           url: '/api/register',
           data: {
             phone: this.ruleForm1.phone,
-            password: this.ruleForm1.pass
+            password: this.ruleForm1.pass,
+            username: this.ruleForm1.username
           }
         }).then((res) => {
           console.log(res)
           let { success, token } = res.data
           if (success) {
-            // 更新store.js里loginAsync方法的token
-            this.$store.dispatch('loginAsync', token);
             // 跳转首页
             this.register_close();
           } else {
