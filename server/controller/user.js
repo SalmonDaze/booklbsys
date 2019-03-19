@@ -311,3 +311,23 @@ module.exports.getNewBook = async (ctx) => {
     ctx.status = 200
     ctx.body = result
 }
+
+module.exports.getUserBorrowList = async (ctx) => {
+    let { _id } = ctx.request.body
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.user.findOne({ _id }).populate({path: 'borrow_list'}).exec((err, doc) => {
+                resolve({
+                    msg: '查询成功',
+                    success: true,
+                    code: 200,
+                    data: doc
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+    
+}

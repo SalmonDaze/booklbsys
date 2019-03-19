@@ -19,4 +19,6 @@ childRouter.post('/returnBook', userController.returnBook)
 childRouter.post('/getHotBook', userController.getHotBook)
 // 查询最新上架
 childRouter.post('/getNewBook', userController.getNewBook)
+// 查询用户借阅记录
+childRouter.post('/getUserBorrowList', userController.getUserBorrowList)
 module.exports = childRouter
