@@ -62,14 +62,16 @@ export default {
   created() {
     this.$ajax.post('http://192.168.2.73:3000/admin/sevenDaysBorrow').then((res) => {
       for (const book of res.data.data) {
-        let { title, borrowTime, borrowUser, borrowCycle, isLending } = book
-        this.tableData3.push({
-          date: borrowTime,
-          bookname: title,
-          reader: borrowUser.username,
-          can_days: borrowCycle,
-          yn: isLending ? '是' : '否'
-        })
+        if (!book.isLending) {
+          let { title, borrowTime, borrowUser, borrowCycle, isLending } = book
+          this.tableData3.push({
+            date: borrowTime,
+            bookname: title,
+            reader: borrowUser.username,
+            can_days: borrowCycle,
+            yn: isLending ? '是' : '否'
+          })
+        }
       }
     })
   },
@@ -86,7 +88,7 @@ export default {
           can_days: '30',
           remainder_days: '10',
           reader: '王江',
-          yn: true
+          yn: false
         },
         {
           date: '2016-05-03',
@@ -134,7 +136,7 @@ export default {
        * es6
        * 得到tableData3里面yn为true的数组的长度
        *  */
-      return this.tableData3.filter(x => x).length
+      return this.tableData3.filter(x => !x.yn).length
     }
   }
 }

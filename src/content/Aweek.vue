@@ -66,7 +66,7 @@ export default {
    */
   created() {
 
-    this.$ajax.post('http://192.168.2.73:3000/admin/sevenDaysBorrow').then((res) => {
+    this.$ajax.post('admin/sevenDaysBorrow').then((res) => {
       for (const book of res.data.data) {
         /**
          * title：书名
@@ -75,18 +75,16 @@ export default {
          * isLending：是否借出
          * returnTime:剩余时间
          */
-        if (borrowCycle-Math.ceil(remainTime(returnTime, getDate()))<7){
           let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime } = book
-        this.tableData3.push({
-          date: unixTranstoDate(borrowTime).slice(0, 10),
-          bookname: title,
-          reader: borrowUser.username,
-          can_days: borrowCycle,
-          remainder_days: Math.ceil(remainTime(returnTime, getDate())),
-          yn: isLending ? '否' : '是'
-        })
+          this.tableData3.push({
+            date: unixTranstoDate(borrowTime).slice(0, 10),
+            bookname: title,
+            reader: borrowUser.username,
+            can_days: borrowCycle,
+            remainder_days: Math.ceil(remainTime(returnTime, getDate())),
+            yn: isLending ? '否' : '是'
+          })
         }
-      }
     })
   },
   data() {

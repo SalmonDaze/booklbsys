@@ -1,15 +1,23 @@
 <template>
   <div class="homepage">
     <div class="header">
-      <p><img src="../../public/logo.png"
-          class="logo" /><strong> 图书管理</strong></p>
+      <div class="header-content">
+        <span class="title"><img src="../../public/logo.png"
+            class="logo" /><strong> 图书管理</strong></span>
+        <div class="user">
+          <a>{{username}}</a>
+          <el-button type="primary"
+            plain>退出登录</el-button>
+        </div>
+      </div>
     </div>
     <div class="navigation-bar">
       <el-menu default-active="2"
         class="el-menu-vertical-demo"
         @open="handleOpen"
         @close="handleClose">
-        <el-submenu index="1" v-if="$store.state.user.isAdmin">
+        <el-submenu index="1"
+          v-if="$store.state.user.isAdmin">
           <template slot="title">
             <i class="el-icon-location"></i>
             <span>借阅记录（admin）</span>
@@ -34,7 +42,8 @@
           </el-submenu>
         </el-submenu>
         <router-link to="/homepage/Userborrowingrecords">
-          <el-menu-item index="1" v-if="!$store.state.user.isAdmin">
+          <el-menu-item index="1"
+            v-if="!$store.state.user.isAdmin">
             <i class="el-icon-location"></i>
             <span slot="title">借阅记录</span>
           </el-menu-item>
@@ -52,13 +61,15 @@
           </el-menu-item>
         </router-link>
         <router-link to="/homepage/usersetup">
-          <el-menu-item index="4" v-if="!$store.state.user.isAdmin">
+          <el-menu-item index="4"
+            v-if="!$store.state.user.isAdmin">
             <i class="el-icon-setting"></i>
             <span slot="title">书籍管理</span>
           </el-menu-item>
         </router-link>
         <router-link to="/homepage/setup">
-          <el-menu-item index="4" v-if="$store.state.user.isAdmin">
+          <el-menu-item index="4"
+            v-if="$store.state.user.isAdmin">
             <i class="el-icon-setting"></i>
             <span slot="title">书籍管理（admin）</span>
           </el-menu-item>
@@ -70,7 +81,7 @@
             <span slot="title">书籍上架</span>
           </el-menu-item>
         </router-link>
-        
+
       </el-menu>
     </div>
     <router-view>
@@ -79,12 +90,19 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   components: {
   },
+  created() {
+  },
   data() {
     return {
+      username: ''
     }
+  },
+  mounted() {
+    this.username = this.user
   },
   methods: {
     handleOpen(key, keyPath) {
@@ -93,8 +111,11 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     },
-  }
-  
+  },
+  computed: mapState({
+    // 获取用户名
+    user: state => state.user.username
+  })
 }
 </script>
 <style>
@@ -107,17 +128,36 @@ export default {
   height: 100px;
   border-bottom: 1px solid rgb(214, 214, 214);
 }
+.homepage .header-content{
+  height: 100px;
+  max-width: 1900px;
+  min-width: 1450px;
+}
+.homepage .header-content .el-button{
+  width: 70px;
+  height: 30px;
+  padding: 2px !important;
+}
 .homepage .navigation-bar {
   width: 200px;
   height: 960px;
   border-right: 1px solid #e0e0e0;
 }
-.homepage .header p {
-  padding-top: 30px;
-  padding-left: 60px;
+.homepage .header .title {
+  position: relative;
+  top: 30px;
+  left: 60px;
   font-family: "宋体";
   font-size: 30px;
   letter-spacing: 10px;
+}
+.homepage .user {
+  float: right;
+  margin-top: 60px;
+  margin-right: 30px;
+}
+.homepage .user a {
+  margin-right: 20px;
 }
 .el-menu {
   border-right: none !important;
