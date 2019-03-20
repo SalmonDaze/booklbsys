@@ -7,6 +7,9 @@
             <span>作者：</span><el-input v-model="author" placeholder="请输入作者" class='input_box'></el-input>
         </div>
         <div class='title'>
+            <span>简介：</span><el-input v-model="bookInfo" placeholder="请输入书本简介" class='input_box'></el-input>
+        </div>
+        <div class='title'>
             <span>可借阅周期：</span><el-input v-model="borrowCycle" placeholder="请输入周期时间" class='input_box'></el-input>
         </div>
         <input type="file" @change='uploadCover' ref='upload' class="uploadfile"/>
@@ -22,6 +25,7 @@
              borrowCycle: '',
              data:null,
              path: '',
+             bookInfo:''
          }
      },
      methods:{
@@ -49,7 +53,8 @@
                      title: this.title,
                      author: this.author,
                      borrowCycle: this.borrowCycle,
-                     cover: path
+                     cover: path,
+                     bookInfo: this.bookInfo
                  }
              }).then(res => {
                  console.log(res)

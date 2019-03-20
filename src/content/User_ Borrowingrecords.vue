@@ -47,7 +47,7 @@
   </div>
 </template>
 <script>
-import vRecordtitle from "../content/record_title.vue";
+import vRecordtitle from "../page/record_title.vue";
 import { msToDate, getDate, remainTime, unixTranstoDate } from '../utils/formatDate.js'
 export default {
   components: {

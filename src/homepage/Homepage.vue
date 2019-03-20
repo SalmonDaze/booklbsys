@@ -7,7 +7,8 @@
         <div class="user">
           <a>{{username}}</a>
           <el-button type="primary"
-            plain>退出登录</el-button>
+            plain
+            @click="loginout">退出登录</el-button>
         </div>
       </div>
     </div>
@@ -105,6 +106,9 @@ export default {
     this.username = this.user
   },
   methods: {
+    loginout(){
+      this.$router.push('/')
+    },
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },
@@ -128,12 +132,12 @@ export default {
   height: 100px;
   border-bottom: 1px solid rgb(214, 214, 214);
 }
-.homepage .header-content{
+.homepage .header-content {
   height: 100px;
   max-width: 1900px;
   min-width: 1450px;
 }
-.homepage .header-content .el-button{
+.homepage .header-content .el-button {
   width: 70px;
   height: 30px;
   padding: 2px !important;

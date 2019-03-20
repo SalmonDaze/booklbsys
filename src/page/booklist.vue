@@ -2,15 +2,16 @@
   <div class="booklist">
     <div class="book-cover">
       <img :alt="title"
-        :src="booklist_img" />
+        :src="booklist_img"
+        class='book_cover' />
     </div>
     <div class="mask">
-      <p class="author">{{author}}</p>
-      <p class="synopsis"
-        :title="synopsis">{{synopsis}}</p>
+      <p class="author" :title="author">{{author}}</p>
+      <p class="synopsis">{{synopsis}}</p>
       <el-button plain>去借阅</el-button>
     </div>
     <h4>{{title}}</h4>
+    <h5>{{author}}</h5>
   </div>
 </template>
 
@@ -20,7 +21,7 @@ export default {
     // 书名
     title: String,
     // 作者
-    author:String,
+    author: String,
     // 封面
     booklist_img: String,
     // 简介
@@ -38,8 +39,8 @@ export default {
 .booklist {
   display: inline-block;
   width: 160px;
-  height: 250px;
-  margin: 40px 40px 0px 40px;
+  height: 280px;
+  margin: 20px 40px 0px 40px;
   overflow: hidden;
 }
 .booklist .book-cover {
@@ -53,6 +54,10 @@ export default {
   box-shadow: 0 3px 5px #b0b0b0;
   margin-top: 10px;
   margin-left: 10px;
+}
+.booklist .book-cover .book_cover {
+  width: 100%;
+  height: 100%;
 }
 .booklist .mask {
   position: relative;
@@ -68,6 +73,9 @@ export default {
   visibility: hidden;
   cursor: pointer;
   opacity: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
   -webkit-transform: translateY(175px);
   -moz-transform: translateY(175px);
   -ms-transform: translateY(175px);
@@ -91,7 +99,6 @@ export default {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
-  cursor: pointer;
   opacity: 0;
   -webkit-transform: translateY(139px);
   -moz-transform: translateY(139px);
@@ -142,10 +149,19 @@ export default {
   -ms-transition: all 440ms ease 345ms;
   transition: all 440ms ease 345ms;
 }
-.booklist h4{
+.booklist h4 {
   position: relative;
   bottom: 230px;
   text-align: center;
   cursor: pointer;
+}
+.booklist h5 {
+  position: relative;
+  bottom: 220px;
+  text-align: center;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 </style>

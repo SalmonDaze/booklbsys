@@ -41,7 +41,7 @@
         <el-pagination @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="pageNum"
-          :page-sizes="[1, 20, 30, 40]"
+          :page-sizes="[10, 20, 30, 40]"
           :page-size="pagesize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="vals">
@@ -51,7 +51,7 @@
   </div>
 </template>
 <script>
-import vRecordtitle from "../content/record_title.vue";
+import vRecordtitle from "../page/record_title.vue";
 import { msToDate, getDate, remainTime, unixTranstoDate } from '../utils/formatDate.js'
 export default {
   components: {
@@ -66,7 +66,7 @@ export default {
    */
   created() {
 
-    this.$ajax.post('admin/sevenDaysBorrow').then((res) => {
+    this.$ajax.post('/admin/sevenDaysBorrow').then((res) => {
       for (const book of res.data.data) {
         /**
          * title：书名
@@ -118,7 +118,7 @@ export default {
         },],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
-      pagesize: 1,//每页的数据条数
+      pagesize: 10,//每页的数据条数
     }
   },
   methods: {

@@ -1,79 +1,55 @@
 <template>
   <div class="hot">
     <div class="hot1">
-      <div>
-        <ul class="hot-book">
-        <li class="book">
-          <v-booklist title="落日余晖"
-            author="狎昵"
-            booklist_img="https://gss0.baidu.com/7LsWdDW5_xN3otqbppnN2DJv/doc/abpic/item/a8014c086e061d957a49a18876f40ad162d9ca77.jpg"
-            synopsis="晚暮阑珊炫彩飞，峦山半掩落霞追。千余秀鸟窝枝站，万朵鲜花艳笑微。密布彤云分五彩，疏离雾气紫红随。潭溪少浪波光静，落日沉红水底辉。"></v-booklist>
-        </li>
-        <li class="book">
-          <v-booklist title="落日余晖"
-            author="狎昵"
-            booklist_img="https://gss0.baidu.com/7LsWdDW5_xN3otqbppnN2DJv/doc/abpic/item/a8014c086e061d957a49a18876f40ad162d9ca77.jpg"
-            synopsis="晚暮阑珊炫彩飞，峦山半掩落霞追。千余秀鸟窝枝站，万朵鲜花艳笑微。密布彤云分五彩，疏离雾气紫红随。潭溪少浪波光静，落日沉红水底辉。"></v-booklist>
-        </li>
-        <li class="book">
-          <v-booklist title="落日余晖"
-            author="狎昵"
-            booklist_img="https://gss0.baidu.com/7LsWdDW5_xN3otqbppnN2DJv/doc/abpic/item/a8014c086e061d957a49a18876f40ad162d9ca77.jpg"
-            synopsis="晚暮阑珊炫彩飞，峦山半掩落霞追。千余秀鸟窝枝站，万朵鲜花艳笑微。密布彤云分五彩，疏离雾气紫红随。潭溪少浪波光静，落日沉红水底辉。"></v-booklist>
-        </li>
-        <li class="book">
-          <v-booklist title="落日余晖"
-            author="狎昵"
-            booklist_img="https://gss0.baidu.com/7LsWdDW5_xN3otqbppnN2DJv/doc/abpic/item/a8014c086e061d957a49a18876f40ad162d9ca77.jpg"
-            synopsis="晚暮阑珊炫彩飞，峦山半掩落霞追。千余秀鸟窝枝站，万朵鲜花艳笑微。密布彤云分五彩，疏离雾气紫红随。潭溪少浪波光静，落日沉红水底辉。"></v-booklist>
-        </li>
-        <li class="book">
-          <v-booklist title="落日余晖"
-            author="狎昵"
-            booklist_img="https://gss0.baidu.com/7LsWdDW5_xN3otqbppnN2DJv/doc/abpic/item/a8014c086e061d957a49a18876f40ad162d9ca77.jpg"
-            synopsis="晚暮阑珊炫彩飞，峦山半掩落霞追。千余秀鸟窝枝站，万朵鲜花艳笑微。密布彤云分五彩，疏离雾气紫红随。潭溪少浪波光静，落日沉红水底辉。"></v-booklist>
-        </li>
-        <li class="book">
-          <v-booklist title="落日余晖"
-            author="狎昵"
-            booklist_img="https://gss0.baidu.com/7LsWdDW5_xN3otqbppnN2DJv/doc/abpic/item/a8014c086e061d957a49a18876f40ad162d9ca77.jpg"
-            synopsis="晚暮阑珊炫彩飞，峦山半掩落霞追。千余秀鸟窝枝站，万朵鲜花艳笑微。密布彤云分五彩，疏离雾气紫红随。潭溪少浪波光静，落日沉红水底辉。"></v-booklist>
-        </li>
-        <li class="book">
-          <v-booklist title="落日余晖"
-            author="狎昵"
-            booklist_img="https://gss0.baidu.com/7LsWdDW5_xN3otqbppnN2DJv/doc/abpic/item/a8014c086e061d957a49a18876f40ad162d9ca77.jpg"
-            synopsis="晚暮阑珊炫彩飞，峦山半掩落霞追。千余秀鸟窝枝站，万朵鲜花艳笑微。密布彤云分五彩，疏离雾气紫红随。潭溪少浪波光静，落日沉红水底辉。"></v-booklist>
-        </li>
-        <li class="book">
-          <v-booklist title="落日余晖"
-            author="狎昵"
-            booklist_img="https://gss0.baidu.com/7LsWdDW5_xN3otqbppnN2DJv/doc/abpic/item/a8014c086e061d957a49a18876f40ad162d9ca77.jpg"
-            synopsis="晚暮阑珊炫彩飞，峦山半掩落霞追。千余秀鸟窝枝站，万朵鲜花艳笑微。密布彤云分五彩，疏离雾气紫红随。潭溪少浪波光静，落日沉红水底辉。"></v-booklist>
-        </li>
-        <li class="book">
-          <v-booklist title="落日余晖"
-            author="狎昵"
-            booklist_img="https://gss0.baidu.com/7LsWdDW5_xN3otqbppnN2DJv/doc/abpic/item/a8014c086e061d957a49a18876f40ad162d9ca77.jpg"
-            synopsis="晚暮阑珊炫彩飞，峦山半掩落霞追。千余秀鸟窝枝站，万朵鲜花艳笑微。密布彤云分五彩，疏离雾气紫红随。潭溪少浪波光静，落日沉红水底辉。"></v-booklist>
-        </li>
-        <li class="book">
-          <v-booklist title="落日余晖"
-            author="狎昵"
-            booklist_img="https://gss0.baidu.com/7LsWdDW5_xN3otqbppnN2DJv/doc/abpic/item/a8014c086e061d957a49a18876f40ad162d9ca77.jpg"
-            synopsis="晚暮阑珊炫彩飞，峦山半掩落霞追。千余秀鸟窝枝站，万朵鲜花艳笑微。密布彤云分五彩，疏离雾气紫红随。潭溪少浪波光静，落日沉红水底辉。"></v-booklist>
+      <h3>热门书籍</h3>
+      <ul class="hot-book">
+        <li class="book"
+          v-for="book in books">
+          <v-booklist :title="book.title"
+            :author="book.author"
+            :booklist_img="book.cover"
+            :synopsis="book.bookInfo"></v-booklist>
         </li>
       </ul>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
 import vBooklist from "../page/booklist.vue"
+import { formatPath } from '../utils/formatDate.js'
 export default {
   components: {
     vBooklist
+  },
+  created() {
+    this.$ajax({
+      url: '/api/getHotBook',
+      method: 'post',
+    }).then(res => {
+      for (const book of res.data.data) {
+        /**
+         * title：书名
+         * author：作者
+         * cover：图片
+         * bookInfo：简介
+         */
+        let { author, title, cover, bookInfo } = book
+        // 图片路径
+        cover = 'http://192.168.2.73:3000/' + formatPath(cover)
+        this.books.push({
+          author: author,
+          title: title,
+          cover: cover,
+          bookInfo: bookInfo
+        })
+      }
+    })
+  },
+  data() {
+    return {
+      books: []
+    }
   }
 }
 </script>
@@ -88,7 +64,10 @@ export default {
 .hot1 {
   width: 1200px;
 }
-.hot .book{
+.hot .book {
   display: inline-block;
+}
+.hot .hot-book {
+  margin-top: 20px;
 }
 </style>
