@@ -1,7 +1,7 @@
 <template>
   <div class="blacklist">
     <div class="blacklist1">
-      <v-recordtitle title="借阅黑名单" input_txt="请输入人名"></v-recordtitle>
+      <v-recordtitle title="逾期名单" input_txt="请输入人名"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
@@ -51,6 +51,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
+import { unixTranstoDate } from '../utils/formatDate'
 export default {
   components: {
     vRecordtitle
@@ -64,54 +65,30 @@ export default {
       input_bookname: '',
       // 选择借书时间
       value_borrowtime: '',
-      tableData3: [
-        {
-          date: '2016-05-03',
-          bookname: 'C语言设计',
-          can_days: '30',
-          remainder_days: '10',
-          reader: '王江',
-          yn: false
-        }, {
-          date: '2016-05-02',
-          bookname: 'Windows程序设计',
-          can_days: '60',
-          remainder_days: '8',
-          reader: '珞珈',
-          yn: false
-        }, {
-          date: '2016-05-04',
-          bookname: 'Java编程语言',
-          can_days: '30',
-          remainder_days: '12',
-          reader: '周敏',
-          yn: false
-        }, {
-          date: '2016-05-03',
-          bookname: 'C语言设计',
-          can_days: '30',
-          remainder_days: '10',
-          reader: '珞珈',
-          yn: false
-        }, {
-          date: '2016-05-02',
-          bookname: 'Windows程序设计',
-          can_days: '60',
-          remainder_days: '8',
-          reader: '周敏',
-          yn: false
-        }, {
-          date: '2016-05-04',
-          bookname: 'Java编程语言',
-          can_days: '30',
-          remainder_days: '12',
-          reader: '周敏',
-          yn: false
-        },],
+      tableData3: [],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
       pagesize: 10,//每页的数据条数
     }
+  },
+  created() {
+    this.$ajax({
+      url:'/admin/getDelayList',
+      method: 'post',
+
+    }).then( res => {
+      for( const book of res.data.data) {
+        // 判断未归还
+          let { title, borrowTime, borrowUser, borrowCycle, isLending} = book
+          this.tableData3.push({
+            date: unixTranstoDate(borrowTime).slice(0, 10),
+            bookname: title,
+            reader: borrowUser.username,
+            can_days: borrowCycle,
+            yn: isLending ? '是' : '否'
+          })
+      }
+    })
   },
   methods: {
     // 分页

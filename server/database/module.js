@@ -72,7 +72,12 @@ const bookSchema = new Schema({
     borrowCount: {
         type: Number,
         default: 0,
-    }
+        
+    },
+    bookInfo: {
+        type: String,
+        default: ''
+    },
 })
 
 let Model = {

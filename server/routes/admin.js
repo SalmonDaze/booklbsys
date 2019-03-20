@@ -25,4 +25,10 @@ adminRouter.post('/sevenDaysExpire', adminController.sevenDaysExpire)
 adminRouter.post('/sevenDaysBorrow', adminController.sevenDaysBorrow)
 // 删除书信息
 adminRouter.post('/deleteBook', adminController.deleteBook)
+// 过的逾期书本名单
+adminRouter.post('/getDelayList', adminController.getDelayList)
+// 查询即将到期书本名单
+adminRouter.post('/delayingBookList', adminController.delaingBookList)
+// 获得未归还书本名单
+adminRouter.post('/unReturnBookList', adminController.unReturnBookList)
 module.exports = adminRouter

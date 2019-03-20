@@ -63,10 +63,10 @@ module.exports.uploadCover = async (ctx, next) => {
 }
 
 module.exports.uploadBook = async (ctx, next) => {
-    let { title, author, borrowCycle, cover } = ctx.request.body
+    let { title, author, borrowCycle, cover, bookInfo } = ctx.request.body
     let anext = async function() {
         return new Promise((resolve, reject) => {
-            Model.book.create({ title, author, borrowCycle, cover, create_time: moment().unix() * 1000}).then( (doc) => {
+            Model.book.create({ title, author, borrowCycle, cover, create_time: moment().unix() * 1000, bookInfo}).then( (doc) => {
                 if (!doc) {
                     resolve({
                         code: 1,
@@ -261,6 +261,83 @@ module.exports.deleteBook = async (ctx) => {
                     msg: '删除成功',
                     code: 200,
                     success: true
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.getDelayList = async (ctx) => {
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.book.find({}).populate({path: 'borrowUser'}).exec((err, doc) => {
+                let bookList = new Array()
+                for( const book of doc ) {
+                    if( book.isLending ) {
+                        if( moment() - book.returnTime >= 0){
+                            bookList.push(book)
+                        }
+                    }
+                }
+                resolve({
+                    msg: '查询成功！',
+                    code: 200,
+                    data: bookList,
+                    success: true
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.delaingBookList = async (ctx) => {
+    let anext= async () => {
+        return new Promise((resolve, reject) => {
+            Model.book.find({}).populate({path:'borrowUser'}).exec( (err, doc) => {
+                let bookList = new Array()
+                for(const book of doc ){
+                   
+                    if( book.isLending ) {
+                        if(moment(Number(book.returnTime)).diff(moment(), 'days') <= 7) {
+                            bookList.push(book)
+                        }
+                    }
+                }
+                resolve({
+                    msg: '查询成功！',
+                    code: 200,
+                    success: true,
+                    data: bookList
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.unReturnBookList = async (ctx) => {
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.book.find({}).populate({path: 'borrowUser'}).exec((err, doc) => {
+                let bookList = new Array()
+                for(const book of doc) {
+                    if (book.isLending) {
+                        bookList.push(book)
+                    }
+                }
+                resolve({
+                    msg: '查询成功',
+                    code: 200,
+                    success: true,
+                    data: bookList
                 })
             })
         })

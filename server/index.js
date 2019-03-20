@@ -10,9 +10,9 @@ const jwt = require('jsonwebtoken')
 const config = require('./config/default')
 const multer = require('koa-multer')
 const moment = require('moment')
+const static = require('koa-static')
 
-let t1 = '2031-04-11T01:53:02.807Z'
-let t2 = '2019-03-15T13:47:02.807'
+app.use(static(__dirname + '/public/uploads'))
 
 app.use(cors({
     origin: function (ctx) {

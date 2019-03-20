@@ -51,6 +51,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
+import { unixTranstoDate } from '../utils/formatDate'
 export default {
   components: {
     vRecordtitle
@@ -59,21 +60,18 @@ export default {
     title: String
   },
   created(){
-    this.$ajax.post('http://192.168.2.73:3000/admin/sevenDaysBorrow').then((res) => {
-      console.log(res)
+    this.$ajax.post('http://192.168.2.73:3000/admin/unReturnBookList').then((res) => {
+
       for( const book of res.data.data) {
         // 判断未归还
-        if( !book.isLending ) {
-          console.log(book)
           let { title, borrowTime, borrowUser, borrowCycle, isLending} = book
           this.tableData3.push({
-            date: borrowTime,
+            date: unixTranstoDate(borrowTime).slice(0, 10),
             bookname: title,
             reader: borrowUser.username,
             can_days: borrowCycle,
             yn: isLending ? '是' : '否'
           })
-        }
       }
     })
   },
@@ -83,15 +81,7 @@ export default {
       input_bookname: '',
       // 选择借书时间
       value_borrowtime: '',
-      tableData3: [
-        {
-          date: '2016-05-04',
-          bookname: 'Java编程语言',
-          can_days: '30',
-          remainder_days: '12',
-          reader: '周敏',
-          yn: false
-        },],
+      tableData3: [],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
       pagesize: 10,//每页的数据条数

@@ -202,7 +202,7 @@ module.exports.bookBorrowContinue = async (ctx) => {
     let { returnTime } = await l_findBook(_id)
     let anext = async () => {
         return new Promise( (resolve, reject) => {
-            Model.book.updateOne({ _id }, {returnTime: moment(returnTime).add(time, 'days')}, (err, doc) => {
+            Model.book.updateOne({ _id }, {returnTime: moment(Number(returnTime)).add(time, 'days').unix() * 1000}, (err, doc) => {
                 if(err) {
                     resolve({
                         code: 1,
