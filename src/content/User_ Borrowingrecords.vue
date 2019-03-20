@@ -1,6 +1,6 @@
 <template>
-  <div class="aweek">
-    <div class="aweek1">
+  <div class="user-borrowingrecords">
+    <div class="user-borrowingrecords1">
       <v-recordtitle title="借阅的书籍"
         input_txt="请输入书名"></v-recordtitle>
       <div class="table">
@@ -138,24 +138,24 @@ export default {
 }
 </script>
 <style>
-.aweek {
+.user-borrowingrecords {
   position: absolute;
   top: 120px;
   left: 230px;
   height: 900px;
 }
-.aweek1 {
+.user-borrowingrecords1 {
   width: 1200px;
 }
-.aweek .table {
+.user-borrowingrecords .table {
   position: absolute;
   top: 160px;
   width: 1200px;
 }
-.aweek .el-button {
+.user-borrowingrecords .el-button {
   margin-left: 30px;
 }
-.aweek .el-pagination {
+.user-borrowingrecords .el-pagination {
   margin-top: 10px;
   text-align: center;
 }

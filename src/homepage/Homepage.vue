@@ -130,12 +130,12 @@ export default {
 }
 .homepage .header {
   height: 100px;
+  width: 1900px;
   border-bottom: 1px solid rgb(214, 214, 214);
 }
 .homepage .header-content {
   height: 100px;
-  max-width: 1900px;
-  min-width: 1450px;
+  width: 1900px;
 }
 .homepage .header-content .el-button {
   width: 70px;

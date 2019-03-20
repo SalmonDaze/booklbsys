@@ -80,6 +80,7 @@ export default {
         if (borrowTime === '') {
           this.tableData3.push({
             bookname: title,
+            reader: '无',
             can_days: borrowCycle,
             remainder_days: '无借阅历史',
             yn: isLending ? '否' : '是'
@@ -88,7 +89,7 @@ export default {
           this.tableData3.push({
             date: unixTranstoDate(borrowTime).slice(0, 10),
             bookname: title,
-            // reader: borrowUser.username,
+            reader: borrowUser.username,
             can_days: borrowCycle,
             remainder_days: Math.ceil(remainTime(returnTime, getDate())),
             yn: isLending ? '否' : '是'
