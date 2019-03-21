@@ -51,6 +51,7 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="vals">
         </el-pagination>
+        
       </div>
     </div>
   </div>
@@ -65,31 +66,21 @@ export default {
   props: {
     title: String
   },
-  /** 
-   * created模板渲染成HTML前调用
-   * mounted模板渲染成HTML后调用
-   */
-  created() {
-    this.$ajax.post('/admin/delaingBookList').then((res) => {
-      console.log(res)
-      for (const book of res.data.data) {
-        /**
-         * title：书名
-         * borrowTime：借出时间
-         * borrowCycle：可借天数
-         * isLending：是否借出
-         * returnTime:剩余时间
-         */
-        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id } = book
-        this.tableData3.push({
-          date: formatTime(borrowTime),
-          bookname: title,
-          bookid: _id,
-          reader: borrowUser.username,
-          can_days: borrowCycle,
-          remainder_days: remainTime(returnTime),
-          yn: isLending ? '否' : '是'
-        })
+  created(){
+    this.$ajax.post('http://192.168.2.73:3000/admin/unReturnBookList').then((res) => {
+
+      for( const book of res.data.data) {
+        // 判断未归还
+          let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id} = book
+          this.tableData3.push({
+            date: formatTime(borrowTime),
+            bookname: title,
+            reader: borrowUser.username,
+            can_days: borrowCycle,
+            bookid: _id,
+            remainder_days: remainTime(returnTime),
+            yn: isLending ? '否' : '是'
+          })
       }
     });
   },
@@ -110,6 +101,7 @@ export default {
     // 续借书籍
     do_renewal(renewal_time) {
       for (const gx of this.multipleSelection) {
+        console.log(gx.bookid)
         this.$ajax({
           url: '/api/bookBorrowContinue',
           method: 'post',

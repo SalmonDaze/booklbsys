@@ -1,7 +1,9 @@
 <template>
   <div class="person">
     <div class="person1">
-      <v-user :username="user" :phone="phone"></v-user>
+      <v-user :username="user.username" :phone="user.phone" :isAdmin='user.isAdmin'
+      :isBanned='user.isBanned' :UID='user.UID' :create_at='user.create_at' :borrow_list='user.borrow_list'></v-user>
+      {{user}}
     </div>
   </div>
 </template>
@@ -14,32 +16,7 @@ export default {
     vUser
   },
   created() {
-    this.$ajax({
-      url: '/admin/getUserInfo',
-      method: 'post',
-      data: {
-        _id: this.$store.state.user._id
-      }
-    }).then(res => {
-      console.log(res)
-      for (const person of res.data.data.borrow_list) {
-        /**
-         * title：书名
-         * borrowTime：借出时间
-         * borrowCycle：可借天数
-         * isLending：是否借出
-         * returnTime:剩余时间
-         */
-        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime } = person
-        this.tableData3.push({
-          date: unixTranstoDate(borrowTime).slice(0, 10),
-          bookname: title,
-          can_days: borrowCycle,
-          remainder_days: Math.ceil(remainTime(returnTime, getDate())),
-          yn: isLending ? '否' : '是'
-        })
-      }
-    })
+    console.log(this.user)
   },
   data () {
     return {
@@ -50,8 +27,7 @@ export default {
   },
   computed: mapState({
     // 获取用户名
-    user: state => state.user.username,
-    phone: state => state.user.phone
+    user: state => state.user,
   })
 }
 </script>

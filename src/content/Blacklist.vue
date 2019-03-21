@@ -1,7 +1,7 @@
 <template>
   <div class="blacklist">
     <div class="blacklist1">
-      <v-recordtitle title="逾期名单" input_txt="请输入人名"></v-recordtitle>
+      <v-recordtitle title="逾期名单" input_txt="请输入人名"  @doRenewal='do_renewal'></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
@@ -79,12 +79,13 @@ export default {
     }).then( res => {
       for( const book of res.data.data) {
         // 判断未归还
-          let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime} = book
+          let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id} = book
           this.tableData3.push({
             date: formatTime(borrowTime),
             bookname: title,
             reader: borrowUser.username,
             can_days: borrowCycle,
+            bookid: _id,
             remainder_days: Math.abs(Math.ceil(remainTime(returnTime))),
             yn: isLending ? '否' : '是'
           })
@@ -109,6 +110,19 @@ export default {
         });
       } else {
         this.$refs.multipleTable.clearSelection();
+      }
+    },
+    do_renewal(renewal_time) {
+      for (const gx of this.multipleSelection) {
+        console.log(gx.bookid)
+        this.$ajax({
+          url: '/api/bookBorrowContinue',
+          method: 'post',
+          data: {
+            time: renewal_time,
+            _id: gx.bookid
+          }
+        }).then(res => console.log(res))
       }
     },
     // 保存勾选数据，type必须是selection
