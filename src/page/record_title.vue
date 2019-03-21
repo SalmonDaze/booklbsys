@@ -19,7 +19,7 @@
           placeholder="请输入续借天数"></el-input>
         </el-date-picker>
         <el-button @click="renewal()">续借</el-button>
-        <el-button @click="return_show()"
+        <el-button @click="returnbook()"
           v-if="return_show">归还</el-button>
         <p>
           <a>*请输入数字1-30</a>
@@ -84,14 +84,11 @@ export default {
       console.log(this.renewal_time)
       this.$emit('doRenewal', this.renewal_time);
     },
-    toggleSelection(){
-      this.$emit('doClear','');
-    }
+    returnbook(){
+      this.$emit('doReturn','');
+    },
   },
   computed: {
-    // days() {
-    //   return moment(moment(this.renewal_time).format('YYYY-MM-DD')).diff(moment().format('YYYY-MM-DD'), 'day')
-    // }
   }
 }
 </script>

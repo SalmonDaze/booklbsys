@@ -1,20 +1,5 @@
 import moment from "moment";
 
-// 转化后端数据显示为日期
-export function msToDate(ms) {
-  // moment.duration创建时间段
-  let d = moment.duration(ms);
-  let years = d.years() + 1970;
-  let months = d.months() < 10 ? "0" + (d.months() + 1) : d.months() + 1;
-  let days = d.days() < 10 ? "0" + d.days() : d.days();
-  console.log(d.days());
-  return `${years}-${months}-${days}`;
-}
-/**
- * ``模板字符串
- * ${} el表达式，可用在所有的HTML和JSP标签中作用是代替JSP页面中复杂的JAVA代码
- */
-
 /**
  * 剩余时间
  * @param {*} start 开始时间
@@ -24,14 +9,7 @@ export function remainTime(end) {
   // 格式化
   return moment(end).diff(moment(), 'days');
 }
-// 获取当前时间
-export function getDate() {
-  return Number(moment().format("x"));
-}
 
-export function unixTranstoDate(ms) {
-  return moment(moment.unix(ms / 1000)).format();
-}
 /**
  *
  *处理图片路径
@@ -47,7 +25,7 @@ export function formatPath(path) {
    */
   return path.split("\\").slice(2).join("");
 }
-
+// 日期格式
 export function formatTime(time) {
   return time.split('').slice(0, time.indexOf(' ')).join('')
 }

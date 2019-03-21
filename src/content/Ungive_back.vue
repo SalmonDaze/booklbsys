@@ -1,7 +1,10 @@
 <template>
-  <div class="ungiveback">
-    <div class="ungiveback1">
-      <v-recordtitle title="未归还书籍" input_txt="请输入书名" @doRenewal='do_renewal'></v-recordtitle>
+  <div class="ungive-back">
+    <div class="ungive-back1">
+      <v-recordtitle title="未归还的书籍"
+        input_txt="请输入书名"
+        v-on:doRenewal="do_renewal"
+        v-on:doReturn="do_return"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
@@ -18,6 +21,9 @@
           </el-table-column>
           <el-table-column prop="bookname"
             label="书名">
+          </el-table-column>
+          <el-table-column prop="bookid"
+            label="图书识别码">
           </el-table-column>
           <el-table-column prop="can_days"
             label="可借天数（天）"
@@ -51,7 +57,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
-import { unixTranstoDate, remainTime, getDate, formatTime } from '../utils/formatDate'
+import { remainTime, formatTime } from '../utils/formatDate.js';
 export default {
   components: {
     vRecordtitle
@@ -59,22 +65,33 @@ export default {
   props: {
     title: String
   },
-  created(){
-    this.$ajax.post('http://192.168.2.73:3000/admin/unReturnBookList').then((res) => {
-
-      for( const book of res.data.data) {
-        // 判断未归还
-          let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime} = book
-          this.tableData3.push({
-            date: formatTime(borrowTime),
-            bookname: title,
-            reader: borrowUser.username,
-            can_days: borrowCycle,
-            remainder_days: remainTime(returnTime),
-            yn: isLending ? '否' : '是'
-          })
+  /** 
+   * created模板渲染成HTML前调用
+   * mounted模板渲染成HTML后调用
+   */
+  created() {
+    this.$ajax.post('/admin/delaingBookList').then((res) => {
+      console.log(res)
+      for (const book of res.data.data) {
+        /**
+         * title：书名
+         * borrowTime：借出时间
+         * borrowCycle：可借天数
+         * isLending：是否借出
+         * returnTime:剩余时间
+         */
+        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id } = book
+        this.tableData3.push({
+          date: formatTime(borrowTime),
+          bookname: title,
+          bookid: _id,
+          reader: borrowUser.username,
+          can_days: borrowCycle,
+          remainder_days: remainTime(returnTime),
+          yn: isLending ? '否' : '是'
+        })
       }
-    })
+    });
   },
   data() {
     return {
@@ -82,6 +99,7 @@ export default {
       input_bookname: '',
       // 选择借书时间
       value_borrowtime: '',
+      // 表单
       tableData3: [],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
@@ -89,25 +107,7 @@ export default {
     }
   },
   methods: {
-    // 分页
-    handleSizeChange(val) {
-      this.pagesize = val;
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      this.pageNum = val
-      console.log(`当前页: ${val}`);
-    },
-    // 勾选
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
-      }
-    },
+    // 续借书籍
     do_renewal(renewal_time) {
       for (const gx of this.multipleSelection) {
         this.$ajax({
@@ -120,44 +120,68 @@ export default {
         }).then(res => console.log(res))
       }
     },
+    // 还书
+    do_return() {
+      for (const gx of this.multipleSelection) {
+        this.$ajax({
+          url: '/api/returnBook',
+          method: 'post',
+          data: {
+            _id:gx.bookid,
+          }
+        }).then(res => console.log(res))
+      }
+    },
+    // 分页
+    handleSizeChange(val) {
+      this.pagesize = val;
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      this.pageNum = val
+      console.log(`当前页: ${val}`);
+    },
     // 保存勾选数据，type必须是selection
     // 把勾选数据传到后台
     handleSelectionChange(val) {
-      console.log(val)
       this.multipleSelection = val;
     }
   },
-  computed:{
+  computed: {
     vals() {
       /**
        * 数组过滤
        * es6
        * 得到tableData3里面yn为true的数组的长度
-       *  */ 
-      return this.tableData3.filter( x =>  !x.yn ).length
+       *  */
+      return this.tableData3.filter(x => x).length
     }
   }
 }
 </script>
 <style>
-.ungiveback {
+.ungive-back {
   position: absolute;
   top: 120px;
   left: 230px;
   height: 900px;
 }
-.ungiveback1 {
-  width: 1200px;
+.ungive-back1 {
+  width: 1600px;
 }
-.ungiveback .table{
+.ungive-back .table {
   position: absolute;
-  top: 160px;
-  width: 1200px;
+  top: 220px;
+  width: 1500px;
 }
-.ungiveback .el-button {
+.ungive-back .el-button {
   margin-left: 30px;
 }
-.ungiveback .el-pagination {
+.ungive-back .el-table td,
+.ungive-back .el-table th {
+  text-align: center;
+}
+.ungive-back .el-pagination {
   margin-top: 10px;
   text-align: center;
 }

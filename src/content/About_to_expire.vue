@@ -2,7 +2,9 @@
   <div class="abouttoexpire">
     <div class="abouttoexpire1">
       <v-recordtitle title="即将到期的书籍"
-        input_txt="请输入书名"></v-recordtitle>
+        input_txt="请输入书名"
+        v-on:doRenewal="do_renewal"
+        v-on:doReturn="do_return"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
@@ -19,6 +21,9 @@
           </el-table-column>
           <el-table-column prop="bookname"
             label="书名">
+          </el-table-column>
+          <el-table-column prop="bookid"
+            label="图书识别码">
           </el-table-column>
           <el-table-column prop="can_days"
             label="可借天数（天）"
@@ -52,6 +57,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
+import { remainTime, formatTime } from '../utils/formatDate.js';
 export default {
   components: {
     vRecordtitle
@@ -59,21 +65,33 @@ export default {
   props: {
     title: String
   },
+  /** 
+   * created模板渲染成HTML前调用
+   * mounted模板渲染成HTML后调用
+   */
   created() {
-    this.$ajax.post('http://192.168.2.73:3000/admin/sevenDaysBorrow').then((res) => {
+    this.$ajax.post('/admin/delayingBookList').then((res) => {
+      console.log(res)
       for (const book of res.data.data) {
-        if (!book.isLending) {
-          let { title, borrowTime, borrowUser, borrowCycle, isLending } = book
-          this.tableData3.push({
-            date: borrowTime,
-            bookname: title,
-            reader: borrowUser.username,
-            can_days: borrowCycle,
-            yn: isLending ? '是' : '否'
-          })
-        }
+        /**
+         * title：书名
+         * borrowTime：借出时间
+         * borrowCycle：可借天数
+         * isLending：是否借出
+         * returnTime:剩余时间
+         */
+        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id } = book
+        this.tableData3.push({
+          date: formatTime(borrowTime),
+          bookname: title,
+          bookid: _id,
+          reader: borrowUser.username,
+          can_days: borrowCycle,
+          remainder_days: remainTime(returnTime),
+          yn: isLending ? '否' : '是'
+        })
       }
-    })
+    });
   },
   data() {
     return {
@@ -81,21 +99,39 @@ export default {
       input_bookname: '',
       // 选择借书时间
       value_borrowtime: '',
-      tableData3: [
-        {
-          date: '2016-05-03',
-          bookname: 'C语言设计',
-          can_days: '30',
-          remainder_days: '10',
-          reader: '王江',
-          yn: false,
-        },],
+      // 表单
+      tableData3: [],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
       pagesize: 10,//每页的数据条数
     }
   },
   methods: {
+    // 续借书籍
+    do_renewal(renewal_time) {
+      for (const gx of this.multipleSelection) {
+        this.$ajax({
+          url: '/api/bookBorrowContinue',
+          method: 'post',
+          data: {
+            time: renewal_time,
+            _id: gx.bookid
+          }
+        }).then(res => console.log(res))
+      }
+    },
+    // 还书
+    do_return() {
+      for (const gx of this.multipleSelection) {
+        this.$ajax({
+          url: '/api/returnBook',
+          method: 'post',
+          data: {
+            _id:gx.bookid,
+          }
+        }).then(res => console.log(res))
+      }
+    },
     // 分页
     handleSizeChange(val) {
       this.pagesize = val;
@@ -104,16 +140,6 @@ export default {
     handleCurrentChange(val) {
       this.pageNum = val
       console.log(`当前页: ${val}`);
-    },
-    // 勾选
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
-      }
     },
     // 保存勾选数据，type必须是selection
     // 把勾选数据传到后台
@@ -128,7 +154,7 @@ export default {
        * es6
        * 得到tableData3里面yn为true的数组的长度
        *  */
-      return this.tableData3.filter(x => !x.yn).length
+      return this.tableData3.filter(x => x).length
     }
   }
 }
@@ -141,15 +167,19 @@ export default {
   height: 900px;
 }
 .abouttoexpire1 {
-  width: 1200px;
+  width: 1600px;
 }
 .abouttoexpire .table {
   position: absolute;
-  top: 160px;
-  width: 1200px;
+  top: 220px;
+  width: 1500px;
 }
 .abouttoexpire .el-button {
   margin-left: 30px;
+}
+.abouttoexpire .el-table td,
+.abouttoexpire .el-table th {
+  text-align: center;
 }
 .abouttoexpire .el-pagination {
   margin-top: 10px;

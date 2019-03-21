@@ -71,7 +71,7 @@ export default {
             bookname: title,
             reader: borrowUser.username,
             can_days: borrowCycle,
-            yn: isLending ? '是' : '否'
+            yn: isLending ? '否' : '是'
           })
         }
       }
