@@ -47,3 +47,7 @@ export function formatPath(path) {
    */
   return path.split("\\").slice(2).join("");
 }
+
+export function formatTime(time) {
+  return time.split('').slice(0, time.indexOf(' ')).join('')
+}

@@ -45,14 +45,13 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="vals">
         </el-pagination>
-        {{tableData3}}
       </div>
     </div>
   </div>
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
-import { unixTranstoDate, remainTime, getDate } from '../utils/formatDate'
+import { unixTranstoDate, remainTime, getDate, formatTime } from '../utils/formatDate'
 export default {
   components: {
     vRecordtitle
@@ -67,11 +66,11 @@ export default {
         // 判断未归还
           let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime} = book
           this.tableData3.push({
-            date: unixTranstoDate(borrowTime).slice(0, 10),
+            date: formatTime(borrowTime),
             bookname: title,
             reader: borrowUser.username,
             can_days: borrowCycle,
-            remainder_days: Math.ceil(remainTime(returnTime, getDate())),
+            remainder_days: remainTime(returnTime),
             yn: isLending ? '否' : '是'
           })
       }
@@ -110,7 +109,7 @@ export default {
       }
     },
     do_renewal(renewal_time) {
-      for (const gx of this.tableData3) {
+      for (const gx of this.multipleSelection) {
         this.$ajax({
           url: '/api/bookBorrowContinue',
           method: 'post',
@@ -124,6 +123,7 @@ export default {
     // 保存勾选数据，type必须是selection
     // 把勾选数据传到后台
     handleSelectionChange(val) {
+      console.log(val)
       this.multipleSelection = val;
     }
   },

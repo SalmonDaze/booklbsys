@@ -51,7 +51,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
-import { unixTranstoDate, getDate, remainTime } from '../utils/formatDate'
+import { unixTranstoDate, getDate, remainTime, formatTime } from '../utils/formatDate'
 export default {
   components: {
     vRecordtitle
@@ -81,11 +81,11 @@ export default {
         // 判断未归还
           let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime} = book
           this.tableData3.push({
-            date: unixTranstoDate(borrowTime).slice(0, 10),
+            date: formatTime(borrowTime),
             bookname: title,
             reader: borrowUser.username,
             can_days: borrowCycle,
-            remainder_days: Math.ceil(remainTime(getDate(), returnTime)),
+            remainder_days: Math.abs(Math.ceil(remainTime(returnTime))),
             yn: isLending ? '否' : '是'
           })
       }
