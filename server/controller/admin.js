@@ -66,7 +66,7 @@ module.exports.uploadBook = async (ctx, next) => {
     let { title, author, borrowCycle, cover, bookInfo } = ctx.request.body
     let anext = async function() {
         return new Promise((resolve, reject) => {
-            Model.book.create({ title, author, borrowCycle, cover, create_time: moment().unix() * 1000, bookInfo}).then( (doc) => {
+            Model.book.create({ title, author, borrowCycle, cover, create_time: moment().format('YYYY-MM-DD HH:mm:ss'), bookInfo}).then( (doc) => {
                 if (!doc) {
                     resolve({
                         code: 1,
@@ -195,8 +195,8 @@ module.exports.sevenDaysExpire = async (ctx) => {
     let returnList = new Array()
     for(const book of bookList) {
         if( book.isLending) {
-            let start = Number(book.borrowTime)
-            let end = Number(book.returnTime)
+            let start = book.borrowTime
+            let end = book.returnTime
             if( moment(end).diff(start, 'days') <= 7 ) {
                 returnList.push(book)
             }
@@ -225,7 +225,8 @@ module.exports.sevenDaysBorrow = async (ctx) => {
             let bookList = new Array()
             for(const book of books) {
                 if( book.isLending ) {
-                    let start = Number(book.borrowTime)
+                    let start = book.borrowTime
+                    console.log(moment().diff(start, 'days'), start)
                     if( moment().diff(start, 'days') <= 7) {
                         let doc = await getDoc(book._id)
                         bookList.push(doc)
@@ -277,7 +278,7 @@ module.exports.getDelayList = async (ctx) => {
                 let bookList = new Array()
                 for( const book of doc ) {
                     if( book.isLending ) {
-                        if( moment() - book.returnTime >= 0){
+                        if( moment().diff(book.returnTime, 'days') >= 0){
                             bookList.push(book)
                         }
                     }
@@ -304,7 +305,7 @@ module.exports.delaingBookList = async (ctx) => {
                 for(const book of doc ){
                    
                     if( book.isLending ) {
-                        if(moment(Number(book.returnTime)).diff(moment(), 'days') <= 7) {
+                        if(moment(book.returnTime).diff(moment(), 'days') <= 7) {
                             bookList.push(book)
                         }
                     }

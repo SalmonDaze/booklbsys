@@ -13,6 +13,9 @@ const moment = require('moment')
 const static = require('koa-static')
 
 app.use(static(__dirname + '/public/uploads'))
+let day = moment().format('YYYY-MM-DD HH:mm:ss')
+let day2 = '2019-03-21 09:00:21'
+console.log(moment(moment().add(7, 'days')).format('YYYY-MM-DD HH:mm:ss'))
 
 app.use(cors({
     origin: function (ctx) {

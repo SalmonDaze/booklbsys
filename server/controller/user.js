@@ -155,9 +155,9 @@ module.exports.borrowBook = async (ctx) => {
             }
             Model.book.updateOne({ _id }, {
                 isLending: true, 
-                borrowTime: moment(),
+                borrowTime: moment().format('YYYY-MM-DD HH:mm:ss'),
                 borrowUser: _userId, 
-                returnTime: moment(Date.now()).add(borrowCycle, 'days'),
+                returnTime: moment().add(borrowCycle, 'days').format('YYYY-MM-DD HH:mm:ss'),
                 $inc : {borrowCount: 1}
             }, (err, doc) => {
                 if(err) {
@@ -202,7 +202,7 @@ module.exports.bookBorrowContinue = async (ctx) => {
     let { returnTime } = await l_findBook(_id)
     let anext = async () => {
         return new Promise( (resolve, reject) => {
-            Model.book.updateOne({ _id }, {returnTime: moment(Number(returnTime)).add(time, 'days').unix() * 1000}, (err, doc) => {
+            Model.book.updateOne({ _id }, {returnTime: moment(returnTime).add(time, 'days').format('YYYY-MM-DD HH:mm:ss')}, (err, doc) => {
                 if(err) {
                     resolve({
                         code: 1,

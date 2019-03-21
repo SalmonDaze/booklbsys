@@ -24,7 +24,7 @@
             show-overflow-tooltip>
           </el-table-column>
           <el-table-column prop="remainder_days"
-            label="剩余天数（天）"
+            label="逾期天数（天）"
             show-overflow-tooltip>
           </el-table-column>
           <el-table-column prop="reader"
@@ -51,7 +51,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
-import { unixTranstoDate } from '../utils/formatDate'
+import { unixTranstoDate, getDate, remainTime } from '../utils/formatDate'
 export default {
   components: {
     vRecordtitle
@@ -79,13 +79,14 @@ export default {
     }).then( res => {
       for( const book of res.data.data) {
         // 判断未归还
-          let { title, borrowTime, borrowUser, borrowCycle, isLending} = book
+          let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime} = book
           this.tableData3.push({
             date: unixTranstoDate(borrowTime).slice(0, 10),
             bookname: title,
             reader: borrowUser.username,
             can_days: borrowCycle,
-            yn: isLending ? '是' : '否'
+            remainder_days: Math.ceil(remainTime(getDate(), returnTime)),
+            yn: isLending ? '否' : '是'
           })
       }
     })

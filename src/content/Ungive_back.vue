@@ -1,7 +1,7 @@
 <template>
   <div class="ungiveback">
     <div class="ungiveback1">
-      <v-recordtitle title="未归还书籍" input_txt="请输入书名"></v-recordtitle>
+      <v-recordtitle title="未归还书籍" input_txt="请输入书名" @doRenewal='do_renewal'></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
@@ -45,13 +45,14 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="vals">
         </el-pagination>
+        {{tableData3}}
       </div>
     </div>
   </div>
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
-import { unixTranstoDate } from '../utils/formatDate'
+import { unixTranstoDate, remainTime, getDate } from '../utils/formatDate'
 export default {
   components: {
     vRecordtitle
@@ -64,13 +65,14 @@ export default {
 
       for( const book of res.data.data) {
         // 判断未归还
-          let { title, borrowTime, borrowUser, borrowCycle, isLending} = book
+          let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime} = book
           this.tableData3.push({
             date: unixTranstoDate(borrowTime).slice(0, 10),
             bookname: title,
             reader: borrowUser.username,
             can_days: borrowCycle,
-            yn: isLending ? '是' : '否'
+            remainder_days: Math.ceil(remainTime(returnTime, getDate())),
+            yn: isLending ? '否' : '是'
           })
       }
     })
@@ -105,6 +107,18 @@ export default {
         });
       } else {
         this.$refs.multipleTable.clearSelection();
+      }
+    },
+    do_renewal(renewal_time) {
+      for (const gx of this.tableData3) {
+        this.$ajax({
+          url: '/api/bookBorrowContinue',
+          method: 'post',
+          data: {
+            time: renewal_time,
+            _id: gx.bookid
+          }
+        }).then(res => console.log(res))
       }
     },
     // 保存勾选数据，type必须是selection
