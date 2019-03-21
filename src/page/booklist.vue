@@ -2,7 +2,7 @@
   <div class="booklist">
     <div class="book-cover">
       <img :alt="title"
-        :src="booklist_img"
+        :src="bookCover"
         class='book_cover' />
     </div>
     <div class="mask">
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { formatPath } from '../utils/formatDate'
 export default {
   props: {
     // 书名
@@ -32,6 +33,11 @@ export default {
 
     }
   },
+  computed:{
+    bookCover() {
+      return `http://192.168.2.73:3000/${formatPath(this.booklist_img)}`
+    }
+  }
 }
 </script>
 

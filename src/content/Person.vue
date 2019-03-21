@@ -3,7 +3,6 @@
     <div class="person1">
       <v-user :username="user.username" :phone="user.phone" :isAdmin='user.isAdmin'
       :isBanned='user.isBanned' :UID='user.UID' :create_at='user.create_at' :borrow_list='user.borrow_list'></v-user>
-      {{user}}
     </div>
   </div>
 </template>

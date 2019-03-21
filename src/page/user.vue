@@ -10,12 +10,23 @@
         <li>创建日期: {{create_date}}</li>
       </ul>
     </div>
+    <div class="borrow_list">
+      <h2 class='borrow_title'>借阅记录</h2>
+      <v-booklist v-for='book in borrow_list' :key='book._id' :title="book.title"
+            :author="book.author"
+            :booklist_img="book.cover"
+            :synopsis="book.bookInfo"></v-booklist>
+    </div>
   </div>
 </template>
 
 <script>
-import { formatTime } from '../utils/formatDate'
+import { formatTime, formatPath } from '../utils/formatDate'
+import vBooklist from './booklist.vue'
 export default {
+  components:{
+    vBooklist
+  },
   props:{
     username:String,
     phone:String,
@@ -35,23 +46,36 @@ export default {
 
 <style>
 .user {
-  position: absolute;
+  position: relative;
   top: 80px;
-  left: 100px;
+  left: 50px;
   height: 500px;
-  width: 500px;
+  width: 400px;
   background: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0 , 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-  padding-top: 30px;
+  padding-top: 50px;
 }
 .user_name {
-  font-size: 2rem;
+  font-size: 3rem;
   text-align: center;
 }
 .user_info {
   margin-top: 20px;
+  font-size: 1.3rem;
 }
 .user_info li {
-  margin-top: 15px;
+  margin-top: 40px;
+}
+.borrow_list {
+  position: relative;
+  width: 1000px;
+  height: 530px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0 , 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  left: 450px;
+  top: -450px;
+  padding-top: 20px;
+}
+.borrow_title {
+  margin-left: 50px;
 }
 </style>

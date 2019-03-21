@@ -17,7 +17,6 @@
       <div style="margin-top: 20px;margin-left:20px;">
         <el-input v-model="renewal_time"
           placeholder="请输入续借天数"></el-input>
-        </el-date-picker>
         <el-button @click="renewal()">续借</el-button>
         <el-button @click="returnbook()"
           v-if="return_show">归还</el-button>

@@ -4,7 +4,7 @@
       <h3>最新上架</h3>
       <ul class="newbooks-book">
         <li class="book"
-          v-for="book in books">
+          v-for="book in books" :key='book._id'>
           <v-booklist :title="book.title"
             :author="book.author"
             :booklist_img="book.cover"
@@ -37,8 +37,6 @@ export default {
          */
         let { author, title, cover, bookInfo } = book
         // 图片路径
-        cover = 'http://192.168.2.73:3000/' + formatPath(cover)
-        console.log(cover)
         this.books.push({
           author: author,
           title: title,

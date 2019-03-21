@@ -93,41 +93,51 @@ module.exports.registry = async (ctx) => {
 
 module.exports.login = async (ctx) => {
     let { phone, password } = ctx.request.body
-    let user = await l_findPhone(phone)
-    const phoneReg = /^1[0-9]{10}$/
-    if( !user || !phoneReg.test(phone)) {
-        ctx.status = 200
-        ctx.body = {
-            success: false,
-            code: 1,
-            msg: '用户名或者密码错误'
-        }
-        return
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.user.findOne({phone}).populate({path: 'borrow_list'}).exec((err, doc) => {
+                console.log(doc)
+                if(err) {
+                    resolve({
+                        success: false,
+                        code: 1,
+                        msg: '登陆错误'
+                    })
+                }
+                const phoneReg = /^1[0-9]{10}$/
+                if( !doc || !phoneReg.test(phone)) {
+                    resolve({
+                        success: false,
+                        code: 1,
+                        msg: '用户名或者密码错误'
+                    })
+                }
+                doc.password = dpPwd(doc.password, SECRET)
+                if( doc.password !== password ) {
+                    resolve({
+                        success: false,
+                        code: 1,
+                        msg: '手机号或者密码错误！'
+                    })
+                }
+                if( doc.password === password ) {
+                    let token = jwt.sign({phone: phone}, SECRET, {
+                        expiresIn : '10d'// 授权时效24小时
+                    });
+                    resolve({
+                        code: 200,
+                        success: true,
+                        token: token,
+                        msg: '登陆成功！',
+                        user: doc
+                    })
+                }
+            })
+        })
     }
-    user.password = dpPwd(user.password, SECRET)
-    if( user.password !== password ) {
-        ctx.status = 200
-        ctx.body = {
-            success: false,
-            code: 1,
-            msg: '手机号或者密码错误！'
-        }
-        return
-    }
-    if( user.password === password ) {
-        let token = jwt.sign({phone: phone}, SECRET, {
-            expiresIn : '10d'// 授权时效24小时
-        });
-        ctx.status = 200
-        ctx.body = {
-            code: 200,
-            success: true,
-            token: token,
-            msg: '登陆成功！',
-            user: user
-        }
-        return
-    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
 }
 
 module.exports.getAllBook = async (ctx) => {
