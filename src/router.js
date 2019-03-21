@@ -92,6 +92,11 @@ let router = new Router({
           component: Newbooks
         },
         {
+          path: "allbooks",
+          name: "allbooks",
+          component: () => import("./content/Allbooks.vue")
+        },
+        {
           path: "setup",
           name: "setup",
           component: Setup
