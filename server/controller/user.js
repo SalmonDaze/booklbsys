@@ -230,9 +230,10 @@ module.exports.returnBook = async (ctx) => {
                 isLending: false,
                 borrowTime: '',
                 returnTime: '',
-                borrowUser: '',
+                borrowUser: null,
             }, (err, doc) => {
                 if(err) {
+                    console.log(err)
                     resolve({
                         success: false,
                         code: 1,

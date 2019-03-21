@@ -45,6 +45,7 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="vals">
         </el-pagination>
+        
       </div>
     </div>
   </div>
@@ -64,12 +65,13 @@ export default {
 
       for( const book of res.data.data) {
         // 判断未归还
-          let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime} = book
+          let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id} = book
           this.tableData3.push({
             date: formatTime(borrowTime),
             bookname: title,
             reader: borrowUser.username,
             can_days: borrowCycle,
+            bookid: _id,
             remainder_days: remainTime(returnTime),
             yn: isLending ? '否' : '是'
           })
@@ -110,6 +112,7 @@ export default {
     },
     do_renewal(renewal_time) {
       for (const gx of this.multipleSelection) {
+        console.log(gx.bookid)
         this.$ajax({
           url: '/api/bookBorrowContinue',
           method: 'post',
@@ -123,7 +126,6 @@ export default {
     // 保存勾选数据，type必须是selection
     // 把勾选数据传到后台
     handleSelectionChange(val) {
-      console.log(val)
       this.multipleSelection = val;
     }
   },

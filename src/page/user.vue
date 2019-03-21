@@ -1,36 +1,34 @@
 <template>
   <div class="user">
-    <div class="user1">
-      <table border="0">
-        <tr>
-          <td colspan="2" class="table-title"><h4>用户信息</h4></td>
-        </tr>
-        <tr class="h1">
-          <td>姓名</td>
-          <td>{{username}}</td>
-        </tr>
-        <tr class="h1">
-          <td>手机号</td>
-          <td>{{phone}}</td>
-        </tr>
-        <tr class="h1">
-          <td>是否是管理员</td>
-          <td>是</td>
-        </tr>
-        <tr class="h1">
-          <td>借阅书籍</td>
-          <td></td>
-        </tr>
-      </table>
+    <div class='user_name'>
+      <h3>{{username}}</h3>
+      <ul class='user_info'>
+        <li>UID: {{UID}}</li>
+        <li>用户组: {{isAdmin ? '管理员' : '普通用户'}}</li>
+        <li>手机号码: {{phone}}</li>
+        <li>账号状态: {{isBanned ? '封禁' : '正常'}}</li>
+        <li>创建日期: {{create_date}}</li>
+      </ul>
     </div>
   </div>
 </template>
 
 <script>
+import { formatTime } from '../utils/formatDate'
 export default {
   props:{
     username:String,
-    phone:String
+    phone:String,
+    isAdmin: Boolean,
+    isBanned: Boolean,
+    borrow_list: Array,
+    UID: Number,
+    create_at: String,
+  },
+  computed:{
+    create_date(){
+      return this.create_at.slice(0, 10)
+    }
   }
 }
 </script>
@@ -38,24 +36,22 @@ export default {
 <style>
 .user {
   position: absolute;
-  top: 120px;
-  left: 230px;
-  height: 900px;
+  top: 80px;
+  left: 100px;
+  height: 500px;
+  width: 500px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0 , 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  padding-top: 30px;
 }
-.user1 {
-  width: 1600px;
-}
-.user table {
-  width: 700px;
-}
-.user td{
-  padding: 10px;
-}
-.user .table-title{
-  height: 50px;
+.user_name {
+  font-size: 2rem;
   text-align: center;
 }
-.user .h1{
-  text-align: center;
+.user_info {
+  margin-top: 20px;
+}
+.user_info li {
+  margin-top: 15px;
 }
 </style>
