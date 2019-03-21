@@ -46,15 +46,6 @@ export default {
   width: 1600px;
 }
 .user table {
-  /* 设置表格的边框是否被折叠成一个单一的边框或隔开 */
-  border-collapse: collapse;
-}
-.user table,
-.user th,
-.user td {
-  border: 1px solid black;
-}
-.user table {
   width: 700px;
 }
 .user td{

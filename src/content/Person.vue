@@ -15,13 +15,30 @@ export default {
   },
   created() {
     this.$ajax({
-      url: '/api/getUserInfo',
+      url: '/admin/getUserInfo',
       method: 'post',
       data: {
         _id: this.$store.state.user._id
       }
     }).then(res => {
       console.log(res)
+      for (const person of res.data.data.borrow_list) {
+        /**
+         * title：书名
+         * borrowTime：借出时间
+         * borrowCycle：可借天数
+         * isLending：是否借出
+         * returnTime:剩余时间
+         */
+        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime } = person
+        this.tableData3.push({
+          date: unixTranstoDate(borrowTime).slice(0, 10),
+          bookname: title,
+          can_days: borrowCycle,
+          remainder_days: Math.ceil(remainTime(returnTime, getDate())),
+          yn: isLending ? '否' : '是'
+        })
+      }
     })
   },
   data () {

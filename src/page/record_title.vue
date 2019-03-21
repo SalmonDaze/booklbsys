@@ -23,7 +23,6 @@
           v-if="return_show">归还</el-button>
         <p>
           <a>*请输入数字1-30</a>
-          <el-button @click="toggleSelection()" class="toggleSelection">取消选择</el-button>
         </p>
       </div>
     </div>

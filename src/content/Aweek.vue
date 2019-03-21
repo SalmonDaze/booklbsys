@@ -3,7 +3,7 @@
     <div class="aweek1">
       <v-recordtitle title="7天内借阅的书籍"
         input_txt="请输入书名"
-        v-on:doRenewal="do_renewal" v-on:doClear="toggleSelection()"></v-recordtitle>
+        v-on:doRenewal="do_renewal"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
@@ -56,7 +56,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
-import { msToDate, getDate, remainTime, unixTranstoDate } from '../utils/formatDate.js'
+import { msToDate, getDate, remainTime, unixTranstoDate,formatTime} from '../utils/formatDate.js'
 export default {
   components: {
     vRecordtitle
@@ -108,7 +108,7 @@ export default {
   methods: {
     // 续借书籍
     do_renewal(renewal_time) {
-      for (const gx of this.tableData3) {
+      for (const gx of this.multipleSelection) {
         this.$ajax({
           url: '/api/bookBorrowContinue',
           method: 'post',
@@ -127,17 +127,6 @@ export default {
     handleCurrentChange(val) {
       this.pageNum = val
       console.log(`当前页: ${val}`);
-    },
-    // 勾选
-    toggleSelection(rows) {
-      console.log(row)
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
-      }
     },
     // 保存勾选数据，type必须是selection
     // 把勾选数据传到后台
