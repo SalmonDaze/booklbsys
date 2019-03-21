@@ -9,13 +9,13 @@ import Abouttoexpire from "./content/About_to_expire.vue";
 import Giveback from "./content/Give_back.vue";
 import Ungiveback from "./content/Ungive_back.vue";
 import Blacklist from "./content/Blacklist.vue";
-import Userborrowingrecords from "./content/User_ Borrowingrecords.vue"
+import Userborrowingrecords from "./content/User_ Borrowingrecords.vue";
 import Hot from "./content/Hot.vue";
 import Newbooks from "./content/Newbooks.vue";
 import Setup from "./content/Set_up.vue";
-import Usersetup from "./content/User_set_up.vue"
+import Usersetup from "./content/User_set_up.vue";
 import store from "./store";
-import axios from 'axios'
+import axios from "axios";
 
 Vue.use(Router);
 
@@ -102,9 +102,26 @@ let router = new Router({
           component: Usersetup
         },
         {
-          path: 'uploadBook',
-          name: 'uploadBook',
-          component: () => import('./content/uploadBook.vue')
+          path: "userlist",
+          name: "userlist",
+          component: () => import("./content/Userlist.vue"),
+          children: [
+            {
+              path: "user",
+              name: "user",
+              component: () => import("./page/user.vue")
+            }
+          ]
+        },
+        {
+          path: "person",
+          name: "person",
+          component: () => import("./content/Person.vue")
+        },
+        {
+          path: "uploadBook",
+          name: "uploadBook",
+          component: () => import("./content/uploadBook.vue")
         }
       ]
     }

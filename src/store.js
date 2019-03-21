@@ -7,7 +7,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     token: null,
-    user:{}
+    user:{},
   },
   /* localStorage.getItem(key):获取指定key本地存储的值
   localStorage.setItem(key,value)：将value存储到key字段
@@ -20,7 +20,7 @@ export default new Vuex.Store({
       localStorage.setItem('token', payload.token);
       axios.defaults.headers.post['accessToken'] = payload.token
       state.token = payload.token;
-      state.user = payload.data
+      state.user = payload.data;
     },
     logout: (state) => {
       localStorage.removeItem("token");

@@ -81,12 +81,12 @@ export default {
          */
         let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id } = book
         this.tableData3.push({
-          date: unixTranstoDate(borrowTime).slice(0, 10),
+          date: borrowTime,
           bookname: title,
           bookid: _id,
           reader: borrowUser.username,
           can_days: borrowCycle,
-          remainder_days: Math.ceil(remainTime(returnTime, getDate())),
+          remainder_days: remainTime(returnTime),
           yn: isLending ? '否' : '是'
         })
       }
@@ -106,6 +106,7 @@ export default {
     }
   },
   methods: {
+    // 续借书籍
     do_renewal(renewal_time) {
       for (const gx of this.tableData3) {
         this.$ajax({

@@ -4,8 +4,8 @@
       <div class="header-content">
         <span class="title"><img src="../../public/logo.png"
             class="logo" /><strong> 图书管理</strong></span>
-        <div class="user">
-          <a>{{username}}</a>
+        <div class="username">
+          <a>{{user}}</a>
           <el-button type="primary"
             plain
             @click="loginout">退出登录</el-button>
@@ -75,8 +75,22 @@
             <span slot="title">书籍管理（admin）</span>
           </el-menu-item>
         </router-link>
-        <router-link :to="{path:'/homepage/uploadBook'}">
+        <router-link to="/homepage/userlist">
           <el-menu-item index="5"
+            v-if="$store.state.user.isAdmin">
+            <i class="el-icon-view"></i>
+            <span slot="title">用户信息（admin）</span>
+          </el-menu-item>
+        </router-link>
+        <router-link to="/homepage/person">
+          <el-menu-item index="6"
+            v-if="$store.state.user.isAdmin">
+            <i class="el-icon-info"></i>
+            <span slot="title">个人信息</span>
+          </el-menu-item>
+        </router-link>
+        <router-link :to="{path:'/homepage/uploadBook'}">
+          <el-menu-item index="7"
             v-if="$store.state.user.isAdmin">
             <i class="el-icon-upload2"></i>
             <span slot="title">书籍上架</span>
@@ -94,16 +108,6 @@
 import { mapState } from 'vuex'
 export default {
   components: {
-  },
-  created() {
-  },
-  data() {
-    return {
-      username: ''
-    }
-  },
-  mounted() {
-    this.username = this.user
   },
   methods: {
     loginout(){
@@ -155,12 +159,12 @@ export default {
   font-size: 30px;
   letter-spacing: 10px;
 }
-.homepage .user {
+.homepage .username {
   float: right;
   margin-top: 60px;
   margin-right: 30px;
 }
-.homepage .user a {
+.homepage .username a {
   margin-right: 20px;
 }
 .el-menu {

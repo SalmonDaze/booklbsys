@@ -20,11 +20,9 @@ export function msToDate(ms) {
  * @param {*} start 开始时间
  * @param {*} end 结束时间
  */
-export function remainTime(start, end) {
-  start = Number(start);
-  end = Number(end);
+export function remainTime(end) {
   // 格式化
-  return (start - end) / 1000 / 60 / 60 / 24;
+  return moment(end).diff(moment(), 'days');
 }
 // 获取当前时间
 export function getDate() {
