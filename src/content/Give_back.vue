@@ -1,7 +1,9 @@
 <template>
   <div class="giveback">
     <div class="giveback1">
-      <v-recordtitle title="已归还书籍" :return_show="false" input_txt="请输入书名"></v-recordtitle>
+      <v-recordtitle title="已归还书籍"
+        :return_show="false"
+        input_txt="请输入书名"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
@@ -12,19 +14,21 @@
           <el-table-column type="selection"
             width="55">
           </el-table-column>
-          <el-table-column label="借出日期"
+          <el-table-column label="上架日期"
             width="120">
             <template slot-scope="scope">{{ scope.row.date }}</template>
           </el-table-column>
           <el-table-column prop="bookname"
             label="书名">
           </el-table-column>
+          <el-table-column prop="bookid"
+            label="图书识别码"></el-table-column>
           <el-table-column prop="can_days"
             label="可借天数（天）"
             show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="remainder_days"
-            label="剩余天数（天）"
+          <el-table-column prop="borrowCount"
+            label="借阅次数（天）"
             show-overflow-tooltip>
           </el-table-column>
           <el-table-column prop="reader"
@@ -51,6 +55,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
+import { formatTime } from '../utils/formatDate.js';
 export default {
   components: {
     vRecordtitle
@@ -58,22 +63,29 @@ export default {
   props: {
     title: String
   },
-  created(){
-    this.$ajax.post('http://192.168.2.73:3000/admin/sevenDaysBorrow').then((res) => {
+  created() {
+    this.$ajax.post('http://192.168.2.73:3000/admin/getUnlendingList').then((res) => {
       console.log(res)
-      for( const book of res.data.data) {
+      for (const book of res.data.data) {
         // 判断已归还
-        if( book.isLending ) {
-          console.log(book)
-          let { title, borrowTime, borrowUser, borrowCycle, isLending} = book
-          this.tableData3.push({
-            date: borrowTime,
-            bookname: title,
-            reader: borrowUser.username,
-            can_days: borrowCycle,
-            yn: isLending ? '否' : '是'
-          })
-        }
+        /**
+         * title：书名
+         * create_time：上架时间
+         * borrowCycle：可借天数
+         * borrowCount：借阅次数
+         * isLending：是否借出
+         * returnTime:剩余时间
+         */
+        console.log(book)
+        let { title,_id, create_time, borrowUser, borrowCycle, borrowCount, isLending } = book
+        this.tableData3.push({
+          date: formatTime(create_time),
+          bookname: title,
+          bookid: _id,
+          borrowCount: borrowCount,
+          can_days: borrowCycle,
+          yn: isLending ? '否' : '是'
+        })
       }
     })
   },
@@ -83,23 +95,7 @@ export default {
       input_bookname: '',
       // 选择借书时间
       value_borrowtime: '',
-      tableData3: [
-        {
-          date: '2016-05-03',
-          bookname: 'C语言设计',
-          can_days: '30',
-          remainder_days: '10',
-          reader: '王江',
-          yn: true
-        },
-        {
-          date: '2016-05-03',
-          bookname: 'JAVA语言设计',
-          can_days: '30',
-          remainder_days: '10',
-          reader: '王力',
-          yn: true
-        }, ],
+      tableData3: [],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
       pagesize: 10,//每页的数据条数
@@ -131,14 +127,14 @@ export default {
       this.multipleSelection = val;
     }
   },
-  computed:{
+  computed: {
     vals() {
       /**
        * 数组过滤
        * es6
        * 得到tableData3里面yn为true的数组的长度
-       *  */ 
-      return this.tableData3.filter( x =>  x.yn ).length
+       *  */
+      return this.tableData3.filter(x => x.yn).length
     }
   }
 }
@@ -153,7 +149,7 @@ export default {
 .giveback1 {
   width: 1200px;
 }
-.giveback .table{
+.giveback .table {
   position: absolute;
   top: 160px;
   width: 1200px;

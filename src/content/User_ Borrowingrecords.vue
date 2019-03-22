@@ -33,10 +33,6 @@
             label="剩余天数（天）"
             show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="reader"
-            label="借阅人"
-            show-overflow-tooltip>
-          </el-table-column>
           <el-table-column prop="yn"
             label="是否归还"
             show-overflow-tooltip>
@@ -70,9 +66,15 @@ export default {
    * mounted模板渲染成HTML后调用
    */
   created() {
-    this.$ajax.post('/admin/getAllBook').then((res) => {
-      console.log(res)
-      for (const book of res.data.data) {
+    this.$ajax({
+      url: '/admin/getUserInfo',
+      method:'post',
+      data:{
+        _id:this.$store.state.user._id
+        }
+      }).then((res) => {
+      let borrow_list = res.data.data[0].borrow_list
+      for (const book of borrow_list) {
         /**
          * title：书名
          * borrowTime：借出时间
@@ -80,12 +82,11 @@ export default {
          * isLending：是否借出
          * returnTime:剩余时间
          */
-        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id } = book
+        let { title, borrowTime, borrowCycle, isLending, returnTime, _id } = book
         this.tableData3.push({
           date: formatTime(borrowTime),
           bookname: title,
           bookid: _id,
-          reader: borrowUser.username,
           can_days: borrowCycle,
           remainder_days: remainTime(returnTime),
           yn: isLending ? '否' : '是'

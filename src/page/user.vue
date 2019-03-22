@@ -7,22 +7,10 @@
         <li>用户组: {{isAdmin ? '管理员' : '普通用户'}}</li>
         <li>手机号码: {{phone}}</li>
         <li>账号状态: {{isBanned ? '封禁' : '正常'}}</li>
-        <li>创建日期: {{create_date}}</li>
+        <li>创建日期: {{create_at.slice(0, 10)}}</li>
       </ul>
     </div>
     <div class="borrow_list">
-      <h2 class='borrow_title'>借阅记录</h2>
-      <v-booklist v-for='book in borrow_list' :key='book._id' :title="book.title"
-            :author="book.author"
-            :booklist_img="book.cover"
-            :synopsis="book.bookInfo"></v-booklist>
-            <div class='pagination'>
-              <el-pagination 
-                layout='prev, pager, next'
-                :page-size='5'
-                :total='pages'>
-                </el-pagination>
-            </div>
       <h2 class='borrow_title' style="margin-top:10px;">借阅记录</h2>
       <div style="margin-top:30px;">
         <v-booklist v-for='book in borrow_list.slice((pageNum-1)*pagesize,pageNum*pagesize)'
@@ -40,7 +28,7 @@
           :current-page.sync="pageNum"
           :page-size="pagesize"
           layout="total, prev, pager, next, jumper"
-          :total="vals">
+          :total="borrow_list.length">
         </el-pagination>
       </div>
     </div>
@@ -50,6 +38,7 @@
 <script>
 import { formatTime, formatPath } from '../utils/formatDate'
 import vBooklist from './booklist.vue'
+import { mapState } from 'vuex'
 export default {
   components: {
     vBooklist
@@ -64,17 +53,6 @@ export default {
     create_at: String,
   },
   computed: {
-    create_date() {
-      return this.create_at.slice(0, 10)
-    },
-    vals() {
-      /**
-       * 数组过滤
-       * es6
-       * 得到borrow_list里面数组的长度
-       *  */
-      return this.borrow_list.filter(x => x).length
-    }
   },
   data() {
     return {
@@ -108,7 +86,7 @@ export default {
 <style>
 .user {
   position: relative;
-  top: 40px;
+  top: 80px;
   left: 50px;
   height: 500px;
   width: 400px;
