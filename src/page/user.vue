@@ -11,7 +11,6 @@
       </ul>
     </div>
     <div class="borrow_list">
-<<<<<<< HEAD
       <h2 class='borrow_title'>借阅记录</h2>
       <v-booklist v-for='book in borrow_list' :key='book._id' :title="book.title"
             :author="book.author"
@@ -24,7 +23,6 @@
                 :total='pages'>
                 </el-pagination>
             </div>
-=======
       <h2 class='borrow_title' style="margin-top:10px;">借阅记录</h2>
       <div style="margin-top:30px;">
         <v-booklist v-for='book in borrow_list.slice((pageNum-1)*pagesize,pageNum*pagesize)'
@@ -45,7 +43,6 @@
           :total="vals">
         </el-pagination>
       </div>
->>>>>>> 188cbf7727717345c0775d56523bb6bf293c2f80
     </div>
   </div>
 </template>
@@ -70,10 +67,6 @@ export default {
     create_date() {
       return this.create_at.slice(0, 10)
     },
-<<<<<<< HEAD
-    pages() {
-      return this.borrow_list.length
-=======
     vals() {
       /**
        * 数组过滤
@@ -81,7 +74,6 @@ export default {
        * 得到borrow_list里面数组的长度
        *  */
       return this.borrow_list.filter(x => x).length
->>>>>>> 188cbf7727717345c0775d56523bb6bf293c2f80
     }
   },
   data() {
@@ -147,15 +139,8 @@ export default {
 .borrow_title {
   margin-left: 50px;
 }
-<<<<<<< HEAD
-.pagination {
-  position: absolute;
-  left: 35%;
-  top: 430px;
-=======
 .user .page{
   margin-top: 30px;
   text-align: center;
->>>>>>> 188cbf7727717345c0775d56523bb6bf293c2f80
 }
 </style>
