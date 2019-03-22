@@ -16,6 +16,13 @@
             :author="book.author"
             :booklist_img="book.cover"
             :synopsis="book.bookInfo"></v-booklist>
+            <div class='pagination'>
+              <el-pagination 
+                layout='prev, pager, next'
+                :page-size='5'
+                :total='pages'>
+                </el-pagination>
+            </div>
     </div>
   </div>
 </template>
@@ -39,6 +46,9 @@ export default {
   computed:{
     create_date(){
       return this.create_at.slice(0, 10)
+    },
+    pages() {
+      return this.borrow_list.length
     }
   }
 }
@@ -47,7 +57,7 @@ export default {
 <style>
 .user {
   position: relative;
-  top: 80px;
+  top: 40px;
   left: 50px;
   height: 500px;
   width: 400px;
@@ -77,5 +87,10 @@ export default {
 }
 .borrow_title {
   margin-left: 50px;
+}
+.pagination {
+  position: absolute;
+  left: 35%;
+  top: 430px;
 }
 </style>
