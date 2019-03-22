@@ -109,7 +109,7 @@ export default {
                 data: user
               });
               // 跳转首页
-              this.$router.push('/homepage/Hot')
+              this.$router.push('/homepage/hot')
             } else {
               this.$message.error(res.data.msg);
             }

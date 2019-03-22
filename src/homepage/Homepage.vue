@@ -18,8 +18,7 @@
         @open="handleOpen"
         @close="handleClose">
         <router-link to="/homepage/Userborrowingrecords">
-          <el-menu-item index="1"
-            v-if="!$store.state.user.isAdmin">
+          <el-menu-item index="1">
             <i class="el-icon-location"></i>
             <span slot="title">借阅记录</span>
           </el-menu-item>

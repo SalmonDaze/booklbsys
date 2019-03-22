@@ -127,6 +127,11 @@ let router = new Router({
           path: "uploadBook",
           name: "uploadBook",
           component: () => import("./content/uploadBook.vue")
+        },
+        {
+          path: "borrowbook",
+          name: "borrowbook",
+          component: () => import("./content/Borrow_book.vue")
         }
       ]
     }

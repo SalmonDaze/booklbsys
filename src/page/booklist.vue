@@ -8,7 +8,7 @@
     <div class="mask">
       <p class="author" :title="author">{{author}}</p>
       <p class="synopsis">{{synopsis}}</p>
-      <el-button plain>去借阅</el-button>
+      <el-button plain @click="borrowbook()">去借阅</el-button>
     </div>
     <h4>{{title}}</h4>
     <h5>{{author}}</h5>
@@ -37,7 +37,12 @@ export default {
     bookCover() {
       return `http://192.168.2.73:3000/${formatPath(this.booklist_img)}`
     }
-  }
+  },
+  methods: {
+    borrowbook(){
+      this.$emit('doborrowbook','')
+    }
+  },
 }
 </script>
 
