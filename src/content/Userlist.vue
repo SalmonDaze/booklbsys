@@ -19,15 +19,25 @@
 <script>
 export default {
   created() {
-    this.$ajax.post('/admin/getUserInfo').then((res) => {
-      console.log(res)
-    });
   },
   data() {
     return {
       phoneNumber: ''
     }
   },
+  methods:{
+    getUserInfo() {
+      this.$ajax({
+        url: '/admin/getUserInfo',
+        method: 'post',
+        data: {
+          phone: this.phoneNumber
+        }
+      }).then( res => {
+        console.log(res)
+      })
+    }
+  }
 }
 </script>
 

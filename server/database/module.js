@@ -78,6 +78,10 @@ const bookSchema = new Schema({
         type: String,
         default: ''
     },
+    borrow_history: [{
+        type: Schema.Types.ObjectId,
+        ref: 'user',
+    }]
 })
 
 let Model = {

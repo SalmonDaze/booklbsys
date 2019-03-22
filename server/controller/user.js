@@ -96,7 +96,6 @@ module.exports.login = async (ctx) => {
     let anext = async () => {
         return new Promise((resolve, reject) => {
             Model.user.findOne({phone}).populate({path: 'borrow_list'}).exec((err, doc) => {
-                console.log(doc)
                 if(err) {
                     resolve({
                         success: false,
@@ -141,14 +140,28 @@ module.exports.login = async (ctx) => {
 }
 
 module.exports.getAllBook = async (ctx) => {
-    let bookList = await l_findAllBook()
-    ctx.status = 200
-    ctx.body = {
-        code: 200,
-        success: true,
-        msg: '查询成功！',
-        data: bookList
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.book.find({}).populate({path: 'borrowUser'}).exec((err, doc) => {
+                if(err) {
+                    resolve({
+                        code: 1,
+                        success: false,
+                        msg: '查询失败'
+                    })
+                }
+                resolve({
+                    code: 200,
+                    success: true,
+                    msg: '查询成功',
+                    data: doc,
+                })
+            })
+        })
     }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
 }
 
 module.exports.borrowBook = async (ctx) => {
@@ -243,7 +256,6 @@ module.exports.returnBook = async (ctx) => {
                 borrowUser: null,
             }, (err, doc) => {
                 if(err) {
-                    console.log(err)
                     resolve({
                         success: false,
                         code: 1,

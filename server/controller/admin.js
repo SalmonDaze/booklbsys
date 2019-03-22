@@ -168,7 +168,6 @@ module.exports.getAllBook = async (ctx) => {
     let anext = async () => {
         return new Promise((resolve, reject) => {
             Model.book.find({}).populate({path: 'borrowUser'}).exec((err, doc) => {
-                console.log(err, doc)
                 if (err) {
                     resolve({
                         msg: '查询失败',
@@ -186,7 +185,6 @@ module.exports.getAllBook = async (ctx) => {
         })
     }
     let result = await anext()
-    console.log(result)
     ctx.body = result
 }
 
@@ -226,7 +224,6 @@ module.exports.sevenDaysBorrow = async (ctx) => {
             for(const book of books) {
                 if( book.isLending ) {
                     let start = book.borrowTime
-                    console.log(moment().diff(start, 'days'), start)
                     if( moment().diff(start, 'days') <= 7) {
                         let doc = await getDoc(book._id)
                         bookList.push(doc)
@@ -339,6 +336,43 @@ module.exports.unReturnBookList = async (ctx) => {
                     code: 200,
                     success: true,
                     data: bookList
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.getUnlendingList = async (ctx) => {
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.book.find({}).where('isLending', false).then( doc => {
+                resolve({
+                    msg: '查询成功',
+                    success: true,
+                    code: 200,
+                    data: doc
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.getUserInfo = async (ctx) => {
+    let { _id } = ctx.request.body
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.user.find({_id}).populate({path: 'borrow_list'}).exec(( err, doc ) => {
+                resolve({
+                    msg: '查询成功',
+                    code: 200,
+                    success: true,
+                    data: doc
                 })
             })
         })

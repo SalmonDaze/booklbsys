@@ -31,4 +31,8 @@ adminRouter.post('/getDelayList', adminController.getDelayList)
 adminRouter.post('/delayingBookList', adminController.delaingBookList)
 // 获得未归还书本名单
 adminRouter.post('/unReturnBookList', adminController.unReturnBookList)
+// 获得未借出书本名单
+adminRouter.post('/getUnlendingList', adminController.getUnlendingList)
+// 查询特定用户信息
+adminRouter.post('/getUserInfo', adminController.getUserInfo)
 module.exports = adminRouter
