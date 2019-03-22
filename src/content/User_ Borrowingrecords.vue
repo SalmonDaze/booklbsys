@@ -1,8 +1,10 @@
 <template>
-  <div class="user-borrowingrecords">
-    <div class="user-borrowingrecords1">
+  <div class="userborrow">
+    <div class="userborrow1">
       <v-recordtitle title="借阅的书籍"
-        input_txt="请输入书名"></v-recordtitle>
+        input_txt="请输入书名"
+        v-on:doRenewal="do_renewal"
+        v-on:doReturn="do_return"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
@@ -20,12 +22,19 @@
           <el-table-column prop="bookname"
             label="书名">
           </el-table-column>
+          <el-table-column prop="bookid"
+            label="图书识别码">
+          </el-table-column>
           <el-table-column prop="can_days"
             label="可借天数（天）"
             show-overflow-tooltip>
           </el-table-column>
           <el-table-column prop="remainder_days"
             label="剩余天数（天）"
+            show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column prop="reader"
+            label="借阅人"
             show-overflow-tooltip>
           </el-table-column>
           <el-table-column prop="yn"
@@ -48,7 +57,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
-import { msToDate, getDate, remainTime, unixTranstoDate } from '../utils/formatDate.js'
+import { remainTime, formatTime } from '../utils/formatDate.js';
 export default {
   components: {
     vRecordtitle
@@ -61,14 +70,9 @@ export default {
    * mounted模板渲染成HTML后调用
    */
   created() {
-    this.$ajax({
-      url: '/api/getUserBorrowList',
-      method: 'post',
-      data: {
-        _id: this.$store.state.user._id
-      }
-    }).then(res => {
-      for (const book of res.data.data.borrow_list) {
+    this.$ajax.post('/admin/getAllBook').then((res) => {
+      console.log(res)
+      for (const book of res.data.data) {
         /**
          * title：书名
          * borrowTime：借出时间
@@ -76,16 +80,18 @@ export default {
          * isLending：是否借出
          * returnTime:剩余时间
          */
-        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime } = book
+        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id } = book
         this.tableData3.push({
-          date: unixTranstoDate(borrowTime).slice(0, 10),
+          date: formatTime(borrowTime),
           bookname: title,
+          bookid: _id,
+          reader: borrowUser.username,
           can_days: borrowCycle,
-          remainder_days: Math.ceil(remainTime(returnTime, getDate())),
+          remainder_days: remainTime(returnTime),
           yn: isLending ? '否' : '是'
         })
       }
-    })
+    });
   },
   data() {
     return {
@@ -93,6 +99,7 @@ export default {
       input_bookname: '',
       // 选择借书时间
       value_borrowtime: '',
+      // 表单
       tableData3: [],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
@@ -100,6 +107,31 @@ export default {
     }
   },
   methods: {
+    // 续借书籍
+    do_renewal(renewal_time) {
+      for (const gx of this.multipleSelection) {
+        this.$ajax({
+          url: '/api/bookBorrowContinue',
+          method: 'post',
+          data: {
+            time: renewal_time,
+            _id: gx.bookid
+          }
+        }).then(res => console.log(res))
+      }
+    },
+    // 还书
+    do_return() {
+      for (const gx of this.multipleSelection) {
+        this.$ajax({
+          url: '/api/returnBook',
+          method: 'post',
+          data: {
+            _id:gx.bookid,
+          }
+        }).then(res => console.log(res))
+      }
+    },
     // 分页
     handleSizeChange(val) {
       this.pagesize = val;
@@ -108,16 +140,6 @@ export default {
     handleCurrentChange(val) {
       this.pageNum = val
       console.log(`当前页: ${val}`);
-    },
-    // 勾选
-    toggleSelection(rows) {
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row);
-        });
-      } else {
-        this.$refs.multipleTable.clearSelection();
-      }
     },
     // 保存勾选数据，type必须是selection
     // 把勾选数据传到后台
@@ -138,24 +160,28 @@ export default {
 }
 </script>
 <style>
-.user-borrowingrecords {
+.userborrow {
   position: absolute;
   top: 120px;
   left: 230px;
   height: 900px;
 }
-.user-borrowingrecords1 {
-  width: 1200px;
+.userborrow1 {
+  width: 1600px;
 }
-.user-borrowingrecords .table {
+.userborrow .table {
   position: absolute;
-  top: 160px;
-  width: 1200px;
+  top: 220px;
+  width: 1500px;
 }
-.user-borrowingrecords .el-button {
+.userborrow .el-button {
   margin-left: 30px;
 }
-.user-borrowingrecords .el-pagination {
+.userborrow .el-table td,
+.userborrow .el-table th {
+  text-align: center;
+}
+.userborrow .el-pagination {
   margin-top: 10px;
   text-align: center;
 }
