@@ -8,7 +8,7 @@
     <div class="mask">
       <p class="author" :title="author">{{author}}</p>
       <p class="synopsis">{{synopsis}}</p>
-      <el-button plain @click="borrowbook()">去借阅</el-button>
+      <el-button plain @click="borrowbook()" v-if="borrow_show">去借阅</el-button>
     </div>
     <h4>{{title}}</h4>
     <h5>{{author}}</h5>
@@ -27,6 +27,10 @@ export default {
     booklist_img: String,
     // 简介
     synopsis: String,
+    borrow_show: {
+      type: Boolean,
+      default: true
+    },
   },
   data() {
     return {

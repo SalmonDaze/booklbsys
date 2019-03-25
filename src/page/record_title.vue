@@ -75,6 +75,7 @@ export default {
     };
   },
   methods: {
+    // 续借
     renewal() {
       if (this.renewal_time > 30) {
         this.renewal_time = 30
@@ -82,6 +83,7 @@ export default {
       console.log(this.renewal_time)
       this.$emit('doRenewal', this.renewal_time);
     },
+    // 归还
     returnbook() {
       this.$emit('doReturn', '');
     },

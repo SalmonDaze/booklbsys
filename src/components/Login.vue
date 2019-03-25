@@ -89,9 +89,20 @@ export default {
     login() {
       console.log(this.ruleForm2.phone, this.ruleForm2.pass)
       const reg = /^1[0-9]{10}$/;
+<<<<<<< HEAD
         if (!reg.test(this.ruleForm2.phone)||!this.ruleForm2.phone||!this.ruleForm2.pass) {
           return false
         }else{
+=======
+        if (!reg.test(this.ruleForm2.phone)) {
+          this.$message.error("请输入正确手机号");
+          return false;
+        }else if(!this.ruleForm2.phone||!this.ruleForm2.pass){
+          this.$message.error("手机号和密码不能为空！");
+          return false;
+        }
+        else{
+>>>>>>> d3e324109f2bef58caea870fd5b593ea8d5f730e
           this.$ajax({
             method: 'post',
             url: '/api/login',

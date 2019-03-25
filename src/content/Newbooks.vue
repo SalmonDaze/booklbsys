@@ -24,7 +24,7 @@ export default {
   },
   created() {
     this.$ajax({
-      url: '/api/getHotBook',
+      url: '/api/getNewBook',
       method: 'post',
     }).then(res => {
       console.log(res)
@@ -76,7 +76,7 @@ export default {
   position: absolute;
   top: 120px;
   left: 230px;
-  height: 900px;
+  height: 830px;
 }
 @media screen and (max-width: 1220px){
   .newbooks .newbooks-book{
