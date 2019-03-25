@@ -111,24 +111,55 @@ module.exports.login = async (ctx) => {
                         msg: '用户名或者密码错误'
                     })
                 }
-                doc.password = dpPwd(doc.password, SECRET)
-                if( doc.password !== password ) {
+                let tempPassword = dpPwd(doc.password, SECRET)
+                if( tempPassword !== password ) {
                     resolve({
                         success: false,
                         code: 1,
                         msg: '手机号或者密码错误！'
                     })
                 }
-                if( doc.password === password ) {
+                if( tempPassword === password ) {
                     let token = jwt.sign({phone: phone}, SECRET, {
                         expiresIn : '10d'// 授权时效24小时
                     });
+                    doc.token = token
+                    doc.save()
                     resolve({
                         code: 200,
                         success: true,
                         token: token,
                         msg: '登陆成功！',
                         user: doc
+                    })
+                }
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.loginByToken = async (ctx) => {
+    let { phone, token} = ctx.request.body
+    console.log(phone, token)
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.user.findOne({ phone }).then( (doc) => {
+                console.log(doc)
+                if( doc.token === token) {
+                    resolve({
+                        msg: '登录成功',
+                        success: true,
+                        code: 200,
+                        data: doc
+                    })
+                } else {
+                    resolve({
+                        msg: '登录失败',
+                        success: false,
+                        code: 1,
                     })
                 }
             })

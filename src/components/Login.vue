@@ -89,6 +89,7 @@ export default {
     login() {
       console.log(this.ruleForm2.phone, this.ruleForm2.pass)
       const reg = /^1[0-9]{10}$/;
+<<<<<<< HEAD
       if (!this.ruleForm2.phone || !this.ruleForm2.pass) {
         this.$message({
           showClose: true,
@@ -125,6 +126,35 @@ export default {
             this.$message.error(res.data.msg);
           }
         })
+=======
+        if (!reg.test(this.ruleForm2.phone)||!this.ruleForm2.phone||!this.ruleForm2.pass) {
+          return false
+        }else{
+          this.$ajax({
+            method: 'post',
+            url: '/api/login',
+            data: {
+              phone: this.ruleForm2.phone,
+              password: this.ruleForm2.pass
+            }
+          }).then((res) => {
+            let { success, user, token } = res.data
+            console.log(res)
+            if (success) {
+              // 更新store.js里loginAsync方法的token
+              this.$store.dispatch('loginAsync', {
+                token,
+                data: user
+              });
+              window.sessionStorage.setItem('phone', JSON.stringify(parseInt(user.phone)))
+              window.sessionStorage.setItem('token', token)
+              // 跳转首页
+              this.$router.push('/homepage/hot')
+            } else {
+              this.$message.error(res.data.msg);
+            }
+          })
+>>>>>>> bd3216d06b8475d01f6f554ccd5cd2d4914b356e
       }
     },
   }
