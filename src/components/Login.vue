@@ -89,31 +89,42 @@ export default {
     login() {
       console.log(this.ruleForm2.phone, this.ruleForm2.pass)
       const reg = /^1[0-9]{10}$/;
-        if (!reg.test(this.ruleForm2.phone)||!this.ruleForm2.phone||!this.ruleForm2.pass) {
-          return false
-        }else{
-          this.$ajax({
-            method: 'post',
-            url: '/api/login',
-            data: {
-              phone: this.ruleForm2.phone,
-              password: this.ruleForm2.pass
-            }
-          }).then((res) => {
-            let { success, user, token } = res.data
-            console.log(res)
-            if (success) {
-              // 更新store.js里loginAsync方法的token
-              this.$store.dispatch('loginAsync', {
-                token,
-                data: user
-              });
-              // 跳转首页
-              this.$router.push('/homepage/hot')
-            } else {
-              this.$message.error(res.data.msg);
-            }
-          })
+      if (!this.ruleForm2.phone || !this.ruleForm2.pass) {
+        this.$message({
+          showClose: true,
+          message: '请确认信息输入完整',
+          type: 'error'
+        });
+        return false
+      } else if (!reg.test(this.ruleForm2.phone)) {
+        this.$message({
+          showClose: true,
+          message: '请输入正确手机号',
+          type: 'error'
+        });
+      } else {
+        this.$ajax({
+          method: 'post',
+          url: '/api/login',
+          data: {
+            phone: this.ruleForm2.phone,
+            password: this.ruleForm2.pass
+          }
+        }).then((res) => {
+          let { success, user, token } = res.data
+          console.log(res)
+          if (success) {
+            // 更新store.js里loginAsync方法的token
+            this.$store.dispatch('loginAsync', {
+              token,
+              data: user
+            });
+            // 跳转首页
+            this.$router.push('/homepage/hot')
+          } else {
+            this.$message.error(res.data.msg);
+          }
+        })
       }
     },
   }

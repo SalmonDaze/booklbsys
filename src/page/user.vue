@@ -70,11 +70,6 @@ export default {
       this.pageNum = val
       console.log(`当前页: ${val}`);
     },
-    // 保存勾选数据，type必须是selection
-    // 把勾选数据传到后台
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-    }
   },
   computed: mapState({
     // 获取用户名
@@ -118,7 +113,8 @@ export default {
   margin-left: 50px;
 }
 .user .page{
-  margin-top: 30px;
-  text-align: center;
+  position: absolute;
+  top: 430px;
+  left: 280px;
 }
 </style>

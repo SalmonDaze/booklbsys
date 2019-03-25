@@ -77,10 +77,12 @@ export default {
   position: absolute;
   top: 120px;
   left: 230px;
-  height: 900px;
+  height: 830px;
 }
-.hot1 {
-  width: 1200px;
+@media screen and (max-width: 1220px){
+  .hot .hot-book{
+    width: 800px;
+  }
 }
 .hot .book {
   display: inline-block;

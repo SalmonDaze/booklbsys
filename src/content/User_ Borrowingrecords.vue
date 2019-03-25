@@ -3,6 +3,7 @@
     <div class="userborrow1">
       <v-recordtitle title="借阅的书籍"
         input_txt="请输入书名"
+        :input_bookname="input_bookname"
         v-on:doRenewal="do_renewal"
         v-on:doReturn="do_return"></v-recordtitle>
       <div class="table">
@@ -18,6 +19,10 @@
           <el-table-column label="借出日期"
             width="120">
             <template slot-scope="scope">{{ scope.row.date }}</template>
+          </el-table-column>
+          <el-table-column label="归还日期"
+            width="120">
+            <template slot-scope="scope">{{ scope.row.return_data }}</template>
           </el-table-column>
           <el-table-column prop="bookname"
             label="书名">
@@ -73,9 +78,12 @@ export default {
         _id:this.$store.state.user._id
         }
       }).then((res) => {
+        console.log(res)
       let borrow_list = res.data.data[0].borrow_list
       for (const book of borrow_list) {
         /**
+         * data：借出时间
+         * return_data：归还时间
          * title：书名
          * borrowTime：借出时间
          * borrowCycle：可借天数
@@ -85,6 +93,7 @@ export default {
         let { title, borrowTime, borrowCycle, isLending, returnTime, _id } = book
         this.tableData3.push({
           date: formatTime(borrowTime),
+          return_data:formatTime(returnTime),
           bookname: title,
           bookid: _id,
           can_days: borrowCycle,

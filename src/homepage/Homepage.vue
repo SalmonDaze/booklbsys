@@ -150,6 +150,16 @@ export default {
   height: 100px;
   width: 1900px;
 }
+@media screen and (max-width: 1220px) {
+  .homepage .header {
+    height: 100px;
+    width: 1200px;
+  }
+  .homepage .header-content {
+    height: 100px;
+    width: 1200px;
+  }
+}
 .homepage .header-content .el-button {
   width: 70px;
   height: 30px;
@@ -157,7 +167,7 @@ export default {
 }
 .homepage .navigation-bar {
   width: 200px;
-  height: 960px;
+  height: 850px;
   border-right: 1px solid #e0e0e0;
 }
 .homepage .header .title {

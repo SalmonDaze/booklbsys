@@ -132,13 +132,21 @@ export default {
     },
     registry() {
       const reg = /^1[0-9]{10}$/;
-      if (!this.ruleForm1.username || !reg.test(this.ruleForm1.phone)) {
+      if (!this.ruleForm1.username && !reg.test(this.ruleForm1.phone) && !this.ruleForm1.pass && !this.ruleForm1.checkPass) {
+        this.$message({ message: "请确认信息输入完整", type: 'warning' });
+        return false;
+      } else if (!this.ruleForm1.username || !this.ruleForm1.phone) {
         this.$message({ message: "用户名和手机号不能为空", type: 'warning' });
-        return false
+        return false;
+      } else if (!reg.test(this.ruleForm1.phone)) {
+        this.$message({ message: "请输入正确手机号", type: "warning" });
+        return false;
       } else if (!this.ruleForm1.pass || !this.ruleForm1.checkPass) {
         this.$message("请输入密码");
+        return false;
       } else if (this.ruleForm1.pass !== this.ruleForm1.checkPass) {
         this.$message.error("两次输入密码不一致");
+        return false;
       }
       else {
         this.$ajax({

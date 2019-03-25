@@ -78,8 +78,10 @@ export default {
   left: 230px;
   height: 900px;
 }
-.newbooks1 {
-  width: 1200px;
+@media screen and (max-width: 1220px){
+  .newbooks .newbooks-book{
+    width: 800px;
+  }
 }
 .newbooks .book {
   display: inline-block;

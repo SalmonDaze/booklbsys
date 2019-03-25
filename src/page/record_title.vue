@@ -5,7 +5,7 @@
       <div class="operate">
         <el-input :placeholder="input_txt"
           prefix-icon="el-icon-search"
-          v-model="input_bookname">
+          v-model="input_bookname" @keyup.enter.native="searchEnterFun">
         </el-input>
         <el-date-picker v-model="value_borrowtime"
           type="date"
@@ -36,13 +36,12 @@ export default {
     return_show: {
       type: Boolean,
       default: true
-    }
+    },
+    // 输入书名
+    input_bookname: String
   },
   data() {
-
     return {
-      // 输入书名
-      input_bookname: '',
       // 选择借书时间
       value_borrowtime: '',
       // 续借时间
@@ -83,8 +82,8 @@ export default {
       console.log(this.renewal_time)
       this.$emit('doRenewal', this.renewal_time);
     },
-    returnbook(){
-      this.$emit('doReturn','');
+    returnbook() {
+      this.$emit('doReturn', '');
     },
   },
   computed: {
@@ -117,9 +116,9 @@ export default {
   line-height: 30px;
   padding-left: 10px;
 }
-.record-title .toggleSelection{
+.record-title .toggleSelection {
   margin-top: 10px;
-  margin-left: 120px!important;
+  margin-left: 120px !important;
   padding: 10px 30px 10px 30px;
   letter-spacing: 2px;
   text-align: center;
