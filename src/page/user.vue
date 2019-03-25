@@ -12,14 +12,15 @@
     </div>
     <div class="borrow_list">
       <h2 class='borrow_title' style="margin-top:10px;">借阅记录</h2>
-      <div style="margin-top:30px;">
+      <h3 v-if='!borrow_list.length' style='margin-left: 400px;margin-top: 100px;'>无借阅记录</h3>
+      <div v-else style="margin-top:30px;">
         <v-booklist v-for='book in borrow_list.slice((pageNum-1)*pagesize,pageNum*pagesize)'
         :key='book._id'
         :title="book.title"
         :author="book.author"
         :booklist_img="book.cover"
         :synopsis="book.bookInfo"
-        borrow_list.length="borrow_list.slice((pageNum-1)*pagesize,pageNum*pagesize)"></v-booklist>
+        ></v-booklist>
       </div>
       <!-- 分页 -->
       <div class="page">
@@ -28,7 +29,7 @@
           :current-page.sync="pageNum"
           :page-size="pagesize"
           layout="total, prev, pager, next, jumper"
-          :total="borrow_list.length">
+          :total="length">
         </el-pagination>
       </div>
     </div>
@@ -51,6 +52,7 @@ export default {
     borrow_list: Array,
     UID: Number,
     create_at: String,
+    length: Number
   },
   computed: {
   },

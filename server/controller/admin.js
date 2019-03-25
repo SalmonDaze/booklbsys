@@ -363,11 +363,11 @@ module.exports.getUnlendingList = async (ctx) => {
     ctx.body = result
 }
 
-module.exports.getUserInfo = async (ctx) => {
-    let { _id } = ctx.request.body
+module.exports.getOneUserInfo = async (ctx) => {
+    let { phone } = ctx.request.body
     let anext = async () => {
         return new Promise((resolve, reject) => {
-            Model.user.find({_id}).populate({path: 'borrow_list'}).exec(( err, doc ) => {
+            Model.user.find({phone}).populate({path: 'borrow_list'}).exec(( err, doc ) => {
                 resolve({
                     msg: '查询成功',
                     code: 200,

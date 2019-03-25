@@ -10,7 +10,6 @@ import "element-ui/lib/theme-chalk/index.css";
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.interceptors.response.use((response) => {
-  console.log(response)
   if( response.data.code === 40001) {
     router.push({
       path: '/'

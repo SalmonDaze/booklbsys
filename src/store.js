@@ -24,6 +24,8 @@ export default new Vuex.Store({
     logout: (state) => {
       localStorage.removeItem("token");
       state.token = null;
+      window.sessionStorage.removeItem('token')
+      window.sessionStorage.removeItem('phone')
     },
     loginByToken: (state, payload) => {
       axios.defaults.headers.post['accessToken'] = payload.token;

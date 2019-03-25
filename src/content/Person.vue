@@ -1,8 +1,8 @@
 <template>
   <div class="person">
     <div class="person1">
-      <v-user :username="user.username" :phone="user.phone" :isAdmin='user.isAdmin'
-      :isBanned='user.isBanned' :UID='user.UID' :create_at='user.create_at' :borrow_list='user.borrow_list'></v-user>
+      <v-user v-if='user' :username="user.username" :phone="user.phone" :isAdmin='user.isAdmin'
+      :isBanned='user.isBanned' :UID='user.UID' :create_at='user.create_at' :borrow_list='user.borrow_list' :length='user.borrow_list.length'></v-user>
     </div>
   </div>
 </template>
@@ -14,20 +14,33 @@ export default {
   components: {
     vUser
   },
-  created() {
-    console.log(this.user)
-  },
-  data () {
+  data() {
     return {
+      user: ''
     }
   },
-  mounted () {
+  mounted() {
+    this.$nextTick(() => {
+      this.getDate()
+    })
     
   },
-  computed: mapState({
-    // 获取用户名
-    user: state => state.user,
-  })
+  computed: {
+  },
+  methods: {
+    getDate() {
+      this.$ajax({
+        url: '/admin/getOneUserInfo',
+        method: 'post',
+        data: {
+          phone: this.$store.state.user.phone
+        }
+      }).then( res => {
+        this.user = res.data.data[0]
+        console.log(this.user.borrow_list.length)
+      })
+    }
+  }
 }
 </script>
 
