@@ -80,27 +80,40 @@ export default {
     }).then((res) => {
       console.log("用户借阅")
       console.log(res)
-      let borrow_list = res.data.data[0].borrow_list
-      for (const book of borrow_list) {
+      let borrow_history = res.data.data[0].borrow_history
+      for (const book of borrow_history) {
         /**
          * data：借出时间
          * return_data：归还时间
          * title：书名
          * borrowTime：借出时间
          * borrowCycle：可借天数
-         * isLending：是否借出
+         * isReturn：是否借出
          * returnTime:剩余时间
          */
-        let { title, borrowTime, borrowCycle, isLending, returnTime, _id } = book
-        this.tableData3.push({
-          date: formatTime(borrowTime),
-          return_data: formatTime(returnTime),
-          bookname: title,
-          bookid: _id,
-          can_days: borrowCycle,
-          remainder_days: remainTime(returnTime),
-          yn: isLending ? '否' : '是'
-        })
+        let { title, borrowCycle, _id } = book.book;
+        let { borrowTime, returnTime, isReturn } = book;
+        if (isReturn) {
+          this.tableData3.push({
+            date: formatTime(borrowTime),
+            return_data: formatTime(returnTime),
+            bookname: title,
+            bookid: _id,
+            can_days: borrowCycle,
+            remainder_days: '已归还',
+            yn: isReturn ? '是' : '否'
+          })
+        } else {
+          this.tableData3.push({
+            date: formatTime(borrowTime),
+            return_data: formatTime(returnTime),
+            bookname: title,
+            bookid: _id,
+            can_days: borrowCycle,
+            remainder_days: remainTime(returnTime),
+            yn: isReturn ? '是' : '否'
+          })
+        }
       }
     });
   },
@@ -118,8 +131,17 @@ export default {
   methods: {
     // 搜索书籍
     do_searchbook(input_bookname) {
-      console.log("1231")
-      console.log(this.input_bookname)
+      for (const book of this.tableData3) {
+        var _this = this;
+        var NewItems = [];
+        this.tableData3.map(function (item) {
+          if (item.bookname.search(input_bookname) != -1) {
+            NewItems.push(item);
+          }
+          console.log(item.name)
+        });
+        return NewItems;
+      }
     },
     // 续借书籍
     do_renewal(renewal_time) {
@@ -142,6 +164,7 @@ export default {
           method: 'post',
           data: {
             _id: gx.bookid,
+            _userId: this.$store.state.user._id
           }
         }).then(res => console.log(res))
       }

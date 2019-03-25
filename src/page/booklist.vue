@@ -6,11 +6,14 @@
         class='book_cover' />
     </div>
     <div class="mask">
-      <p class="author" :title="author">{{author}}</p>
+      <p class="author"
+        :title="author">{{author}}</p>
       <p class="synopsis">{{synopsis}}</p>
-      <el-button plain @click="borrowbook()" v-if="borrow_show">去借阅</el-button>
+      <el-button plain
+        @click="borrowbook()"
+        v-if="borrow_show">去借阅</el-button>
     </div>
-    <h4>{{title}}</h4>
+    <h4 :title="title">{{title}}</h4>
     <h5>{{author}}</h5>
   </div>
 </template>
@@ -37,14 +40,14 @@ export default {
 
     }
   },
-  computed:{
+  computed: {
     bookCover() {
       return `http://192.168.2.73:3000/${formatPath(this.booklist_img)}`
     }
   },
   methods: {
-    borrowbook(){
-      this.$emit('doborrowbook','')
+    borrowbook() {
+      this.$emit('doborrowbook', '')
     }
   },
 }
@@ -169,6 +172,10 @@ export default {
   bottom: 230px;
   text-align: center;
   cursor: pointer;
+  /* 超出部分省略号 */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .booklist h5 {
   position: relative;

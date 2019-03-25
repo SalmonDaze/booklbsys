@@ -104,6 +104,12 @@
               <span slot="title">书籍上架</span>
             </el-menu-item>
           </router-link>
+          <router-link :to="{path:'/homepage/check'}">
+            <el-menu-item index="8">
+              <i class="el-icon-edit"></i>
+              <span slot="title">借阅审核</span>
+            </el-menu-item>
+          </router-link>
         </el-submenu>
       </el-menu>
     </div>

@@ -76,7 +76,8 @@ export default {
   },
   methods: {
     // 书名查询
-    searchEnterFun(input_bookname){
+    searchEnterFun(){
+      console.log(this.input_bookname)
       this.$emit('doSearchbook',this.input_bookname);
     },
     // 续借
