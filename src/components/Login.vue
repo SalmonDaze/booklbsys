@@ -108,6 +108,8 @@ export default {
                 token,
                 data: user
               });
+              window.sessionStorage.setItem('phone', JSON.stringify(parseInt(user.phone)))
+              window.sessionStorage.setItem('token', token)
               // 跳转首页
               this.$router.push('/homepage/hot')
             } else {

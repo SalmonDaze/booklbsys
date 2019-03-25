@@ -19,13 +19,6 @@ import axios from "axios";
 
 Vue.use(Router);
 
-// 异步操作
-// localStorage持久化本地储存
-// localStorage.getItem(key) 获取指定key本地存储的值
-if (localStorage.getItem("token")) {
-  store.dispatch("loginAsync", localStorage.getItem("token"));
-}
-
 let router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
@@ -138,14 +131,21 @@ let router = new Router({
   ]
 });
 
+
+
 // 导航守卫
 // 使用 router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-
-    if (!store.state.token) {
+    if( window.sessionStorage.getItem('token') && !store.state.token ) {
+      store.dispatch('loginByToken', {
+        phone: window.sessionStorage.getItem('phone'),
+        token: window.sessionStorage.getItem('token')
+      })
+    }
+    if (!window.sessionStorage.getItem('token')) {
       next({
         path: "/"
       });

@@ -32,7 +32,7 @@ app.use(bodyParser())
 
 // 路由拦截判定token有效限
 app.use( async (ctx, next) => {
-    const authUrl = ['/api/login', '/api/register']
+    const authUrl = ['/api/login', '/api/register', '/api/loginByToken']
     let token = ctx.header.accesstoken
     let url = authUrl.find( url => url === ctx.url)
     if( url ) {
@@ -42,7 +42,7 @@ app.use( async (ctx, next) => {
             jwt.verify(token, config.SECRET, async (err, decoded) => {
                 if( err ) {
                     resolve({
-                        code: 1,
+                        code: 40001,
                         msg: 'token已失效'
                     })
                 }else {

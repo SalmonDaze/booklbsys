@@ -105,7 +105,6 @@
             </el-menu-item>
           </router-link>
         </el-submenu>
-        </el-submenu>
       </el-menu>
     </div>
     <router-view>
