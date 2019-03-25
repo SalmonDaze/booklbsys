@@ -24,7 +24,7 @@ export default {
   },
   created() {
     this.$ajax({
-      url: '/api/getHotBook',
+      url: '/api/getAllBook',
       method: 'post',
     }).then(res => {
       console.log(res)
