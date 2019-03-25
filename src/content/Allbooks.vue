@@ -101,18 +101,14 @@ export default {
   left: 230px;
   height: 830px;
 }
-@media screen and (max-width: 1220px) {
-  .allbooks .allbooks-book {
-    width: 800px;
-  }
-}
 .allbooks .book {
   display: inline-block;
 }
 .allbooks .allbooks-book {
+  width: 1500px;
   margin-top: 20px;
 }
-.allbooks .page{
+.allbooks .page {
   position: absolute;
   top: 680px;
   left: 500px;
