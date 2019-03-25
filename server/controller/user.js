@@ -207,23 +207,13 @@ module.exports.borrowBook = async (ctx) => {
                     msg: '操作失败'
                 })
             }
-            Model.book.updateOne({ _id }, {
-                isLending: true, 
-                borrowTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-                borrowUser: _userId, 
-                returnTime: moment().add(borrowCycle, 'days').format('YYYY-MM-DD HH:mm:ss'),
-                $inc : {borrowCount: 1}
-            }, (err, doc) => {
-                if(err) {
-                    resolve({
-                        code: 1,
-                        success: false,
-                        msg: '操作失败'
-                    })
-                }
-                
+            Model.book.findOne({ _id }).then( bookdoc => {
+                bookdoc.isLending = true
+                bookdoc.borrowTime = moment().format('YYYY-MM-DD HH:mm:ss')
+                bookdoc.borrowUser = _userId,
+                bookdoc.returnTime = moment().add(borrowCycle, 'days').format('YYYY-MM-DD HH:mm:ss')
+                bookdoc.borrowCount += 1
                 Model.user.findOne({ phone }).then( doc => {
-                    
                     let isBorrowed = doc.borrow_list.some( (_vid) => {
                         return String(_vid) === String(_id)
                     })
@@ -233,9 +223,19 @@ module.exports.borrowBook = async (ctx) => {
                             success: false,
                             msg: '不能重复借同本书！'
                         })
+                        return
                     }
                     doc.borrow_list.push(_id)
+                    doc.borrow_history.push({
+                        book: bookdoc._id,
+                        borrowTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                    })
+                    bookdoc.borrow_history.push({
+                        borrowUser: doc._id,
+                        borrowTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                    })
                     doc.save()
+                    bookdoc.save()
                 }).then(() => {
                     resolve({
                         code: 200,
@@ -277,22 +277,30 @@ module.exports.bookBorrowContinue = async (ctx) => {
 }
 
 module.exports.returnBook = async (ctx) => {
-    let { _id } = ctx.request.body
+    let { _id, _userId } = ctx.request.body
     let anext = async () => {
         return new Promise ( (resolve, reject ) => {
-            Model.book.updateOne({ _id }, {
-                isLending: false,
-                borrowTime: '',
-                returnTime: '',
-                borrowUser: null,
-            }, (err, doc) => {
-                if(err) {
-                    resolve({
-                        success: false,
-                        code: 1,
-                        msg: '操作失败'
-                    })
+            Model.book.findOne({ _id }).then( doc => {
+                let borrowTime = doc.borrowTime
+                doc.isLending = false
+                doc.borrowTime = ''
+                doc.returnTime = ''
+                doc.borrowUser = null
+                for( const item of doc.borrow_history) {
+                    if( item.borrowTime === borrowTime ) {
+                        item.returnTime = moment().format('YYYY-MM-DD HH:mm:ss')
+                    }
                 }
+                Model.user.findOne({ _id: _userId}).then( user => {
+                    user.borrow_list.splice(user.borrow_list.indexOf( _id ), 1)
+                    for(const item of user.borrow_history) {
+                        if ( item.borrowTime === borrowTime ) {
+                            item.returnTime = moment().format('YYYY-MM-DD HH:mm:ss')
+                        }
+                    }
+                    user.save()
+                })
+                doc.save()
                 resolve({
                     success: true,
                     code: 200,

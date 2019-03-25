@@ -30,6 +30,20 @@ const userSchema = new Schema({
     borrow_list: [{
         type: Schema.Types.ObjectId,
         ref: 'book',
+    }],
+    borrow_history: [{
+        book: {
+            type: Schema.Types.ObjectId,
+            ref: 'user',
+        },
+        borrowTime: {
+            type: String,
+            default: ''
+        },
+        returnTime: {
+            type: String,
+            default: ''
+        }
     }]
 })
 
@@ -80,8 +94,18 @@ const bookSchema = new Schema({
         default: ''
     },
     borrow_history: [{
-        type: Schema.Types.ObjectId,
-        ref: 'user',
+        borrowUser: {
+            type: Schema.Types.ObjectId,
+            ref: 'user',
+        },
+        borrowTime: {
+            type: String,
+            default: ''
+        },
+        returnTime: {
+            type: String,
+            default: ''
+        }
     }]
 })
 
