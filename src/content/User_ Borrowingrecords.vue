@@ -3,7 +3,7 @@
     <div class="userborrow1">
       <v-recordtitle title="借阅的书籍"
         input_txt="请输入书名"
-        :input_bookname="input_bookname"
+        v-on:doSearchbook="do_searchbook"
         v-on:doRenewal="do_renewal"
         v-on:doReturn="do_return"></v-recordtitle>
       <div class="table">
@@ -72,13 +72,14 @@ export default {
    */
   created() {
     this.$ajax({
-      url: '/admin/getUserInfo',
-      method:'post',
-      data:{
-        _id:this.$store.state.user._id
-        }
-      }).then((res) => {
-        console.log(res)
+      url: '/admin/getOneUserInfo',
+      method: 'post',
+      data: {
+        phone: this.$store.state.user.phone
+      }
+    }).then((res) => {
+      console.log("用户借阅")
+      console.log(res)
       let borrow_list = res.data.data[0].borrow_list
       for (const book of borrow_list) {
         /**
@@ -93,7 +94,7 @@ export default {
         let { title, borrowTime, borrowCycle, isLending, returnTime, _id } = book
         this.tableData3.push({
           date: formatTime(borrowTime),
-          return_data:formatTime(returnTime),
+          return_data: formatTime(returnTime),
           bookname: title,
           bookid: _id,
           can_days: borrowCycle,
@@ -105,8 +106,6 @@ export default {
   },
   data() {
     return {
-      // 输入书名
-      input_bookname: '',
       // 选择借书时间
       value_borrowtime: '',
       // 表单
@@ -117,6 +116,11 @@ export default {
     }
   },
   methods: {
+    // 搜索书籍
+    do_searchbook(input_bookname) {
+      console.log("1231")
+      console.log(this.input_bookname)
+    },
     // 续借书籍
     do_renewal(renewal_time) {
       for (const gx of this.multipleSelection) {
@@ -137,7 +141,7 @@ export default {
           url: '/api/returnBook',
           method: 'post',
           data: {
-            _id:gx.bookid,
+            _id: gx.bookid,
           }
         }).then(res => console.log(res))
       }
