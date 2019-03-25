@@ -20,7 +20,8 @@
         :author="book.author"
         :booklist_img="book.cover"
         :synopsis="book.bookInfo"
-        ></v-booklist>
+        :borrow_show="false"
+        borrow_list.length="borrow_list.slice((pageNum-1)*pagesize,pageNum*pagesize)"></v-booklist>
       </div>
       <!-- 分页 -->
       <div class="page">

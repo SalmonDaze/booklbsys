@@ -37,11 +37,11 @@ export default {
       type: Boolean,
       default: true
     },
-    // 输入书名
-    input_bookname: String
   },
   data() {
     return {
+      // 书名查询
+      input_bookname:'',
       // 选择借书时间
       value_borrowtime: '',
       // 续借时间
@@ -75,6 +75,10 @@ export default {
     };
   },
   methods: {
+    // 书名查询
+    searchEnterFun(input_bookname){
+      this.$emit('doSearchbook',this.input_bookname);
+    },
     // 续借
     renewal() {
       if (this.renewal_time > 30) {
