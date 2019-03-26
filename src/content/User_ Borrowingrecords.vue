@@ -79,8 +79,6 @@ export default {
         phone: this.$store.state.user.phone
       }
     }).then((res) => {
-      console.log("用户借阅")
-      console.log(res)
       let borrow_history = res.data.data[0].borrow_history
       for (const book of borrow_history) {
         /**
@@ -117,7 +115,7 @@ export default {
         }
       }
     });
-    this.tableData1 = this.tableData
+    this.tableData1 = this.tableData;
   },
   data() {
     return {
@@ -152,12 +150,13 @@ export default {
     },
     // 搜索日期
     do_searchtime(value_borrowtime) {
-      var date_value = calendarTime(value_borrowtime);
       var NewItemtimes = [];
+      console.log(value_borrowtime)
       if (!value_borrowtime) {
         this.$message.warning("请输入要查询的借出日期");
         return false;
       } else {
+        var date_value = calendarTime(value_borrowtime);
         NewItemtimes = this.tableData.filter(function (item1) {
           return item1.date === date_value
         });

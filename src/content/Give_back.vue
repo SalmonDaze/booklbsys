@@ -3,7 +3,10 @@
     <div class="giveback1">
       <v-recordtitle title="已归还书籍"
         :return_show="false"
-        input_txt="请输入书名"></v-recordtitle>
+        input_txt="请输入书名"
+        v-on:doSearchbook="do_searchbook"
+        v-on:doSearchtime="do_searchtime"
+        v-on:doRenewal="do_renewal"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
@@ -77,7 +80,7 @@ export default {
          * returnTime:剩余时间
          */
         console.log(book)
-        let { title,_id, create_time, borrowUser, borrowCycle, borrowCount, isLending } = book
+        let { title, _id, create_time, borrowUser, borrowCycle, borrowCount, isLending } = book
         this.tableData3.push({
           date: formatTime(create_time),
           bookname: title,
