@@ -455,7 +455,7 @@ module.exports.getOneBookInfo = async (ctx) => {
     let { _id } = ctx.request.body
     let anext = async () => {
         return new Promise((resolve, reject) => {
-            Model.book.findOne({_id}).then( doc => {
+            Model.book.findOne({_id}).populate('borrow_history.borrowUser').exec( (err, doc) => {
                 resolve({
                     msg: '查询成功',
                     code: 200,

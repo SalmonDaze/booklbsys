@@ -268,7 +268,7 @@ module.exports.getDelayList = async (ctx) => {
                 let bookList = new Array()
                 for( const book of doc ) {
                     if( book.isLending ) {
-                        if( moment().diff(book.returnTime, 'days') >= 0){
+                        if( moment().diff(book.returnTime, 'seconds') >= 0 ){
                             bookList.push(book)
                         }
                     }
@@ -292,10 +292,9 @@ module.exports.delaingBookList = async (ctx) => {
         return new Promise((resolve, reject) => {
             Model.book.find({}).populate({path:'borrowUser'}).exec( (err, doc) => {
                 let bookList = new Array()
-                for(const book of doc ){
-                   
+                for(const book of doc ){               
                     if( book.isLending ) {
-                        if(moment(book.returnTime).diff(moment(), 'days') <= 7) {
+                        if(moment(book.returnTime).diff(moment(), 'days') <= 7 && moment().diff(book.returnTime, 'seconds') <= 0) {
                             bookList.push(book)
                         }
                     }

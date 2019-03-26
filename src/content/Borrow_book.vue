@@ -3,6 +3,7 @@
     <div class="borrowbook1">
       <div style="height:200px;">
         <p class="borrowcycle">可借阅周期：<a>{{bookInfo.borrowCycle}}</a></p>
+        <p class="borrowcycle" :style="{color: bookInfo.isLending? 'red':'black'}">{{bookInfo.isLending ? '该书已被借出' : '未借出'}}</p>
         <div class="book-cover">
           <img class='book_cover'
             :src="bookCover" />
@@ -18,7 +19,34 @@
             :disabled="borrowbook">申请借阅</el-button>
           <el-button type="primary"
             :disabled="returnbook">归还</el-button>
+          <el-button type="info"
+          :disabled="returnbook" @click='show_history = true'>借阅历史</el-button>
         </div>
+      </div>
+    </div>
+    <div class="shade" v-show='show_history' @click='show_history = false'></div>
+    <div class="book_history" v-show='show_history'>
+      <div class='history_top'>
+        <h3 class='history_title'>借阅历史</h3>
+        <span class='close_history' @click='show_history = false'>X</span>
+      </div>
+      <div class="history_container">
+        <table class='history_item'>
+            <thead>
+              <tr>
+                <th>借阅日期</th>
+                <th>归还日期</th>
+                <th>借阅人</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for='item in bookInfo.borrow_history' :key='item._id'>
+                <td width='38%'>{{item.borrowTime}}</td>
+                <td width='49%'>{{item.returnTime}}</td>
+                <td width='30%'>{{item.borrowUser.username}}</td>
+              </tr>
+            </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -31,6 +59,7 @@ export default {
     return {
       // false可用，true禁用
       bookInfo: {},
+      show_history: false,
       borrowbook: false,
       returnbook: false,
       img: ''
@@ -50,7 +79,13 @@ export default {
           _id: this.$router.currentRoute.params.bookid,
           _userId: this.$store.state.user._id
         }
-      }).then( res => console.log(res))
+      }).then( res => {
+        if (res.data.success) {
+          this.$message.success(res.data.msg)
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      })
     }
   },
   created() {
@@ -60,7 +95,10 @@ export default {
       data: {
         _id: this.$router.currentRoute.params.bookid
       }
-    }).then( res => this.bookInfo = res.data.data)
+    }).then( res => {
+      console.log(res)
+      this.bookInfo = res.data.data
+    })
   }
 }
 </script>
@@ -130,5 +168,50 @@ export default {
 }
 .borrowbook .el-button + .el-button {
   margin-left: 50px;
+}
+.book_history{
+  width: 600px;
+  min-height: 400px;
+  background: white;
+  position: absolute;
+  left: 300px;
+  top: 50px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  text-align: center;
+  z-index: 10;
+}
+.history_top {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+.history_title {
+  display: inline;
+  text-align: center;
+  padding-top: 10px;
+}
+.close_history {
+  float: right;
+  margin-right: 10px;
+  margin-top: 0px;
+  font-size: 1.2rem;
+}
+.close_history:hover {
+  cursor: pointer;
+}
+.history_item {
+  margin-left: 20px;
+}
+.history_item th {
+  margin-left: 50px;
+}
+.shade{
+  background: rgba(0, 0 ,0, 0.8);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9;
 }
 </style>
