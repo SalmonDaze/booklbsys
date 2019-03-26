@@ -135,7 +135,7 @@ export default {
     do_searchbook(input_bookname) {
       var NewItems = [];
       if (!input_bookname) {
-        this.$message.error("请输入要查询的书名");
+        this.$message.warning("请输入要查询的书名");
         return false;
       } else {
         this.tableData.map(function (item) {
@@ -151,34 +151,51 @@ export default {
     },
     // 续借书籍
     do_renewal(renewal_time) {
-      for (const gx of this.multipleSelection) {
-        if (gx.yn === "是") {
-          this.$message.error("请借阅后再操作！");
+      if (renewal_time) {
+        if (!Number.isInteger(renewal_time)) {
+          this.$message.error("输入框只能输入1-30的数字！");
           return false;
         } else {
-          this.$ajax({
-            url: '/api/bookBorrowContinue',
-            method: 'post',
-            data: {
-              time: renewal_time,
-              _id: gx.bookid
+          for (const gx of this.multipleSelection) {
+            if (gx.yn === "是") {
+              this.$message.error("请借阅后再操作！");
+              return false;
+            } else {
+              this.$ajax({
+                url: '/api/bookBorrowContinue',
+                method: 'post',
+                data: {
+                  time: renewal_time,
+                  _id: gx.bookid
+                }
+              }).then(res => console.log(res))
+              this.$message.error("续借成功！");
             }
-          }).then(res => console.log(res))
-          this.$message.error("续借成功！");
+          }
         }
+      } else if (this.multipleSelection.length === 0) {
+        this.$message.error("请勾选需要续借的书籍！");
+        return false;
+      } else {
+        this.$message.warning("请输入续借时间！");
+        return false;
       }
     },
     // 还书
     do_return() {
       for (const gx of this.multipleSelection) {
-        this.$ajax({
-          url: '/api/returnBook',
-          method: 'post',
-          data: {
-            _id: gx.bookid,
-            _userId: this.$store.state.user._id
-          }
-        }).then(res => console.log(res))
+        if (gx.yn === "是") {
+          this.$message.warning("书籍已归还，请勿重复操作！");
+        } else {
+          this.$ajax({
+            url: '/api/returnBook',
+            method: 'post',
+            data: {
+              _id: gx.bookid,
+              _userId: this.$store.state.user._id
+            }
+          }).then(res => console.log(res))
+        }
       }
     },
     // 分页
