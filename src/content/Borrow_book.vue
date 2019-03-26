@@ -16,9 +16,7 @@
         <div class="operate">
           <el-button type="primary"
             plain @click='applyBorrow'
-            :disabled="borrowbook">申请借阅</el-button>
-          <el-button type="primary"
-            :disabled="returnbook">归还</el-button>
+            :disabled="bookInfo.isLending">申请借阅</el-button>
           <el-button type="info"
           :disabled="returnbook" @click='show_history = true'>借阅历史</el-button>
         </div>
@@ -67,7 +65,10 @@ export default {
   },
   computed: {
     bookCover() {
-      return `http://192.168.2.73:3000/${formatPath(this.bookInfo.cover)}`
+      if(this.bookInfo.cover){
+        return `http://192.168.2.73:3000/${formatPath(this.bookInfo.cover)}`
+      }
+      
     }
   },
   methods:{

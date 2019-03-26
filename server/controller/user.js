@@ -469,3 +469,32 @@ module.exports.getOneBookInfo = async (ctx) => {
     ctx.status = 200
     ctx.body = result
 }
+
+module.exports.cancelApply = async (ctx) => {
+    let { _id } = ctx.request.body
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.tempList.findOne({ _id }).then( tempdoc => {
+                Model.user.findOne({ _id: tempdoc.borrowUser}).then( userdoc => {
+                    for(const index in userdoc.apply_borrow_list) {
+                        console.log(String(userdoc.apply_borrow_list[index].apply_item) == String(_id))
+                        if(String(userdoc.apply_borrow_list[index].apply_item) == String(_id)){
+                            console.log(index)
+                            userdoc.apply_borrow_list.splice(index, 1)
+                        }
+                    }
+                    userdoc.save()
+                    tempdoc.remove().exec()
+                })
+            })
+            resolve({
+                msg: '删除成功',
+                success: true,
+                code: 200
+            })
+        })
+    }
+    let result = await anext()
+    ctx.statsu = 200
+    ctx.body = result
+}
