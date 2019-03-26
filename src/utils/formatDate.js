@@ -29,3 +29,12 @@ export function formatPath(path) {
 export function formatTime(time) {
   return time.split('').slice(0, time.indexOf(' ')).join('')
 }
+
+// 选择日历日期格式化
+export function calendarTime(date) {
+  const i = '00';
+  var datamonth = i + (date.getMonth() + 1);
+  var dataday = i + (date.getDate());
+  // datamonth.slice(datamonth.length - 2)选取月份最后两位例如3月，不截取就是003
+  return date.getFullYear() + '-' + datamonth.slice(datamonth.length - 2) + '-' + dataday.slice(dataday.length - 2);
+}

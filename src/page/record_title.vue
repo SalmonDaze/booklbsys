@@ -10,10 +10,11 @@
         </el-input>
         <el-date-picker v-model="value_borrowtime"
           type="date"
-          placeholder="请选择借书时间">
+          placeholder="请选择借出日期">
         </el-date-picker>
         <el-button type="primary"
-          plain>查询</el-button>
+          plain
+          @click="seek()">查询</el-button>
       </div>
       <div style="margin-top: 20px;margin-left:20px;">
         <el-input v-model="renewal_time"
@@ -29,7 +30,7 @@
   </div>
 </template>
 <script>
-import moment from 'moment'
+import { calendarTime } from '../utils/formatDate.js';
 export default {
   props: {
     title: String,
@@ -81,12 +82,14 @@ export default {
       console.log(this.input_bookname)
       this.$emit('doSearchbook', this.input_bookname);
     },
+    // 时间查询
+    seek() {
+      this.$emit('doSearchtime',this.value_borrowtime);
+    },
     // 续借
     renewal() {
       if (this.renewal_time > 30) {
         this.renewal_time = 30;
-      } else if (this.renewal_time < 1) {
-        this.renewal_time = 1;
       }
       console.log(this.renewal_time)
       this.$emit('doRenewal', this.renewal_time);
@@ -96,8 +99,6 @@ export default {
       this.$emit('doReturn', '');
     },
   },
-  computed: {
-  }
 }
 </script>
 <style>
