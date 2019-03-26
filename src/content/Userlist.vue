@@ -6,12 +6,22 @@
         <el-input v-model="phoneNumber"
           prefix-icon="el-icon-search"
           placeholder="请输入用户手机号"></el-input>
-          <el-button type="primary"
-            plain @click='getUserInfo'>查询</el-button>
+        <el-button type="primary"
+          plain
+          @click='getUserInfo'>查询</el-button>
+        <h3 v-if='!user'
+          style='margin-left: 400px;margin-top: 100px;'>暂无数据</h3>
       </div>
     </div>
-    <v-user v-if='user'  :username="user.username" :phone="user.phone" :isAdmin='user.isAdmin'
-      :isBanned='user.isBanned' :UID='user.UID' :create_at='user.create_at' :borrow_list='user.borrow_list' :length='user.borrow_list.length'></v-user>
+    <v-user v-if='user'
+      :username="user.username"
+      :phone="user.phone"
+      :isAdmin='user.isAdmin'
+      :isBanned='user.isBanned'
+      :UID='user.UID'
+      :create_at='user.create_at'
+      :borrow_list='user.borrow_list'
+      :length='user.borrow_list.length'></v-user>
 
   </div>
 </template>
@@ -28,7 +38,7 @@ export default {
       user: '',
     }
   },
-  methods:{
+  methods: {
     getUserInfo() {
       this.$ajax({
         url: '/admin/getOneUserInfo',
@@ -36,7 +46,7 @@ export default {
         data: {
           phone: this.phoneNumber
         }
-      }).then( res => {
+      }).then(res => {
         this.user = res.data.data[0]
       })
     }

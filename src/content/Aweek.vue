@@ -3,12 +3,14 @@
     <div class="aweek1">
       <v-recordtitle title="7天内借阅的书籍"
         input_txt="请输入书名"
+        v-on:doSearchbook="do_searchbook"
+        v-on:doSearchtime="do_searchtime"
         v-on:doRenewal="do_renewal"
         v-on:doReturn="do_return"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
-          :data="tableData3.slice((pageNum-1)*pagesize,pageNum*pagesize)"
+          :data="tableData1.slice((pageNum-1)*pagesize,pageNum*pagesize)"
           tooltip-effect="dark"
           style="width: 100%"
           @selection-change="handleSelectionChange">
@@ -57,7 +59,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
-import { remainTime, formatTime } from '../utils/formatDate.js';
+import { remainTime, formatTime, calendarTime } from '../utils/formatDate.js';
 export default {
   components: {
     vRecordtitle
@@ -80,8 +82,8 @@ export default {
          * isLending：是否借出
          * returnTime:剩余时间
          */
-        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id } = book
-        this.tableData3.push({
+        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id,username } = book
+        this.tableData.push({
           date: formatTime(borrowTime),
           bookname: title,
           bookid: _id,
@@ -92,6 +94,7 @@ export default {
         })
       }
     });
+    this.tableData1 = this.tableData;
   },
   data() {
     return {
@@ -100,36 +103,107 @@ export default {
       // 选择借书时间
       value_borrowtime: '',
       // 表单
-      tableData3: [],
+      tableData: [],
+      tableData1:[],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
       pagesize: 10,//每页的数据条数
     }
   },
   methods: {
+    // 搜索书名
+    do_searchbook(input_bookname) {
+      var NewItems = [];
+      if (!input_bookname) {
+        this.$message.warning("请输入要查询的书名");
+        return false;
+      } else {
+        this.tableData.map(function (item) {
+          // 数组里的书名和输入框书名一致
+          if (item.bookname === input_bookname) {
+            NewItems.push(item);
+          } else {
+            return false;
+          }
+        });
+        return this.tableData1 = NewItems;
+      }
+    },
+    // 搜索日期
+    do_searchtime(value_borrowtime) {
+      var NewItemtimes = [];
+      console.log(value_borrowtime)
+      if (!value_borrowtime) {
+        this.$message.warning("请输入要查询的借出日期");
+        return false;
+      } else {
+        var date_value = calendarTime(value_borrowtime);
+        NewItemtimes = this.tableData.filter(function (item1) {
+          return item1.date === date_value
+        });
+        return this.tableData1 = NewItemtimes;
+      }
+    },
     // 续借书籍
     do_renewal(renewal_time) {
-      for (const gx of this.multipleSelection) {
-        this.$ajax({
-          url: '/api/bookBorrowContinue',
-          method: 'post',
-          data: {
-            time: renewal_time,
-            _id: gx.bookid
+      // 将勾选内容的长度赋值在select，判断是否勾选书籍
+      var select = this.multipleSelection.length;
+      // 校验输入是否是数字
+      let reg = /^[1-9]\d*$/
+      if (renewal_time) {
+        if (!reg.test(renewal_time)) {
+          this.$message.error("输入框只能输入1-30的数字！");
+          return false;
+        } else {
+          if (select === 0) {
+            this.$message.error("请勾选需要续借的书籍！");
+            return false;
+          } else {
+            for (const gx of this.multipleSelection) {
+              if (gx.yn === "是") {
+                this.$message.error("请借阅后再操作！");
+                return false;
+              } else {
+                this.$ajax({
+                  url: '/api/bookBorrowContinue',
+                  method: 'post',
+                  data: {
+                    time: renewal_time,
+                    _id: gx.bookid
+                  }
+                }).then(res => console.log(res))
+                this.$message.success("续借成功！");
+              }
+            }
           }
-        }).then(res => console.log(res))
+        }
+      } else {
+        this.$message.warning("请输入续借时间！");
+        return false;
       }
     },
     // 还书
     do_return() {
-      for (const gx of this.multipleSelection) {
-        this.$ajax({
-          url: '/api/returnBook',
-          method: 'post',
-          data: {
-            _id:gx.bookid,
+      // 将勾选内容的长度赋值在select，判断是否勾选书籍
+      var select = this.multipleSelection.length;
+      if (select === 0) {
+        this.$message.error("请勾选需要归还的书籍！");
+        return false;
+      } else {
+        for (const gx of this.multipleSelection) {
+          if (gx.yn === "是") {
+            this.$message.warning("书籍已归还，请勿重复操作！");
+          } else {
+            this.$ajax({
+              url: '/api/returnBook',
+              method: 'post',
+              data: {
+                _id: gx.bookid,
+                _userId: this.$store.state.user._id
+              }
+            }).then(res => console.log(res))
           }
-        }).then(res => console.log(res))
+        }
       }
     },
     // 分页
@@ -152,9 +226,9 @@ export default {
       /**
        * 数组过滤
        * es6
-       * 得到tableData3里面yn为true的数组的长度
+       * 得到tableData1里面yn为true的数组的长度
        *  */
-      return this.tableData3.filter(x => x).length
+      return this.tableData1.filter(x => x).length
     }
   }
 }

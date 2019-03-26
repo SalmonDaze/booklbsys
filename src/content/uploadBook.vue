@@ -1,6 +1,8 @@
  <template>
   <div class='upload_container'>
-    <div class='title'>
+    <h3>书籍上架</h3>
+    <div class="table">
+      <div class='title'>
       <span>书名：</span>
       <el-input v-model="title"
         placeholder="请输入书名"
@@ -31,6 +33,7 @@
     <el-button type="primary"
       @click='uploadBook'
       class="unload">上传</el-button>
+    </div>
   </div>
 </template>
  <script>
@@ -125,8 +128,12 @@ export default {
   width: 800px;
   height: 600px;
   position: absolute;
-  top: 180px;
-  left: 260px;
+  top: 120px;
+  left: 230px;
+}
+.upload_container .table{
+  margin-top: 80px;
+  margin-left: 20px;
 }
 .input_box {
   float: right;
