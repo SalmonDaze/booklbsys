@@ -2,8 +2,9 @@
   <div class="userborrow">
     <div class="userborrow1">
       <v-recordtitle title="借阅的书籍"
-        input_txt="请输入书名"
+        input_txt="请输入书名，回车"
         v-on:doSearchbook="do_searchbook"
+        v-on:doSearchtime="do_searchtime"
         v-on:doRenewal="do_renewal"
         v-on:doReturn="do_return"></v-recordtitle>
       <div class="table">
@@ -58,7 +59,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
-import { remainTime, formatTime } from '../utils/formatDate.js';
+import { remainTime, formatTime, calendarTime } from '../utils/formatDate.js';
 export default {
   components: {
     vRecordtitle
@@ -131,7 +132,7 @@ export default {
     }
   },
   methods: {
-    // 搜索书籍
+    // 搜索书名
     do_searchbook(input_bookname) {
       var NewItems = [];
       if (!input_bookname) {
@@ -149,33 +150,53 @@ export default {
         return this.tableData1 = NewItems;
       }
     },
+    // 搜索日期
+    do_searchtime(value_borrowtime) {
+      var date_value = calendarTime(value_borrowtime);
+      var NewItemtimes = [];
+      if (!value_borrowtime) {
+        this.$message.warning("请输入要查询的借出日期");
+        return false;
+      } else {
+        NewItemtimes = this.tableData.filter(function (item1) {
+          return item1.date === date_value
+        });
+        return this.tableData1 = NewItemtimes;
+      }
+    },
     // 续借书籍
     do_renewal(renewal_time) {
+      // 将勾选内容的长度赋值在select，判断是否勾选书籍
+      var select = this.multipleSelection.length;
+      // 校验输入是否是数字
+      let reg = /^[1-9]\d*$/
       if (renewal_time) {
-        if (!Number.isInteger(renewal_time)) {
+        if (!reg.test(renewal_time)) {
           this.$message.error("输入框只能输入1-30的数字！");
           return false;
         } else {
-          for (const gx of this.multipleSelection) {
-            if (gx.yn === "是") {
-              this.$message.error("请借阅后再操作！");
-              return false;
-            } else {
-              this.$ajax({
-                url: '/api/bookBorrowContinue',
-                method: 'post',
-                data: {
-                  time: renewal_time,
-                  _id: gx.bookid
-                }
-              }).then(res => console.log(res))
-              this.$message.error("续借成功！");
+          if (select === 0) {
+            this.$message.error("请勾选需要续借的书籍！");
+            return false;
+          } else {
+            for (const gx of this.multipleSelection) {
+              if (gx.yn === "是") {
+                this.$message.error("请借阅后再操作！");
+                return false;
+              } else {
+                this.$ajax({
+                  url: '/api/bookBorrowContinue',
+                  method: 'post',
+                  data: {
+                    time: renewal_time,
+                    _id: gx.bookid
+                  }
+                }).then(res => console.log(res))
+                this.$message.error("续借成功！");
+              }
             }
           }
         }
-      } else if (this.multipleSelection.length === 0) {
-        this.$message.error("请勾选需要续借的书籍！");
-        return false;
       } else {
         this.$message.warning("请输入续借时间！");
         return false;
@@ -183,18 +204,25 @@ export default {
     },
     // 还书
     do_return() {
-      for (const gx of this.multipleSelection) {
-        if (gx.yn === "是") {
-          this.$message.warning("书籍已归还，请勿重复操作！");
-        } else {
-          this.$ajax({
-            url: '/api/returnBook',
-            method: 'post',
-            data: {
-              _id: gx.bookid,
-              _userId: this.$store.state.user._id
-            }
-          }).then(res => console.log(res))
+      // 将勾选内容的长度赋值在select，判断是否勾选书籍
+      var select = this.multipleSelection.length;
+      if (select === 0) {
+        this.$message.error("请勾选需要归还的书籍！");
+        return false;
+      } else {
+        for (const gx of this.multipleSelection) {
+          if (gx.yn === "是") {
+            this.$message.warning("书籍已归还，请勿重复操作！");
+          } else {
+            this.$ajax({
+              url: '/api/returnBook',
+              method: 'post',
+              data: {
+                _id: gx.bookid,
+                _userId: this.$store.state.user._id
+              }
+            }).then(res => console.log(res))
+          }
         }
       }
     },
