@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const defaultAvatar = require('../config/default').defaultAvatar
 const moment = require('moment')
 
 mongoose.connect('mongodb://localhost:27017/bookSystem', {useNewUrlParser:true})

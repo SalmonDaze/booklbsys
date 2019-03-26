@@ -10,6 +10,7 @@
             :author="book.author"
             :booklist_img="book.cover"
             :synopsis="book.bookInfo"
+            :bookid='book._id'
             v-on:doborrowbook="do_borrowbook(book)"></v-booklist>
         </li>
       </ul>
@@ -36,14 +37,15 @@ export default {
          * cover：图片
          * bookInfo：简介
          */
-        let { author, title, cover, bookInfo, borrowCycle } = book
+        let { author, title, cover, bookInfo, borrowCycle, _id } = book
         // 图片路径
         this.books.push({
           author: author,
           title: title,
           cover: cover,
           bookInfo: bookInfo,
-          borrowCycle: borrowCycle
+          borrowCycle: borrowCycle,
+          _id: _id
         })
       }
     })

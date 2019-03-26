@@ -9,7 +9,7 @@
             width="180">
             <template slot-scope="scope">
               <i class="el-icon-time"></i>
-              <span style="margin-left: 10px">{{ scope.row.date }}</span>
+              <span style="margin-left: 10px">{{ scope.row.applyTime }}</span>
             </template>
           </el-table-column>
           <el-table-column label="姓名"
@@ -21,7 +21,7 @@
                 <p>书籍: {{ scope.row.bookname }}</p>
                 <div slot="reference"
                   class="name-wrapper">
-                  <el-tag size="medium">{{ scope.row.name }}</el-tag>
+                  <el-tag size="medium">{{ scope.row.borrowUser.username }}</el-tag>
                 </div>
               </el-popover>
             </template>
@@ -29,13 +29,13 @@
           <el-table-column label="书名"
             width="180">
             <template slot-scope="scope">
-              <span style="margin-left: 10px">{{ scope.row.bookname }}</span>
+              <span style="margin-left: 10px">{{ scope.row.borrowBook.title }}</span>
             </template>
           </el-table-column>
           <el-table-column label="图书识别码"
             width="280">
             <template slot-scope="scope">
-              <span style="margin-left: 10px">{{ scope.row.bookid }}</span>
+              <span style="margin-left: 10px">{{ scope.row.borrowBook._id }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作">
@@ -58,33 +58,44 @@
 export default {
   data() {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        bookname: '华胥引',
-        bookid:'12323243545232435365765'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        bookname: '桃妆'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        bookname: '鬼吹灯'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        bookname: '福尔摩斯探案集'
-      }]
+      tableData: []
     }
   },
   methods: {
     handleEdit(index, row) {
-      console.log(index, row);
+      this.$ajax({
+        url: '/admin/applySuccess',
+        method: 'post',
+        data: {
+          _id: row._id
+        }
+      }).then( res => {
+        console.log(res)
+      })
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      this.$ajax({
+        url: '/admin/applyFail',
+        method: 'post',
+        data: {
+          _id: row._id
+        }
+      }).then( res => {
+        console.log(res)
+      })
+    },
+    getData() {
+      this.$ajax({
+        url: '/admin/getApplyList',
+        method: 'post'
+      }).then(res => {
+        this.tableData = res.data.data;
+        console.log(this.tableData)
+      })
     }
+  },
+  created() {
+    this.getData()
   }
 }
 </script>

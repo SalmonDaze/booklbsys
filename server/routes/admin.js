@@ -39,4 +39,6 @@ adminRouter.post('/getOneUserInfo', adminController.getOneUserInfo)
 adminRouter.post('/applySuccess', adminController.applySuccess)
 // 拒绝申请借阅
 adminRouter.post('/applyFail', adminController.applyFail)
+// 获得申请借阅列表
+adminRouter.post('/getApplyList', adminController.getApplyList)
 module.exports = adminRouter

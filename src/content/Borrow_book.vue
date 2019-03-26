@@ -2,20 +2,20 @@
   <div class="borrowbook">
     <div class="borrowbook1">
       <div style="height:200px;">
-        <p class="borrowcycle">可借阅周期：<a>{{this.$route.query.borrowCycle}}</a></p>
+        <p class="borrowcycle">可借阅周期：<a>{{bookInfo.borrowCycle}}</a></p>
         <div class="book-cover">
           <img class='book_cover'
             :src="bookCover" />
         </div>
         <div class="borrowbook-content">
-          <h1>{{this.$route.query.title}}</h1>
-          <p>作者：{{this.$route.query.author}}</p>
-          <p class="synopsis">{{this.$route.query.bookInfo}}</p>
+          <h1>{{bookInfo.title}}</h1>
+          <p>作者：{{bookInfo.author}}</p>
+          <p class="synopsis">{{bookInfo.bookInfo}}</p>
         </div>
         <div class="operate">
           <el-button type="primary"
-            plain
-            :disabled="borrowbook">借阅</el-button>
+            plain @click='applyBorrow'
+            :disabled="borrowbook">申请借阅</el-button>
           <el-button type="primary"
             :disabled="returnbook">归还</el-button>
         </div>
@@ -30,16 +30,38 @@ export default {
   data() {
     return {
       // false可用，true禁用
+      bookInfo: {},
       borrowbook: false,
       returnbook: false,
-      img: this.$route.query.cover
+      img: ''
     }
   },
   computed: {
     bookCover() {
-      return `http://192.168.2.73:3000/${formatPath(this.img)}`
+      return `http://192.168.2.73:3000/${formatPath(this.bookInfo.cover)}`
     }
   },
+  methods:{
+    applyBorrow() {
+      this.$ajax({
+        url: '/api/applyBorrowBook',
+        method: 'post',
+        data: {
+          _id: this.$router.currentRoute.params.bookid,
+          _userId: this.$store.state.user._id
+        }
+      }).then( res => console.log(res))
+    }
+  },
+  created() {
+    this.$ajax({
+      url: '/api/getOneBookInfo',
+      method: 'post',
+      data: {
+        _id: this.$router.currentRoute.params.bookid
+      }
+    }).then( res => this.bookInfo = res.data.data)
+  }
 }
 </script>
 

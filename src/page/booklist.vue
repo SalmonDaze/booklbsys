@@ -9,9 +9,11 @@
       <p class="author"
         :title="author">{{author}}</p>
       <p class="synopsis">{{synopsis}}</p>
-      <el-button plain
-        @click="borrowbook()"
+      <router-link :to="{name: 'borrowbook', params: {bookid: bookid}}">
+        <el-button plain
         v-if="borrow_show">去借阅</el-button>
+      </router-link>
+      
     </div>
     <h4 :title="title">{{title}}</h4>
     <h5>{{author}}</h5>
@@ -30,6 +32,7 @@ export default {
     booklist_img: String,
     // 简介
     synopsis: String,
+    bookid: String,
     borrow_show: {
       type: Boolean,
       default: true

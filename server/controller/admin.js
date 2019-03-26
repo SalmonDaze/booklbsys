@@ -1,11 +1,4 @@
 const Model = require('../database/module')
-const jwt = require('jsonwebtoken')
-const SECRET = require('../config/default').SECRET
-const crypto = require('crypto')
-const path = require('path')
-const fs = require('fs')
-const upload = require('../utils/upload')
-const multer = require('koa-multer')
 const moment = require('moment')
 
 const l_findAllUser = async () => {
@@ -457,6 +450,24 @@ module.exports.applyFail = async (ctx) => {
                 msg: '拒绝成功',
                 success: true,
                 code: 200
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.getApplyList = async (ctx) => {
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.tempList.find({}).populate('borrowBook borrowUser').then( doc => {
+                resolve({
+                    msg: '查询成功',
+                    code: 200,
+                    success: true,
+                    data: doc
+                })
             })
         })
     }

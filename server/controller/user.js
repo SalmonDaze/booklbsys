@@ -271,6 +271,17 @@ module.exports.applyBorrowBook = async ( ctx ) => {
                         })
                         return
                     }
+                    Model.book.findOne({ _id }).then( bookdoc => {
+                        console.log(bookdoc)
+                        if( bookdoc.isLending ) {
+                            resolve({
+                                msg: '该书已被借阅',
+                                success: false,
+                                code: 1,
+                            })
+                            return
+                        }
+                    })
                     Model.tempList.create({
                         borrowBook: _id,
                         borrowUser: _userId,
@@ -438,5 +449,23 @@ module.exports.getUserBorrowList = async (ctx) => {
     let result = await anext()
     ctx.status = 200
     ctx.body = result
-    
+}
+
+module.exports.getOneBookInfo = async (ctx) => {
+    let { _id } = ctx.request.body
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.book.findOne({_id}).then( doc => {
+                resolve({
+                    msg: '查询成功',
+                    code: 200,
+                    data: doc,
+                    success: true
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
 }

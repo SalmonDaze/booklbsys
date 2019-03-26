@@ -25,4 +25,6 @@ childRouter.post('/getNewBook', userController.getNewBook)
 childRouter.post('/getUserBorrowList', userController.getUserBorrowList)
 // 申请借书
 childRouter.post('/applyBorrowBook', userController.applyBorrowBook)
+// 查询某本书信息
+childRouter.post('/getOneBookInfo', userController.getOneBookInfo)
 module.exports = childRouter
