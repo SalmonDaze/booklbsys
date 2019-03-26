@@ -35,4 +35,6 @@ adminRouter.post('/unReturnBookList', adminController.unReturnBookList)
 adminRouter.post('/getUnlendingList', adminController.getUnlendingList)
 // 查询特定用户信息
 adminRouter.post('/getOneUserInfo', adminController.getOneUserInfo)
+// 同意申请借阅
+adminRouter.post('/applySuccess', adminController.applySuccess)
 module.exports = adminRouter

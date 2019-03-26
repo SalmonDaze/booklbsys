@@ -27,6 +27,21 @@ const userSchema = new Schema({
         type: String,
         default: 'defaultAvatar'
     },
+    apply_borrow_list: [{
+        apply_item: {
+            type: Schema.Types.ObjectId,
+            ref: 'tempList'
+        },
+        apply_book: {
+            type: Schema.Types.ObjectId,
+            ref: 'book'
+        },
+        status: {
+            type: String,
+            default: 'applying'
+        }
+        
+    }],
     borrow_list: [{
         type: Schema.Types.ObjectId,
         ref: 'book',
@@ -34,7 +49,7 @@ const userSchema = new Schema({
     borrow_history: [{
         book: {
             type: Schema.Types.ObjectId,
-            ref: 'user',
+            ref: 'book',
         },
         borrowTime: {
             type: String,
@@ -43,6 +58,10 @@ const userSchema = new Schema({
         returnTime: {
             type: String,
             default: ''
+        },
+        isReturn: {
+            type: Boolean,
+            default: false
         }
     }]
 })
@@ -105,12 +124,34 @@ const bookSchema = new Schema({
         returnTime: {
             type: String,
             default: ''
+        },
+        isReturn: {
+            type: Boolean,
+            default: false
         }
     }]
 })
 
+const tempList = new Schema({
+    borrowUser: {
+        type: Schema.Types.ObjectId,
+        ref: 'user',
+        required: true
+    },
+    applyTime: {
+        type: String,
+        default: ''
+    },
+    borrowBook: {
+        type: Schema.Types.ObjectId,
+        ref: 'book',
+        required: true,
+    }
+})
+
 let Model = {
     user: mongoose.model('user', userSchema),
-    book: mongoose.model('book', bookSchema)
+    book: mongoose.model('book', bookSchema),
+    tempList: mongoose.model('tempList', tempList)
 }
 module.exports = Model

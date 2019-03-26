@@ -228,11 +228,15 @@ module.exports.borrowBook = async (ctx) => {
                     doc.borrow_list.push(_id)
                     doc.borrow_history.push({
                         book: bookdoc._id,
-                        borrowTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                        borrowTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        returnTime: moment().add(borrowCycle, 'days').format('YYYY-MM-DD HH:mm:ss'),
+                        isReturn: false,
                     })
                     bookdoc.borrow_history.push({
                         borrowUser: doc._id,
-                        borrowTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                        borrowTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        returnTime: moment().add(borrowCycle, 'days').format('YYYY-MM-DD HH:mm:ss'),
+                        isReturn: false
                     })
                     doc.save()
                     bookdoc.save()
@@ -246,6 +250,47 @@ module.exports.borrowBook = async (ctx) => {
             })
         })
     }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.applyBorrowBook = async ( ctx ) => {
+    let { _id, _userId } = ctx.request.body
+    let anext = async () => {
+        return new Promise( (resolve, reject) => {
+                Model.user.findOne({_id: _userId}).then( doc => {
+                    let isApplying = doc.apply_borrow_list.some( ( book ) => {
+                        return ( String(book.apply_book) === String(_id) && book.status === 'applying' )
+                    })
+                    if( isApplying ) {
+                        resolve({
+                            code: 1,
+                            msg: '不可重复申请',
+                            success: false
+                        })
+                        return
+                    }
+                    Model.tempList.create({
+                        borrowBook: _id,
+                        borrowUser: _userId,
+                        applyTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                    }).then( applydoc => {
+                        doc.apply_borrow_list.push({
+                            apply_item: applydoc._id,
+                            apply_book: _id
+                        })
+                        doc.save()
+                        resolve({
+                            code: 200,
+                            msg: '申请成功',
+                            success: true,
+                        })
+                    })
+                })    
+            })
+    }
+
     let result = await anext()
     ctx.status = 200
     ctx.body = result
@@ -289,6 +334,7 @@ module.exports.returnBook = async (ctx) => {
                 for( const item of doc.borrow_history) {
                     if( item.borrowTime === borrowTime ) {
                         item.returnTime = moment().format('YYYY-MM-DD HH:mm:ss')
+                        item.isReturn = true
                     }
                 }
                 Model.user.findOne({ _id: _userId}).then( user => {
@@ -296,6 +342,7 @@ module.exports.returnBook = async (ctx) => {
                     for(const item of user.borrow_history) {
                         if ( item.borrowTime === borrowTime ) {
                             item.returnTime = moment().format('YYYY-MM-DD HH:mm:ss')
+                            item.isReturn = true
                         }
                     }
                     user.save()
