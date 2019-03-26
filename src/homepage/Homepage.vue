@@ -54,6 +54,12 @@
             <span slot="title">个人信息</span>
           </el-menu-item>
         </router-link>
+        <router-link to="/homepage/userapply">
+          <el-menu-item index="10">
+            <i class="el-icon-loading"></i>
+            <span slot="title">我的申请</span>
+          </el-menu-item>
+        </router-link>
         <!-- 管理员 -->
         <el-submenu index="7"
           v-if="$store.state.user.isAdmin">

@@ -105,7 +105,7 @@ export default {
   position: absolute;
   top: 120px;
   left: 230px;
-  height: 900px;
+  height: 830px;
 }
 .check1 {
   width: 1600px;

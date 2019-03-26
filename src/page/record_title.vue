@@ -18,11 +18,11 @@
       </div>
       <div style="margin-top: 20px;margin-left:20px;">
         <el-input v-model="renewal_time"
-          placeholder="请输入续借天数"></el-input>
-        <el-button @click="renewal()">续借</el-button>
+          placeholder="请输入续借天数" v-if="renewal_show"></el-input>
+        <el-button @click="renewal()" v-if="renewal_show">续借</el-button>
         <el-button @click="returnbook()"
           v-if="return_show">归还</el-button>
-        <p>
+        <p v-if="renewal_show">
           <a>*请输入数字1-30</a>
         </p>
       </div>
@@ -39,6 +39,10 @@ export default {
       type: Boolean,
       default: true
     },
+    renewal_show: {
+      type: Boolean,
+      default:true
+    }
   },
   data() {
     return {

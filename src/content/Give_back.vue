@@ -3,14 +3,14 @@
     <div class="giveback1">
       <v-recordtitle title="已归还书籍"
         :return_show="false"
+        :renewal_show="false"
         input_txt="请输入书名"
         v-on:doSearchbook="do_searchbook"
-        v-on:doSearchtime="do_searchtime"
-        v-on:doRenewal="do_renewal"></v-recordtitle>
+        v-on:doSearchtime="do_searchtime"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
-          :data="tableData3.slice((pageNum-1)*pagesize,pageNum*pagesize)"
+          :data="tableData1.slice((pageNum-1)*pagesize,pageNum*pagesize)"
           tooltip-effect="dark"
           style="width: 100%"
           @selection-change="handleSelectionChange">
@@ -34,10 +34,6 @@
             label="借阅次数（天）"
             show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="reader"
-            label="借阅人"
-            show-overflow-tooltip>
-          </el-table-column>
           <el-table-column prop="yn"
             label="是否归还"
             show-overflow-tooltip>
@@ -58,7 +54,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
-import { formatTime } from '../utils/formatDate.js';
+import { remainTime, formatTime, calendarTime } from '../utils/formatDate.js';
 export default {
   components: {
     vRecordtitle
@@ -80,8 +76,8 @@ export default {
          * returnTime:剩余时间
          */
         console.log(book)
-        let { title, _id, create_time, borrowUser, borrowCycle, borrowCount, isLending } = book
-        this.tableData3.push({
+        let { title,_id, create_time, borrowUser, borrowCycle, borrowCount, isLending } = book
+        this.tableData.push({
           date: formatTime(create_time),
           bookname: title,
           bookid: _id,
@@ -90,7 +86,8 @@ export default {
           yn: isLending ? '否' : '是'
         })
       }
-    })
+    });
+    this.tableData1 = this.tableData;
   },
   data() {
     return {
@@ -98,13 +95,47 @@ export default {
       input_bookname: '',
       // 选择借书时间
       value_borrowtime: '',
-      tableData3: [],
+      tableData: [],
+      tableData1:[],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
       pagesize: 10,//每页的数据条数
     }
   },
   methods: {
+    // 搜索书名
+    do_searchbook(input_bookname) {
+      var NewItems = [];
+      if (!input_bookname) {
+        this.$message.warning("请输入要查询的书名");
+        return false;
+      } else {
+        this.tableData.map(function (item) {
+          // 数组里的书名和输入框书名一致
+          if (item.bookname === input_bookname) {
+            NewItems.push(item);
+          } else {
+            return false;
+          }
+        });
+        return this.tableData1 = NewItems;
+      }
+    },
+    // 搜索日期
+    do_searchtime(value_borrowtime) {
+      var NewItemtimes = [];
+      console.log(value_borrowtime)
+      if (!value_borrowtime) {
+        this.$message.warning("请输入要查询的借出日期");
+        return false;
+      } else {
+        var date_value = calendarTime(value_borrowtime);
+        NewItemtimes = this.tableData.filter(function (item1) {
+          return item1.date === date_value
+        });
+        return this.tableData1 = NewItemtimes;
+      }
+    },
     // 分页
     handleSizeChange(val) {
       this.pagesize = val;
@@ -137,7 +168,7 @@ export default {
        * es6
        * 得到tableData3里面yn为true的数组的长度
        *  */
-      return this.tableData3.filter(x => x.yn).length
+      return this.tableData1.filter(x => x).length
     }
   }
 }
@@ -147,7 +178,7 @@ export default {
   position: absolute;
   top: 120px;
   left: 230px;
-  height: 900px;
+  height: 830px;
 }
 .giveback1 {
   width: 1200px;
@@ -155,13 +186,14 @@ export default {
 .giveback .table {
   position: absolute;
   top: 160px;
-  width: 1200px;
-}
-.giveback .el-button {
-  margin-left: 30px;
+  width: 1500px;
 }
 .giveback .el-pagination {
   margin-top: 10px;
+  text-align: center;
+}
+.giveback .el-table td,
+.giveback .el-table th {
   text-align: center;
 }
 </style>
