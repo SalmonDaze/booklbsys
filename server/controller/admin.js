@@ -438,11 +438,29 @@ module.exports.applySuccess = async (ctx) => {
     ctx.body = result
 }
 
-module.exports.applyFail = async () => {
+module.exports.applyFail = async (ctx) => {
     let { _id } = ctx.request.body
     let anext = async () => {
         return new Promise((resolve, reject) => {
-            Model.tempList.findOne({})
+            Model.tempList.findOne({ _id }).then( tempdoc => {
+                Model.user.findOne({ _id: tempdoc.borrowUser}).then( userdoc => {
+                    for( const item of userdoc.apply_borrow_list ) {
+                        if( String(tempdoc._id) == String(item.apply_item)) {
+                            item.status = 'fail'
+                        }
+                    }
+                    userdoc.save()
+                })
+            })
+            Model.tempList.findOne({ _id }).remove().exec()
+            resolve({
+                msg: '拒绝成功',
+                success: true,
+                code: 200
+            })
         })
     }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
 }
