@@ -108,7 +108,7 @@ export default {
   position: absolute;
   top: 160px;
   left: 280px;
-  height: 900px;
+  height: 830px;
 }
 .borrowbook1 {
   width: 1200px;

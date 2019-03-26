@@ -59,7 +59,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
-import { remainTime, formatTime } from '../utils/formatDate.js';
+import { remainTime, formatTime, calendarTime } from '../utils/formatDate.js';
 export default {
   components: {
     vRecordtitle
@@ -238,7 +238,7 @@ export default {
   position: absolute;
   top: 120px;
   left: 230px;
-  height: 900px;
+  height: 830px;
 }
 .abouttoexpire1 {
   width: 1600px;
@@ -247,9 +247,6 @@ export default {
   position: absolute;
   top: 220px;
   width: 1500px;
-}
-.abouttoexpire .el-button {
-  margin-left: 30px;
 }
 .abouttoexpire .el-table td,
 .abouttoexpire .el-table th {

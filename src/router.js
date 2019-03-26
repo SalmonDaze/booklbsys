@@ -117,6 +117,11 @@ let router = new Router({
           component: () => import("./content/Person.vue")
         },
         {
+          path: "userapply",
+          name: "userapply",
+          component: () => import("./content/User_apply.vue")
+        },
+        {
           path: "uploadBook",
           name: "uploadBook",
           component: () => import("./content/uploadBook.vue")
@@ -136,21 +141,19 @@ let router = new Router({
   ]
 });
 
-
-
 // 导航守卫
 // 使用 router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    if( window.sessionStorage.getItem('token') && !store.state.token ) {
-      store.dispatch('loginByToken', {
-        phone: window.sessionStorage.getItem('phone'),
-        token: window.sessionStorage.getItem('token')
-      })
+    if (window.sessionStorage.getItem("token") && !store.state.token) {
+      store.dispatch("loginByToken", {
+        phone: window.sessionStorage.getItem("phone"),
+        token: window.sessionStorage.getItem("token")
+      });
     }
-    if (!window.sessionStorage.getItem('token')) {
+    if (!window.sessionStorage.getItem("token")) {
       next({
         path: "/"
       });
