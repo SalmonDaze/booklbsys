@@ -45,21 +45,7 @@ let router = new Router({
       meta: { requiresAuth: true },
       children: [
         {
-          path: "aweek",
-          name: "aweek",
-          component: Aweek
-        },
-        {
-          path: "abouttoexpire",
-          name: "abouttoexpire",
-          component: Abouttoexpire
-        },
-        {
-          path: "giveback",
-          name: "giveback",
-          component: Giveback
-        },
-        {
+          // 用户借阅
           path: "userborrowingrecords",
           name: "userborrowingrecords",
           component: Userborrowingrecords
@@ -68,16 +54,6 @@ let router = new Router({
           path: "hot",
           name: "hot",
           component: Hot
-        },
-        {
-          path: "ungiveback",
-          name: "ungiveback",
-          component: Ungiveback
-        },
-        {
-          path: "blacklist",
-          name: "blacklist",
-          component: Blacklist
         },
         {
           path: "newbooks",
@@ -90,49 +66,87 @@ let router = new Router({
           component: () => import("./content/Allbooks.vue")
         },
         {
-          path: "setup",
-          name: "setup",
-          component: Setup
-        },
-        {
           // 用户书籍管理
           path: "usersetup",
           name: "usersetup",
           component: Usersetup
         },
         {
-          path: "userlist",
-          name: "userlist",
-          component: () => import("./content/Userlist.vue"),
-          children: [
-            {
-              path: "user",
-              name: "user",
-              component: () => import("./page/user.vue")
-            }
-          ]
-        },
-        {
+          // 用户个人信息
           path: "person",
           name: "person",
           component: () => import("./content/Person.vue")
         },
         {
+          // 我的申请
           path: "userapply",
           name: "userapply",
           component: () => import("./content/User_apply.vue")
         },
+        // 管理员
         {
-          path: "uploadBook",
-          name: "uploadBook",
-          component: () => import("./content/uploadBook.vue")
+          path: "admin",
+          name: "admin",
+          component:()=>import("./content/Admin.vue"),
+          children: [
+            {
+              // 七天
+              path: "aweek",
+              name: "aweek",
+              component: Aweek
+            },
+            {
+              // 即将到期
+              path: "abouttoexpire",
+              name: "abouttoexpire",
+              component: Abouttoexpire
+            },
+            {
+              // 已归还
+              path: "giveback",
+              name: "giveback",
+              component: Giveback
+            },
+            {
+              // 未归还
+              path: "ungiveback",
+              name: "ungiveback",
+              component: Ungiveback
+            },
+            {
+              // 逾期
+              path: "blacklist",
+              name: "blacklist",
+              component: Blacklist
+            },
+            {
+              // 用户信息管理
+              path: "userlist",
+              name: "userlist",
+              component: () => import("./content/Userlist.vue"),
+            },
+            {
+              // 书籍管理
+              path: "setup",
+              name: "setup",
+              component: Setup
+            },
+            {
+              // 书籍上架
+              path: "uploadBook",
+              name: "uploadBook",
+              component: () => import("./content/uploadBook.vue")
+            },
+            {
+              // 借阅审核
+              path: "check",
+              name: "check",
+              component: () => import("./content/Check.vue")
+            },
+          ]
         },
         {
-          path: "check",
-          name: "check",
-          component: () => import("./content/Check.vue")
-        },
-        {
+          // 书籍详情页
           path: "borrowbook/:bookid",
           name: "borrowbook",
           component: () => import("./content/Borrow_book.vue")

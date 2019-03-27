@@ -61,62 +61,62 @@
           </el-menu-item>
         </router-link>
         <!-- 管理员 -->
-        <el-submenu index="7"
-          v-if="$store.state.user.isAdmin">
-          <template slot="title">
-            <i class="el-icon-location"></i>
-            <span>管理员</span>
-          </template>
-          <el-submenu index="8">
+          <el-submenu index="7"
+            v-if="$store.state.user.isAdmin">
             <template slot="title">
-              <i class="el-icon-document"></i>
-              <span>借阅记录</span>
+              <i class="el-icon-location"></i>
+              <span>管理员</span>
             </template>
-            <router-link to="/homepage/aweek">
-              <el-menu-item index="1-1">7天内</el-menu-item>
-            </router-link>
-            <router-link to="/homepage/abouttoexpire">
-              <el-menu-item index="1-2">即将到期</el-menu-item>
-            </router-link>
-            <router-link to="/homepage/giveback">
-              <el-menu-item index="1-3">已归还</el-menu-item>
-            </router-link>
-            <el-submenu index="1-4">
-              <template slot="title">未归还书籍</template>
-              <router-link to="/homepage/ungiveback">
-                <el-menu-item index="1-4-1">未归还</el-menu-item>
+            <el-submenu index="8">
+              <template slot="title">
+                <i class="el-icon-document"></i>
+                <span>借阅记录</span>
+              </template>
+              <router-link to="/homepage/admin/aweek">
+                <el-menu-item index="1-1">7天内</el-menu-item>
               </router-link>
-              <router-link to="/homepage/blacklist">
-                <el-menu-item index="1-4-2">逾期</el-menu-item>
+              <router-link to="/homepage/admin/abouttoexpire">
+                <el-menu-item index="1-2">即将到期</el-menu-item>
               </router-link>
+              <router-link to="/homepage/admin/giveback">
+                <el-menu-item index="1-3">已归还</el-menu-item>
+              </router-link>
+              <el-submenu index="1-4">
+                <template slot="title">未归还书籍</template>
+                <router-link to="/homepage/admin/ungiveback">
+                  <el-menu-item index="1-4-1">未归还</el-menu-item>
+                </router-link>
+                <router-link to="/homepage/admin/blacklist">
+                  <el-menu-item index="1-4-2">逾期</el-menu-item>
+                </router-link>
+              </el-submenu>
             </el-submenu>
+            <router-link to="/homepage/admin/userlist">
+              <el-menu-item index="5">
+                <i class="el-icon-view"></i>
+                <span slot="title">用户信息（admin）</span>
+              </el-menu-item>
+            </router-link>
+            <router-link to="/homepage/admin/setup">
+              <el-menu-item index="4"
+                v-if="$store.state.user.isAdmin">
+                <i class="el-icon-setting"></i>
+                <span slot="title">书籍管理（admin）</span>
+              </el-menu-item>
+            </router-link>
+            <router-link :to="{path:'/homepage/admin/uploadBook'}">
+              <el-menu-item index="7">
+                <i class="el-icon-upload2"></i>
+                <span slot="title">书籍上架</span>
+              </el-menu-item>
+            </router-link>
+            <router-link :to="{path:'/homepage/admin/check'}">
+              <el-menu-item index="8">
+                <i class="el-icon-edit"></i>
+                <span slot="title">借阅审核</span>
+              </el-menu-item>
+            </router-link>
           </el-submenu>
-          <router-link to="/homepage/userlist">
-            <el-menu-item index="5">
-              <i class="el-icon-view"></i>
-              <span slot="title">用户信息（admin）</span>
-            </el-menu-item>
-          </router-link>
-          <router-link to="/homepage/setup">
-            <el-menu-item index="4"
-              v-if="$store.state.user.isAdmin">
-              <i class="el-icon-setting"></i>
-              <span slot="title">书籍管理（admin）</span>
-            </el-menu-item>
-          </router-link>
-          <router-link :to="{path:'/homepage/uploadBook'}">
-            <el-menu-item index="7">
-              <i class="el-icon-upload2"></i>
-              <span slot="title">书籍上架</span>
-            </el-menu-item>
-          </router-link>
-          <router-link :to="{path:'/homepage/check'}">
-            <el-menu-item index="8">
-              <i class="el-icon-edit"></i>
-              <span slot="title">借阅审核</span>
-            </el-menu-item>
-          </router-link>
-        </el-submenu>
       </el-menu>
     </div>
     <router-view>
