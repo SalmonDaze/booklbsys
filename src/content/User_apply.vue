@@ -96,6 +96,7 @@ export default {
 }
 .userapply .table{
   width: 1100px;
+  margin: 30px 0px 0px 30px;
 }
 .userapply .el-table td,
 .userapply .el-table th {
