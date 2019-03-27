@@ -201,7 +201,13 @@ export default {
                 _id: gx.bookid,
                 _userId: this.$store.state.user._id
               }
-            }).then(res => console.log(res))
+            }).then(res => {
+              for( const item in this.tableData ) {
+                if(this.tableData[ item ].bookid === gx.bookid) {
+                  this.tableData.splice(item, 1)
+                }
+              }
+            })
           }
         }
       }
