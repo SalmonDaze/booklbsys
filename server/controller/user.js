@@ -308,22 +308,39 @@ module.exports.applyBorrowBook = async ( ctx ) => {
 }
 
 module.exports.bookBorrowContinue = async (ctx) => {
-    let { time, _id } = ctx.request.body
+    let { time, _id, _userId } = ctx.request.body
     let { returnTime } = await l_findBook(_id)
     let anext = async () => {
         return new Promise( (resolve, reject) => {
-            Model.book.updateOne({ _id }, {returnTime: moment(returnTime).add(time, 'days').format('YYYY-MM-DD HH:mm:ss')}, (err, doc) => {
-                if(err) {
+            Model.book.findOne({ _id }).then( doc => {
+                let returnTime = moment(doc.returnTime).add(time, 'days').format('YYYY-MM-DD HH:mm:ss')
+                if( moment(returnTime).diff(doc.borrowTime, 'days') > 90) {
                     resolve({
-                        code: 1,
+                        msg: '最多只能借阅90天',
                         success: false,
-                        msg: '操作失败'
+                        code: 1
                     })
                 }
+                doc.returnTime = returnTime
+                Model.user.findOne({ _id: _userId }).then( userdoc => {
+                    for(const item of userdoc.borrow_history ) {
+                        if( item.borrowTime === doc.borrowTime ) {
+                            item.returnTime = moment(item.returnTime).add(time, 'days').format('YYYY-MM-DD HH:mm:ss')
+                        }
+                    }
+                    for(const item of doc.borrow_history ) {
+                        if( item.borrowTime === doc.borrowTime ) {
+                            item.returnTime = moment(item.returnTime).add(time, 'days').format('YYYY-MM-DD HH:mm:ss')
+                        }
+                    }
+                    userdoc.save()
+                    doc.save()
+                })
+                
                 resolve({
+                    msg: '续借成功',
                     code: 200,
-                    success: true,
-                    msg: '续借成功!'
+                    success: true
                 })
             })
         })

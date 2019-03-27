@@ -148,6 +148,27 @@ const tempList = new Schema({
     }
 })
 
+const applyContinue = new Schema({
+    borrowUser: {
+        type: Schema.Types.ObjectId,
+        ref: 'user',
+        required: true
+    },
+    applyTime: {
+        type: String,
+        default: ''
+    },
+    borrowBook: {
+        type: Schema.Types.ObjectId,
+        ref: 'book',
+        required: true,
+    },
+    continueTime: {
+        type: String,
+        required: true,
+    }
+})
+
 let Model = {
     user: mongoose.model('user', userSchema),
     book: mongoose.model('book', bookSchema),
