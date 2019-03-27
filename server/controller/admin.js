@@ -407,11 +407,6 @@ module.exports.applySuccess = async (ctx) => {
                         bookdoc.borrowCount += 1
                         bookdoc.isLending = true
                         bookdoc.borrowUser = userdoc._id
-                        bookdoc.borrow_history.push({
-                            borrowTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-                            returnTime: moment().add(bookdoc.borrowCycle, 'days').format('YYYY-MM-DD HH:mm:ss'),
-                            borrowUser: userdoc._id
-                        })
                         bookdoc.save()
                     })
                     userdoc.save()
@@ -466,6 +461,56 @@ module.exports.getApplyList = async (ctx) => {
                     code: 200,
                     success: true,
                     data: doc
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.applyReturnSuccess = async (ctx) => {
+    let { _id } = ctx.request.body
+    let anext = async () => {
+        return new Promise( (resolve, reject) => {
+            Model.tempList.findOne({ _id }).populate('borrowBook borrowUser').exec( (err, tempdoc) => {
+                Model.user.findOne({ phone: tempdoc.borrowUser.phone }).then( userdoc => {
+                    for( const item of userdoc.borrow_history ) {
+                        if( String(item.book) === String(tempdoc.borrowBook) ) {
+                            item.returnTime = moment().format('YYYY-MM-DD HH:mm:ss')
+                        }
+                    }
+                    for( const item in userdoc.borrow_list ) {
+                        if( String(userdoc.borrow_list[item]) === String(tempdoc.borrowBook) ) {
+                            userdoc.borrow_list.splice(item, 1)
+                        }
+                    }
+                    for( const item of userdoc.apply_return_list ) {
+                        if( String(item.apply_item) == String(tempdoc._id) ) {
+                            item.status = 'success'
+                        }
+                    }
+                    Model.book.findOne({ _id: tempdoc.borrowBook._id }).then( bookdoc => {
+                        let tempTime = bookdoc.borrowTime
+                        bookdoc.borrowTime = ''
+                        bookdoc.returnTime = ''
+                        bookdoc.isLending = false
+                        bookdoc.borrowUser = null
+                        bookdoc.borrow_history.push({
+                            borrowTime: tempTime,
+                            returnTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+                            borrowUser: userdoc._id
+                        })
+                        bookdoc.save()
+                    })
+                    userdoc.save()
+                    Model.tempList.findOne({_id}).remove().exec()
+                    resolve({
+                        msg: '成功归还',
+                        code: 200,
+                        success: true
+                    })
                 })
             })
         })

@@ -39,7 +39,20 @@ const userSchema = new Schema({
             type: String,
             default: 'applying'
         }
-        
+    }],
+    apply_return_list: [{
+        apply_item: {
+            type: Schema.Types.ObjectId,
+            ref: 'tempList'
+        },
+        apply_book: {
+            type: Schema.Types.ObjectId,
+            ref: 'book'
+        },
+        status: {
+            type: String,
+            default: 'applying'
+        }
     }],
     borrow_list: [{
         type: Schema.Types.ObjectId,
@@ -145,25 +158,8 @@ const tempList = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'book',
         required: true,
-    }
-})
-
-const applyContinue = new Schema({
-    borrowUser: {
-        type: Schema.Types.ObjectId,
-        ref: 'user',
-        required: true
     },
-    applyTime: {
-        type: String,
-        default: ''
-    },
-    borrowBook: {
-        type: Schema.Types.ObjectId,
-        ref: 'book',
-        required: true,
-    },
-    continueTime: {
+    state: {
         type: String,
         required: true,
     }

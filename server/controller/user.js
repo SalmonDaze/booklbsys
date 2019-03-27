@@ -285,6 +285,7 @@ module.exports.applyBorrowBook = async ( ctx ) => {
                     Model.tempList.create({
                         borrowBook: _id,
                         borrowUser: _userId,
+                        state:'borrow',
                         applyTime: moment().format('YYYY-MM-DD HH:mm:ss')
                     }).then( applydoc => {
                         doc.apply_borrow_list.push({
@@ -392,6 +393,7 @@ module.exports.getHotBook = async (ctx) => {
     let anext = async () => {
         return new Promise((resolve, reject) => {
             Model.book.find({}).then((doc) => {
+                if( !doc.length ) return
                 let newArr = new Array()
                 let min = doc[0].borrowCount
                 let length = doc.length < 12 ? doc.length : 12
@@ -513,5 +515,43 @@ module.exports.cancelApply = async (ctx) => {
     }
     let result = await anext()
     ctx.statsu = 200
+    ctx.body = result
+}
+
+module.exports.applyReturnBook = async ( ctx ) => {
+    let { _id, _userId } = ctx.request.body
+    let anext = async () => {
+        return new Promise( (resolve, reject) => {
+                Model.user.findOne({_id: _userId}).then( doc => {
+                    if( doc.borrow_list.findIndex(item => String(item) === String(_id)) <= -1 ) {
+                        resolve({
+                            msg:'操作失败',
+                            code: 1,
+                            success: false
+                        })
+                        return
+                    }
+                    Model.tempList.create({
+                        borrowBook: _id,
+                        borrowUser: _userId,
+                        state: 'return',
+                        applyTime: moment().format('YYYY-MM-DD HH:mm:ss')
+                    }).then( applydoc => {
+                        doc.apply_return_list.push({
+                            apply_item: applydoc._id,
+                            apply_book: _id
+                        })
+                        doc.save()
+                        resolve({
+                            code: 200,
+                            msg: '申请成功',
+                            success: true,
+                        })
+                    })
+                })
+            })
+    }
+    let result = await anext()
+    ctx.status = 200
     ctx.body = result
 }

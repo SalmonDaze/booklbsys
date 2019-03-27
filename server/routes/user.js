@@ -29,4 +29,6 @@ childRouter.post('/applyBorrowBook', userController.applyBorrowBook)
 childRouter.post('/getOneBookInfo', userController.getOneBookInfo)
 // 取消申请借阅
 childRouter.post('/cancelApply', userController.cancelApply)
+// 申请归还图书
+childRouter.post('/applyReturnBook', userController.applyReturnBook)
 module.exports = childRouter
