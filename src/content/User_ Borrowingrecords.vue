@@ -247,7 +247,7 @@ export default {
        * es6
        * 得到tableData里面yn为true的数组的长度
        *  */
-      return this.tableData.filter(x => x).length
+      return this.tableData1.length
     }
   }
 }

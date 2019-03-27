@@ -2,7 +2,7 @@
   <div class="blacklist">
     <div class="blacklist1">
       <v-recordtitle title="逾期名单"
-        input_txt="请输入人名"
+        input_txt="请输入人名，回车"
         :return_show="false"
         :renewal_show="false"
         v-on:doSearchbook="do_searchbook"
@@ -59,7 +59,7 @@
 </template>
 <script>
 import vRecordtitle from "../page/record_title.vue";
-import { unixTranstoDate, getDate, remainTime, formatTime } from '../utils/formatDate'
+import { remainTime, formatTime, calendarTime } from '../utils/formatDate'
 export default {
   components: {
     vRecordtitle
@@ -86,6 +86,7 @@ export default {
       method: 'post',
 
     }).then(res => {
+      console.log(res)
       for (const book of res.data.data) {
         // 判断未归还
         let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id } = book
@@ -95,7 +96,7 @@ export default {
           reader: borrowUser.username,
           can_days: borrowCycle,
           bookid: _id,
-          remainder_days: Math.abs(Math.ceil(remainTime(returnTime))),
+          remainder_days: remainTime(returnTime),
           yn: isLending ? '否' : '是'
         })
       }
@@ -112,7 +113,7 @@ export default {
       } else {
         this.tableData.map(function (item) {
           // 数组里的书名和输入框书名一致
-          if (item.bookname === input_bookname) {
+          if (item.reader === input_bookname) {
             NewItems.push(item);
           } else {
             return false;
@@ -168,7 +169,7 @@ export default {
        * es6
        * 得到tableData1里面yn为true的数组的长度
        *  */
-      return this.tableData1.filter(x => !x.yn).length
+      return this.tableData.length
     }
   }
 }

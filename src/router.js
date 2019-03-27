@@ -95,6 +95,7 @@ let router = new Router({
           component: Setup
         },
         {
+          // 用户书籍管理
           path: "usersetup",
           name: "usersetup",
           component: Usersetup

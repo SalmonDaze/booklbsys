@@ -35,7 +35,9 @@
           @click="return_login">已有账号，立即登录</a>
         <el-form-item>
           <el-button type="primary"
-            @click="registry()">注册</el-button>
+            @click="registry()"
+            :disabled="closure"
+            class="registry">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -110,8 +112,20 @@ export default {
         checkPass: [
           { validator: validatePass2, trigger: 'blur' }
         ],
-      }
+      },
+      // 注册按钮是否禁用，true禁用
+      closure: true
     };
+  },
+  created() {
+    const reg = /^1[0-9]{10}$/;
+    if (!this.ruleForm1.username || !reg.test(this.ruleForm1.phone) || !this.ruleForm1.pass || !this.ruleForm1.checkPass || this.ruleForm1.pass === this.ruleForm1.checkPass) {
+      console.log("不正确校验")
+      return false;
+    } else {
+      console.log("正确")
+      this.closure = false
+    }
   },
   methods: {
     register_close() {
@@ -131,43 +145,24 @@ export default {
       });
     },
     registry() {
-      const reg = /^1[0-9]{10}$/;
-      if (!this.ruleForm1.username && !reg.test(this.ruleForm1.phone) && !this.ruleForm1.pass && !this.ruleForm1.checkPass) {
-        this.$message({ message: "请确认信息输入完整", type: 'warning' });
-        return false;
-      } else if (!this.ruleForm1.username || !this.ruleForm1.phone) {
-        this.$message({ message: "用户名和手机号不能为空", type: 'warning' });
-        return false;
-      } else if (!reg.test(this.ruleForm1.phone)) {
-        this.$message({ message: "请输入正确手机号", type: "warning" });
-        return false;
-      } else if (!this.ruleForm1.pass || !this.ruleForm1.checkPass) {
-        this.$message("请输入密码");
-        return false;
-      } else if (this.ruleForm1.pass !== this.ruleForm1.checkPass) {
-        this.$message.error("两次输入密码不一致");
-        return false;
-      }
-      else {
-        this.$ajax({
-          method: 'post',
-          url: '/api/register',
-          data: {
-            phone: this.ruleForm1.phone,
-            password: this.ruleForm1.pass,
-            username: this.ruleForm1.username
-          }
-        }).then((res) => {
-          console.log(res)
-          let { success, token } = res.data
-          if (success) {
-            // 跳转首页
-            this.register_close();
-          } else {
-            this.$message.error(res.data.msg);
-          }
-        })
-      }
+      this.$ajax({
+        method: 'post',
+        url: '/api/register',
+        data: {
+          phone: this.ruleForm1.phone,
+          password: this.ruleForm1.pass,
+          username: this.ruleForm1.username
+        }
+      }).then((res) => {
+        console.log(res)
+        let { success, token } = res.data
+        if (success) {
+          // 跳转首页
+          this.register_close();
+        } else {
+          this.$message.error(res.data.msg);
+        }
+      })
     },
   }
 }

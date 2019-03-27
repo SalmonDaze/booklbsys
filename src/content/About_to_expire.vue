@@ -2,7 +2,7 @@
   <div class="abouttoexpire">
     <div class="abouttoexpire1">
       <v-recordtitle title="即将到期的书籍"
-        input_txt="请输入书名"
+        input_txt="请输入书名，回车"
         v-on:doSearchbook="do_searchbook"
         v-on:doSearchtime="do_searchtime"
         v-on:doRenewal="do_renewal"
@@ -228,7 +228,7 @@ export default {
        * es6
        * 得到tableData1里面yn为true的数组的长度
        *  */
-      return this.tableData1.filter(x => x).length
+      return this.tableData1.length
     }
   }
 }
