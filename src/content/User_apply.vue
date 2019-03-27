@@ -13,33 +13,25 @@
                 width="180">
                 <template slot-scope="scope">
                   <i class="el-icon-time"></i>
-                  <span style="margin-left: 10px">{{ scope.row.date }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="姓名"
-                width="180">
-                <template slot-scope="scope">
-                  <el-popover trigger="hover"
-                    placement="top">
-                    <p>姓名: {{ scope.row.name }}</p>
-                    <p>书名: {{ scope.row.bookname }}</p>
-                    <div slot="reference"
-                      class="name-wrapper">
-                      <el-tag size="medium">{{ scope.row.name }}</el-tag>
-                    </div>
-                  </el-popover>
+                  <span style="margin-left: 10px">{{ scope.row.applyTime }}</span>
                 </template>
               </el-table-column>
               <el-table-column label="书名"
                 width="180">
                 <template slot-scope="scope">
-                  <span style="margin-left: 10px">{{ scope.row.bookname }}</span>
+                  <span style="margin-left: 10px">{{ scope.row.apply_book.title }}</span>
                 </template>
               </el-table-column>
               <el-table-column label="图书识别码"
                 width="180">
                 <template slot-scope="scope">
-                  <span style="margin-left: 10px">{{ scope.row.bookid }}</span>
+                  <span style="margin-left: 10px">{{ scope.row.apply_book._id }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="状态"
+                width="180">
+                <template slot-scope="scope">
+                  <span style="margin-left: 10px">{{ stateLabel[scope.row.status] }}</span>
                 </template>
               </el-table-column>
               <el-table-column label="操作">
@@ -70,33 +62,25 @@
                 width="180">
                 <template slot-scope="scope">
                   <i class="el-icon-time"></i>
-                  <span style="margin-left: 10px">{{ scope.row.date }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="姓名"
-                width="180">
-                <template slot-scope="scope">
-                  <el-popover trigger="hover"
-                    placement="top">
-                    <p>姓名: {{ scope.row.name }}</p>
-                    <p>书名: {{ scope.row.bookname }}</p>
-                    <div slot="reference"
-                      class="name-wrapper">
-                      <el-tag size="medium">{{ scope.row.name }}</el-tag>
-                    </div>
-                  </el-popover>
+                  <span style="margin-left: 10px">{{ scope.row.applyTime }}</span>
                 </template>
               </el-table-column>
               <el-table-column label="书名"
                 width="180">
                 <template slot-scope="scope">
-                  <span style="margin-left: 10px">{{ scope.row.bookname }}</span>
+                  <span style="margin-left: 10px">{{ scope.row.apply_book.title }}</span>
                 </template>
               </el-table-column>
               <el-table-column label="图书识别码"
                 width="180">
                 <template slot-scope="scope">
-                  <span style="margin-left: 10px">{{ scope.row.bookid }}</span>
+                  <span style="margin-left: 10px">{{ scope.row.apply_book._id }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="状态"
+                width="180">
+                <template slot-scope="scope">
+                  <span style="margin-left: 10px">{{ stateLabel[scope.row.status] }}</span>
                 </template>
               </el-table-column>
               <el-table-column label="操作">
@@ -128,64 +112,37 @@ export default {
   data() {
     return {
       activeName: 'second',
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        bookname: '刷刷刷',
-        bookid: '1234234543543'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        bookname: '说的绝对是',
-        bookid: '121324353'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        bookname: '艾萨克'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        bookname: '为切尔克'
-      }],
-      tableData2: [{
-        date: '2016-05-02',
-        name: '王虎',
-        bookname: '刷刷刷',
-        bookid: '1234234543543'
-      }, {
-        date: '2016-05-04',
-        name: '小虎',
-        bookname: '说的绝对是',
-        bookid: '121324353'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        bookname: '艾萨克'
-      }, {
-        date: '2016-05-03',
-        name: '虎',
-        bookname: '为切尔克'
-      }],
+      tableData: [],
+      tableData2: [],
       pageNum: 1,//默认开始页面
       pagesize: 10,//每页的数据条数
+      stateLabel: {
+        applying: '申请中',
+        success: '已同意',
+        fail: '已拒绝'
+      }
     }
   },
   methods: {
     handleClick(tab, event) {
-      console.log(tab, event);
     },
     // 分页
     handleSizeChange(val) {
       this.pagesize = val;
-      console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       this.pageNum = val
-      console.log(`当前页: ${val}`);
     },
     // 撤销申请
     handleDelete(index, row) {
-      console.log(index, row);
+      console.log(row)
+      this.$ajax({
+        url: '/api/cancelApply',
+        method: 'post',
+        data: {
+          _id: row.apply_item
+        }
+      }).then(res => console.log(res))
     }
   },
   computed: {
@@ -200,6 +157,19 @@ export default {
     vals2(){
       return this.tableData2.length;
     }
+  },
+  mounted() {
+    this.$ajax({
+      url: '/admin/getOneUserInfo',
+      method: 'post',
+      data: {
+        phone: this.$store.state.user.phone
+      }
+    }).then( res => {
+      console.log(res)
+      this.tableData = res.data.data[0].apply_borrow_list
+      this.tableData2 = res.data.data[0].apply_return_list
+    })
   }
 }
 </script>

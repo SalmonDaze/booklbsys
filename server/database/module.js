@@ -35,6 +35,9 @@ const userSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'book'
         },
+        applyTime: {
+            type: String
+        },
         status: {
             type: String,
             default: 'applying'
@@ -48,6 +51,9 @@ const userSchema = new Schema({
         apply_book: {
             type: Schema.Types.ObjectId,
             ref: 'book'
+        },
+        applyTime: {
+            type: String,
         },
         status: {
             type: String,

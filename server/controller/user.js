@@ -71,6 +71,14 @@ module.exports.registry = async (ctx) => {
             msg: '手机号码格式错误! '
         }
     }
+    if ( !username ) {
+        ctx.status = 200
+        return ctx.body = {
+            code: 1,
+            success: false,
+            msg: '请输入用户名'
+        }
+    }
     let doc = await l_findPhone(phone)
     if( doc ) {
         ctx.status = 200
@@ -93,6 +101,13 @@ module.exports.registry = async (ctx) => {
 
 module.exports.login = async (ctx) => {
     let { phone, password } = ctx.request.body
+    if ( !phone || !password ) {
+        resolve({
+            success: false,
+            code: 1,
+            msg: '信息不完整'
+        })
+    }
     let anext = async () => {
         return new Promise((resolve, reject) => {
             Model.user.findOne({phone}).populate({path: 'borrow_list'}).exec((err, doc) => {
@@ -290,7 +305,8 @@ module.exports.applyBorrowBook = async ( ctx ) => {
                     }).then( applydoc => {
                         doc.apply_borrow_list.push({
                             apply_item: applydoc._id,
-                            apply_book: _id
+                            apply_book: _id,
+                            applyTime: moment().format('YYYY-MM-DD HH:mm:ss')
                         })
                         doc.save()
                         resolve({
@@ -494,6 +510,7 @@ module.exports.cancelApply = async (ctx) => {
     let anext = async () => {
         return new Promise((resolve, reject) => {
             Model.tempList.findOne({ _id }).then( tempdoc => {
+                console.log(tempdoc)
                 Model.user.findOne({ _id: tempdoc.borrowUser}).then( userdoc => {
                     for(const index in userdoc.apply_borrow_list) {
                         console.log(String(userdoc.apply_borrow_list[index].apply_item) == String(_id))
@@ -539,7 +556,8 @@ module.exports.applyReturnBook = async ( ctx ) => {
                     }).then( applydoc => {
                         doc.apply_return_list.push({
                             apply_item: applydoc._id,
-                            apply_book: _id
+                            apply_book: _id,
+                            applyTime: moment().format('YYYY-MM-DD HH:mm:ss')
                         })
                         doc.save()
                         resolve({
