@@ -70,7 +70,7 @@ export default {
           _id: row._id
         }
       }).then( res => {
-        console.log(res)
+        this.getData()
       })
     },
     handleDelete(index, row) {
@@ -81,7 +81,7 @@ export default {
           _id: row._id
         }
       }).then( res => {
-        console.log(res)
+        this.getData()
       })
     },
     getData() {

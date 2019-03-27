@@ -236,7 +236,7 @@ export default {
           if (gx.yn === "否") {
             this.$message.error("该书暂未归还，无法下架！");
           } else {
-            if (gx.borrowCount > 5) {
+            if (gx.borrowCount > 1) {
               this.$confirm('该书多次被借阅，是否继续？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
