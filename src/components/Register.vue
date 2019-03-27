@@ -11,7 +11,8 @@
         label-width="100px"
         class="demo-ruleForm">
         <el-form-item label="用户名"
-          prop="username">
+          prop="username"
+          ref="name">
           <el-input v-model.number="ruleForm1.username"></el-input>
         </el-form-item>
         <el-form-item label="手机号"
@@ -36,8 +37,7 @@
         <el-form-item>
           <el-button type="primary"
             @click="registry()"
-            :disabled="closure"
-            class="registry">注册</el-button>
+            :disabled="!pro">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -49,21 +49,28 @@ export default {
   data() {
     var checkuserName = (rule, value, callback) => {
       if (!value) {
+        this.tablename = false;
         return callback(new Error('用户名不能为空'));
+      } else {
+        this.tablename = true;
       }
     };
     var checkPhone = (rule, value, callback) => {
       if (!value) {
+        this.tablephone = false;
         return callback(new Error('手机号不能为空'));
       }
       setTimeout(() => {
         if (!Number.isInteger(value)) {
+          this.tablephone = false;
           callback(new Error('请输入数字值'));
         } else {
           const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
           if (reg.test(value)) {
+            this.tablephone = true;
             callback();
           } else {
+            this.tablephone = false;
             return callback(new Error('请输入正确的手机号'));
           }
         }
@@ -71,20 +78,26 @@ export default {
     };
     var validatePass = (rule, value, callback) => {
       if (value === '') {
+        this.tablepass = false;
         callback(new Error('请输入密码'));
       } else {
         if (this.ruleForm1.checkPass !== '') {
+          this.tablepass = false;
           this.$refs.ruleForm1.validateField('checkPass');
         }
+        this.tablepass = true;
         callback();
       }
     };
     var validatePass2 = (rule, value, callback) => {
       if (value === '') {
+        this.tablecheckpass = false;
         callback(new Error('请再次输入密码'));
       } else if (value !== this.ruleForm1.pass) {
+        this.tablecheckpass = false;
         callback(new Error('两次输入密码不一致!'));
       } else {
+        this.tablecheckpass = true;
         callback();
       }
     };
@@ -113,18 +126,16 @@ export default {
           { validator: validatePass2, trigger: 'blur' }
         ],
       },
-      // 注册按钮是否禁用，true禁用
-      closure: true
+      // 记录输入是否正确，控制按钮禁用
+      tablename: false,
+      tablephone: false,
+      tablepass: false,
+      tablecheckpass: false
     };
   },
-  created() {
-    const reg = /^1[0-9]{10}$/;
-    if (!this.ruleForm1.username || !reg.test(this.ruleForm1.phone) || !this.ruleForm1.pass || !this.ruleForm1.checkPass || this.ruleForm1.pass === this.ruleForm1.checkPass) {
-      console.log("不正确校验")
-      return false;
-    } else {
-      console.log("正确")
-      this.closure = false
+  computed: {
+    pro() {
+      return this.tablename, this.tablephone, this.tablepass, this.tablecheckpass;
     }
   },
   methods: {
@@ -133,16 +144,6 @@ export default {
     },
     return_login() {
       this.$emit('returnLogin', '');
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!');
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
     },
     registry() {
       this.$ajax({

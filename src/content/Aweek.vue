@@ -82,7 +82,7 @@ export default {
          * isLending：是否借出
          * returnTime:剩余时间
          */
-        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id,username } = book
+        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id, username } = book
         this.tableData.push({
           date: formatTime(borrowTime),
           bookname: title,
@@ -104,7 +104,7 @@ export default {
       value_borrowtime: '',
       // 表单
       tableData: [],
-      tableData1:[],
+      tableData1: [],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
       pagesize: 10,//每页的数据条数
@@ -169,10 +169,10 @@ export default {
                   method: 'post',
                   data: {
                     time: renewal_time,
-                    _id: gx.bookid
+                    _id: gx.bookid,
+                    _userId: gx.reader
                   }
-                }).then(res => console.log(res))
-                this.$message.success("续借成功！");
+                }).then(res => this.$message(res.data.msg))
               }
             }
           }

@@ -103,7 +103,7 @@ export default {
       // 选择借书时间
       value_borrowtime: '',
       // 表单
-      tableData:[],
+      tableData: [],
       tableData1: [],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
@@ -169,10 +169,10 @@ export default {
                   method: 'post',
                   data: {
                     time: renewal_time,
-                    _id: gx.bookid
+                    _id: gx.bookid,
+                    _userId: gx.reader
                   }
-                }).then(res => console.log(res))
-                this.$message.error("续借成功！");
+                }).then(res => this.$message(res.data.msg))
               }
             }
           }

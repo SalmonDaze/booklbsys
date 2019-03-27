@@ -35,25 +35,31 @@ export default {
   data() {
     var checkPhone = (rule, value, callback) => {
       if (!value) {
+        this.tablephone = false;
         return callback(new Error('手机号不能为空'));
       }
       setTimeout(() => {
         if (!Number.isInteger(value)) {
+          this.tablephone = false;
           callback(new Error('请输入数字值'));
         } else {
           const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
-          if (reg.test(value)) {
-            callback();
-          } else {
+          if (!reg.test(value)) {
+            this.tablephone = false
             return callback(new Error('请输入正确的手机号'));
+          } else {
+            this.tablephone = true;
+            callback();
           }
         }
       }, 1000);
     };
     var validatePass = (rule, value, callback) => {
       if (value === '') {
+        this.tablephone = false;
         callback(new Error('请输入密码'));
       } else {
+        this.tablephone = true;
         callback();
       }
     };
@@ -71,7 +77,9 @@ export default {
         pass: [
           { validator: validatePass, trigger: 'blur' }
         ]
-      }
+      },
+      tablephone: false,
+      tablepass: false
     };
   },
   // 从首页后退时，清空token，重新登录
@@ -87,40 +95,34 @@ export default {
     },
     // 登录
     login() {
-      console.log(this.ruleForm2.phone, this.ruleForm2.pass)
       const reg = /^1[0-9]{10}$/;
-        if (!reg.test(this.ruleForm2.phone)) {
-          this.$message.error("请输入正确手机号");
-          return false;
-        }else if(!this.ruleForm2.phone||!this.ruleForm2.pass){
-          this.$message.error("手机号和密码不能为空！");
-          return false;
-        }
-        else{
-          this.$ajax({
-            method: 'post',
-            url: '/api/login',
-            data: {
-              phone: this.ruleForm2.phone,
-              password: this.ruleForm2.pass
-            }
-          }).then((res) => {
-            let { success, user, token } = res.data
-            console.log(res)
-            if (success) {
-              // 更新store.js里loginAsync方法的token
-              this.$store.dispatch('loginAsync', {
-                token,
-                data: user
-              });
-              window.sessionStorage.setItem('phone', JSON.stringify(parseInt(user.phone)))
-              window.sessionStorage.setItem('token', token)
-              // 跳转首页
-              this.$router.push('/homepage/hot')
-            } else {
-              this.$message.error(res.data.msg);
-            }
-          })
+      if (!reg.test(this.ruleForm2.phone) || !this.ruleForm2.phone || !this.ruleForm2.pass) {
+        return false;
+      } else {
+        this.$ajax({
+          method: 'post',
+          url: '/api/login',
+          data: {
+            phone: this.ruleForm2.phone,
+            password: this.ruleForm2.pass
+          }
+        }).then((res) => {
+          let { success, user, token } = res.data
+          console.log(res)
+          if (success) {
+            // 更新store.js里loginAsync方法的token
+            this.$store.dispatch('loginAsync', {
+              token,
+              data: user
+            });
+            window.sessionStorage.setItem('phone', JSON.stringify(parseInt(user.phone)))
+            window.sessionStorage.setItem('token', token)
+            // 跳转首页
+            this.$router.push('/homepage/hot')
+          } else {
+            this.$message.error(res.data.msg);
+          }
+        })
       }
     },
   }
