@@ -48,7 +48,7 @@
               <el-button size="mini"
                 type="danger"
                 @click="do_return(scope.$index, scope.row)"
-                v-if="scope.row.yn === '否'">归还</el-button>
+                v-if="scope.row.yn === '否'">申请归还</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -224,7 +224,7 @@ export default {
         this.$message.warning("书籍已归还，请勿重复操作！");
       } else {
         this.$ajax({
-          url: '/api/returnBook',
+          url: '/api/applyReturnBook',
           method: 'post',
           data: {
             _id: row.bookid,
@@ -232,7 +232,7 @@ export default {
           }
         }).then(res => {
           if (res.data.code === 200) {
-            row.remainder_days = "已归还";
+            row.remainder_days = "申请归还中";
             row.yn = "是";
             this.$message.success(res.data.msg);
           } else {

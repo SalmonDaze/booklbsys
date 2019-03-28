@@ -359,7 +359,7 @@ module.exports.getOneUserInfo = async (ctx) => {
     let { phone } = ctx.request.body
     let anext = async () => {
         return new Promise((resolve, reject) => {
-            Model.user.find({phone}).populate('borrow_list borrow_history.book apply_borrow_list.apply_book').exec(( err, doc ) => {
+            Model.user.find({phone}).populate('borrow_list borrow_history.book apply_borrow_list.apply_book apply_return_list.apply_book').exec(( err, doc ) => {
                 resolve({
                     msg: '查询成功',
                     code: 200,

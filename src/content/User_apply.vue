@@ -37,7 +37,7 @@
               <el-table-column label="操作">
                 <template slot-scope="scope">
                   <el-button size="mini"
-                    type="danger"
+                    type="danger" v-if="scope.row.status === 'applying'"
                     @click="handleDelete(scope.$index, scope.row)">撤销申请</el-button>
                 </template>
               </el-table-column>
@@ -86,8 +86,8 @@
               <el-table-column label="操作">
                 <template slot-scope="scope">
                   <el-button size="mini"
-                    type="danger"
-                    @click="handleDelete(scope.$index, scope.row)">撤销申请</el-button>
+                    type="danger"  v-if="scope.row.status === 'applying'"
+                    @click="handleDelete2(scope.$index, scope.row)">撤销申请</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -138,6 +138,15 @@ export default {
       console.log(row)
       this.$ajax({
         url: '/api/cancelApply',
+        method: 'post',
+        data: {
+          _id: row.apply_item
+        }
+      }).then(res => console.log(res))
+    },
+    handleDelete2(index, row) {
+      this.$ajax({
+        url: '/api/cancelApplyReturn',
         method: 'post',
         data: {
           _id: row.apply_item
