@@ -387,7 +387,6 @@ module.exports.applySuccess = async (ctx) => {
     let anext = async () => {
         return new Promise( (resolve, reject) => {
             Model.tempList.findOne({ _id }).populate('borrowBook borrowUser').exec( (err, tempdoc) => {
-                console.log(tempdoc.borrowBook.isLending)
                 if( tempdoc.borrowBook.isLending ) {
                     resolve({
                         code: 1,
@@ -405,7 +404,6 @@ module.exports.applySuccess = async (ctx) => {
                             book: tempdoc.borrowBook._id
                         })
                         for( const item of userdoc.apply_borrow_list ) {
-                            console.log(item.apply_item, tempdoc._id, item.apply_item == tempdoc._id)
                             if( String(item.apply_item) == String(tempdoc._id) ) {
                                 item.status = 'success'
                             }

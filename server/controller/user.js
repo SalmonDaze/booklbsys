@@ -158,11 +158,9 @@ module.exports.login = async (ctx) => {
 
 module.exports.loginByToken = async (ctx) => {
     let { phone, token} = ctx.request.body
-    console.log(phone, token)
     let anext = async () => {
         return new Promise((resolve, reject) => {
             Model.user.findOne({ phone }).then( (doc) => {
-                console.log(doc)
                 if( doc.token === token) {
                     resolve({
                         msg: '登录成功',
@@ -287,7 +285,6 @@ module.exports.applyBorrowBook = async ( ctx ) => {
                         return
                     }
                     Model.book.findOne({ _id }).then( bookdoc => {
-                        console.log(bookdoc)
                         if( bookdoc.isLending ) {
                             resolve({
                                 msg: '该书已被借阅',
@@ -511,12 +508,9 @@ module.exports.cancelApply = async (ctx) => {
     let anext = async () => {
         return new Promise((resolve, reject) => {
             Model.tempList.findOne({ _id }).then( tempdoc => {
-                console.log(tempdoc)
                 Model.user.findOne({ _id: tempdoc.borrowUser}).then( userdoc => {
                     for(const index in userdoc.apply_borrow_list) {
-                        console.log(String(userdoc.apply_borrow_list[index].apply_item) == String(_id))
                         if(String(userdoc.apply_borrow_list[index].apply_item) == String(_id)){
-                            console.log(index)
                             userdoc.apply_borrow_list.splice(index, 1)
                         }
                     }
