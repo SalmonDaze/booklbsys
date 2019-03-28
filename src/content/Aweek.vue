@@ -72,28 +72,7 @@ export default {
    * mounted模板渲染成HTML后调用
    */
   created() {
-    this.$ajax.post('/admin/sevenDaysBorrow').then((res) => {
-      console.log(res)
-      for (const book of res.data.data) {
-        /**
-         * title：书名
-         * borrowTime：借出时间
-         * borrowCycle：可借天数
-         * isLending：是否借出
-         * returnTime:剩余时间
-         */
-        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id, username } = book
-        this.tableData.push({
-          date: formatTime(borrowTime),
-          bookname: title,
-          bookid: _id,
-          reader: borrowUser.username,
-          can_days: borrowCycle,
-          remainder_days: remainTime(returnTime),
-          yn: isLending ? '否' : '是'
-        })
-      }
-    });
+    this.getData()
     this.tableData1 = this.tableData;
   },
   data() {
@@ -111,6 +90,32 @@ export default {
     }
   },
   methods: {
+    // 请求后端数据
+    getData() {
+      this.$ajax.post('/admin/sevenDaysBorrow').then((res) => {
+        console.log(res)
+        for (const book of res.data.data) {
+          /**
+           * title：书名
+           * borrowTime：借出时间
+           * borrowCycle：可借天数
+           * isLending：是否借出
+           * returnTime:剩余时间
+           */
+          let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id, username } = book
+          this.tableData.push({
+            date: formatTime(borrowTime),
+            bookname: title,
+            bookid: _id,
+            reader: borrowUser.username,
+            can_days: borrowCycle,
+            remainder_days: remainTime(returnTime),
+            yn: isLending ? '否' : '是',
+            userid: borrowUser._id
+          })
+        }
+      });
+    },
     // 搜索书名
     do_searchbook(input_bookname) {
       var NewItems = [];
@@ -170,9 +175,12 @@ export default {
                   data: {
                     time: renewal_time,
                     _id: gx.bookid,
-                    _userId: gx.reader
+                    _userId: gx.userid
                   }
-                }).then(res => this.$message(res.data.msg))
+                }).then(res => {
+                  this.tableData1;
+                  this.$message.success(res.data.msg);
+                })
               }
             }
           }
@@ -202,8 +210,9 @@ export default {
                 _userId: this.$store.state.user._id
               }
             }).then(res => {
-              for( const item in this.tableData ) {
-                if(this.tableData[ item ].bookid === gx.bookid) {
+              this.$message.success(res.data.msg)
+              for (const item in this.tableData) {
+                if (this.tableData[item].bookid === gx.bookid) {
                   this.tableData.splice(item, 1)
                 }
               }

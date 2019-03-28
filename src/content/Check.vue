@@ -41,7 +41,7 @@
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button size="mini"
-                @click="handleEdit(scope.$index, scope.row)">通过</el-button>
+                @click="handlepass(scope.$index, scope.row)">通过</el-button>
               <el-button size="mini"
                 type="danger"
                 @click="handleDelete(scope.$index, scope.row)">驳回</el-button>
@@ -62,7 +62,7 @@ export default {
     }
   },
   methods: {
-    handleEdit(index, row) {
+    handlepass(index, row) {
       this.$ajax({
         url: '/admin/applySuccess',
         method: 'post',
@@ -70,6 +70,7 @@ export default {
           _id: row._id
         }
       }).then( res => {
+        this.$message.success("已通过审核")
         this.getData()
       })
     },
@@ -81,6 +82,7 @@ export default {
           _id: row._id
         }
       }).then( res => {
+        this.$message.success("已驳回")
         this.getData()
       })
     },

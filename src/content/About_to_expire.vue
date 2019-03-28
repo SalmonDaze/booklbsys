@@ -90,7 +90,8 @@ export default {
           reader: borrowUser.username,
           can_days: borrowCycle,
           remainder_days: remainTime(returnTime),
-          yn: isLending ? '否' : '是'
+          yn: isLending ? '否' : '是',
+          userid: borrowUser._id
         })
       }
     });
@@ -170,7 +171,7 @@ export default {
                   data: {
                     time: renewal_time,
                     _id: gx.bookid,
-                    _userId: gx.reader
+                    _userId: gx.userid
                   }
                 }).then(res => this.$message(res.data.msg))
               }
