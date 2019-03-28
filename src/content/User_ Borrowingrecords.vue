@@ -48,7 +48,7 @@
               <el-button size="mini"
                 type="danger"
                 @click="do_return(scope.$index, scope.row)"
-                v-if="">归还</el-button>
+                v-if="scope.row.yn === '否'">归还</el-button>
             </template>
           </el-table-column>
         </el-table>
