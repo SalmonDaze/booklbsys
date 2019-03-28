@@ -3,10 +3,10 @@
     <div class="userborrow1">
       <v-recordtitle title="借阅的书籍"
         input_txt="请输入书名，回车"
+        :return_show="false"
         v-on:doSearchbook="do_searchbook"
         v-on:doSearchtime="do_searchtime"
-        v-on:doRenewal="do_renewal"
-        v-on:doReturn="do_return"></v-recordtitle>
+        v-on:doRenewal="do_renewal"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
@@ -42,6 +42,14 @@
           <el-table-column prop="yn"
             label="是否归还"
             show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button size="mini"
+                type="danger"
+                @click="do_return(scope.$index, scope.row)"
+                v-if="">归还</el-button>
+            </template>
           </el-table-column>
         </el-table>
         <!-- 分页 -->
@@ -100,7 +108,7 @@ export default {
             bookid: _id,
             can_days: borrowCycle,
             remainder_days: '已归还',
-            yn: isReturn ? '是' : '否'
+            yn: isReturn ? '是' : '否',
           })
         } else {
           this.tableData.push({
@@ -110,7 +118,7 @@ export default {
             bookid: _id,
             can_days: borrowCycle,
             remainder_days: remainTime(returnTime),
-            yn: isReturn ? '是' : '否'
+            yn: isReturn ? '是' : '否',
           })
         }
       }
@@ -188,10 +196,17 @@ export default {
                   method: 'post',
                   data: {
                     time: renewal_time,
-                    _id: gx.bookid
+                    _id: gx.bookid,
+                    _userId: this.$store.state.user._id
                   }
-                }).then(res => console.log(res))
-                this.$message.error("续借成功！");
+                }).then(res => {
+                  if (res.data.code === 200) {
+                    gx.remainder_days += parseInt(renewal_time);
+                    this.$message.success(res.data.msg);
+                  } else {
+                    this.$message.error(res.data.msg)
+                  }
+                })
               }
             }
           }
@@ -202,27 +217,28 @@ export default {
       }
     },
     // 还书
-    do_return() {
+    do_return(index, row) {
       // 将勾选内容的长度赋值在select，判断是否勾选书籍
       var select = this.multipleSelection.length;
-      if (select === 0) {
-        this.$message.error("请勾选需要归还的书籍！");
-        return false;
+      if (row.yn === "是") {
+        this.$message.warning("书籍已归还，请勿重复操作！");
       } else {
-        for (const gx of this.multipleSelection) {
-          if (gx.yn === "是") {
-            this.$message.warning("书籍已归还，请勿重复操作！");
-          } else {
-            this.$ajax({
-              url: '/api/returnBook',
-              method: 'post',
-              data: {
-                _id: gx.bookid,
-                _userId: this.$store.state.user._id
-              }
-            }).then(res => console.log(res))
+        this.$ajax({
+          url: '/api/returnBook',
+          method: 'post',
+          data: {
+            _id: row.bookid,
+            _userId: this.$store.state.user._id
           }
-        }
+        }).then(res => {
+          if (res.data.code === 200) {
+            row.remainder_days = "已归还";
+            row.yn = "是";
+            this.$message.success(res.data.msg);
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        })
       }
     },
     // 分页

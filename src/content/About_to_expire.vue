@@ -173,7 +173,14 @@ export default {
                     _id: gx.bookid,
                     _userId: gx.userid
                   }
-                }).then(res => this.$message(res.data.msg))
+                }).then(res => {
+                  if (res.data.code === 200) {
+                    gx.remainder_days += parseInt(renewal_time);
+                    this.$message.success(res.data.msg);
+                  } else {
+                    this.$message.error(res.data.msg)
+                  }
+                })
               }
             }
           }
@@ -202,7 +209,14 @@ export default {
                 _id: gx.bookid,
                 _userId: this.$store.state.user._id
               }
-            }).then(res => console.log(res))
+            }).then(res => {
+              this.$message.success(res.data.msg)
+              for (const item in this.tableData) {
+                if (this.tableData[item].bookid === gx.bookid) {
+                  this.tableData.splice(item, 1)
+                }
+              }
+            })
           }
         }
       }

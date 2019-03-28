@@ -49,28 +49,28 @@ export default {
   data() {
     var checkuserName = (rule, value, callback) => {
       if (value) {
-        this.prohibit = true;
+        this.tablename = false;
       } else {
-        this.prohibit = true;
+        this.tablename = true;
         return callback(new Error('用户名不能为空'));
       }
     };
     var checkPhone = (rule, value, callback) => {
       if (!value) {
-        this.prohibit = true;
+        this.tablephone = true;
         return callback(new Error('手机号不能为空'));
       }
       setTimeout(() => {
         if (!Number.isInteger(value)) {
-          this.prohibit = true;
+          this.tablephone = true;
           callback(new Error('请输入数字值'));
         } else {
           const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
           if (!reg.test(value)) {
-            this.prohibit = true;
+            this.tablephone = true;
             return callback(new Error('请输入正确的手机号'));
           } else {
-            this.prohibit = false;
+            this.tablephone = false;
             callback();
           }
         }
@@ -78,26 +78,26 @@ export default {
     };
     var validatePass = (rule, value, callback) => {
       if (value === '') {
-        this.prohibit = true;
+        this.tablepass = true;
         callback(new Error('请输入密码'));
       } else {
         if (this.ruleForm1.checkPass !== '') {
-          this.prohibit = true;
+          this.tablepass = true;
           this.$refs.ruleForm1.validateField('checkPass');
         }
-        this.prohibit = false;
+        this.tablepass = false;
         callback();
       }
     };
     var validatePass2 = (rule, value, callback) => {
       if (value === '') {
-        this.prohibit = true;
+        this.tablecheckpass = true;
         callback(new Error('请再次输入密码'));
       } else if (value !== this.ruleForm1.pass) {
-        this.prohibit = true;
+        this.tablecheckpass = true;
         callback(new Error('两次输入密码不一致!'));
       } else {
-        this.prohibit = false;
+        this.tablecheckpass = false;
         callback();
       }
     };
@@ -127,12 +127,15 @@ export default {
         ],
       },
       // 记录输入是否正确，控制按钮禁用
-      prohibit: true,
+      tablename: true,
+      tablephone:true,
+      tablepass:true,
+      tablecheckpass:true
     };
   },
   computed: {
     pro() {
-      return this.prohibit;
+      return this.tablename||this.tablephone||this.tablepass||this.tablecheckpass;
     }
   },
   methods: {

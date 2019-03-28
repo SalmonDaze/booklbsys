@@ -181,9 +181,9 @@ export default {
                   if( res.data.code === 200 ) {
                     gx.remainder_days += parseInt(renewal_time);
                     this.$message.success(res.data.msg);
+                  }else{
+                    this.$message.error(res.data.msg)
                   }
-                  this.$message.error(res.data.msg)
-
                 })
               }
             }
