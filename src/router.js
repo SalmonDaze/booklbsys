@@ -123,8 +123,7 @@ let router = new Router({
               // 用户信息管理
               path: "userlist",
               name: "userlist",
-              component: () => import("./content/Userlist.vue"),
-              children: []
+              component: () => import("./content/Userlist.vue")
             },
             {
               // 书籍管理
@@ -151,7 +150,12 @@ let router = new Router({
           path: "borrowbook/:bookid",
           name: "borrowbook",
           component: () => import("./content/Borrow_book.vue")
-        }
+        },
+        {
+          path: 'userlist/:userPhone',
+          name: 'userPhone',
+          component: () => import('./page/user.vue')
+        },
       ]
     }
   ]

@@ -48,7 +48,7 @@
             <span slot="title">书籍管理</span>
           </el-menu-item>
         </router-link>
-        <router-link to="/homepage/person">
+        <router-link :to="{name: 'userPhone', params:{userPhone: this.$store.state.user.phone}}">
           <el-menu-item index="6">
             <i class="el-icon-info"></i>
             <span slot="title">个人信息</span>

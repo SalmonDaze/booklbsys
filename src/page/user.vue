@@ -1,20 +1,20 @@
 <template>
   <div class="user">
     <div class='user_name'>
-      <h3>{{username}}</h3>
+      <h3>{{userInfo.username}}</h3>
       <ul class='user_info'>
-        <li>UID: {{UID}}</li>
-        <li>用户组: {{isAdmin ? '管理员' : '普通用户'}}</li>
-        <li>手机号码: {{phone}}</li>
-        <li>账号状态: {{isBanned ? '封禁' : '正常'}}</li>
-        <li>创建日期: {{create_at.slice(0, 10)}}</li>
+        <li>UID: {{userInfo.UID}}</li>
+        <li>用户组: {{userInfo.isAdmin ? '管理员' : '普通用户'}}</li>
+        <li>手机号码: {{userInfo.phone}}</li>
+        <li>账号状态: {{userInfo.isBanned ? '封禁' : '正常'}}</li>
+        <li>创建日期: {{userInfo.create_at.slice(0, 10)}}</li>
       </ul>
     </div>
     <div class="borrow_list">
       <h2 class='borrow_title' style="margin-top:10px;">借阅记录</h2>
-      <h3 v-if='!borrow_list.length' style='margin-left: 400px;margin-top: 100px;'>无借阅记录</h3>
+      <h3 v-if='!userInfo.borrow_list.length' style='margin-left: 400px;margin-top: 100px;'>无借阅记录</h3>
       <div v-else style="margin-top:30px;">
-        <v-booklist v-for='book in borrow_list.slice((pageNum-1)*pagesize,pageNum*pagesize)'
+        <v-booklist v-for='book in userInfo.borrow_list.slice((pageNum-1)*pagesize,pageNum*pagesize)'
         :key='book._id'
         :title="book.title"
         :author="book.author"
@@ -45,22 +45,11 @@ export default {
   components: {
     vBooklist
   },
-  props: {
-    username: String,
-    phone: String,
-    isAdmin: Boolean,
-    isBanned: Boolean,
-    borrow_list: Array,
-    UID: Number,
-    create_at: String,
-    length: Number
-  },
-  computed: {
-  },
   data() {
     return {
       pageNum: 1,//默认开始页面
       pagesize: 4,//每页的数据条数
+      userInfo: {},
     }
   },
   methods: {
@@ -73,19 +62,33 @@ export default {
       this.pageNum = val
       console.log(`当前页: ${val}`);
     },
+    getDate() {
+      this.$ajax({
+        url: '/admin/getOneUserInfo',
+        method: 'post',
+        data: {
+          phone: this.$router.currentRoute.params.userPhone
+        }
+      }).then( res => {
+        this.userInfo = res.data.data[0]
+      })
+    }
   },
   computed: mapState({
     // 获取用户名
     user: state => state.user,
-  })
+  }),
+  created() {
+    this.getDate()
+  }
 }
 </script>
 
 <style>
 .user {
-  position: relative;
-  top: 80px;
-  left: 50px;
+  position: absolute;
+  top: 150px;
+  left: 250px;
   height: 500px;
   width: 400px;
   background: white;

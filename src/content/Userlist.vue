@@ -6,9 +6,11 @@
         <el-input v-model="phoneNumber"
           prefix-icon="el-icon-search"
           placeholder="请输入用户手机号"></el-input>
-        <el-button type="primary"
-          plain
-          @click='getUserInfo'>查询</el-button>
+          <router-link :to="{name: 'userPhone', params:{userPhone: phoneNumber}}">
+            <el-button type="primary"
+            plain
+            @click='getUserInfo'>查询</el-button>
+          </router-link>
         <h3 v-if='!user'
           style='margin-left: 400px;margin-top: 100px;'>暂无数据</h3>
       </div>

@@ -1,8 +1,8 @@
 <template>
   <div class="person">
     <div class="person1">
-      <v-user v-if='user' :username="user.username" :phone="user.phone" :isAdmin='user.isAdmin'
-      :isBanned='user.isBanned' :UID='user.UID' :create_at='user.create_at' :borrow_list='user.borrow_list' :length='user.borrow_list.length'></v-user>
+      <router-view>
+      </router-view>
     </div>
   </div>
 </template>
