@@ -15,15 +15,10 @@
           <el-table-column label="姓名"
             width="180">
             <template slot-scope="scope">
-              <el-popover trigger="hover"
-                placement="top">
-                <p>姓名: {{ scope.row.name }}</p>
-                <p>书籍: {{ scope.row.bookname }}</p>
-                <div slot="reference"
-                  class="name-wrapper">
-                  <el-tag size="medium">{{ scope.row.borrowUser.username }}</el-tag>
-                </div>
-              </el-popover>
+              <div slot="reference"
+                class="name-wrapper">
+                <el-tag size="medium">{{ scope.row.borrowUser.username }}</el-tag>
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="书名"
@@ -69,7 +64,7 @@ export default {
         data: {
           _id: row._id
         }
-      }).then( res => {
+      }).then(res => {
         this.$message.success("已通过审核")
         this.getData()
       })
@@ -81,7 +76,7 @@ export default {
         data: {
           _id: row._id
         }
-      }).then( res => {
+      }).then(res => {
         this.$message.success("已驳回")
         this.getData()
       })
@@ -116,7 +111,8 @@ export default {
   width: 1100px;
   margin: 30px 0px 0px 30px;
 }
-.check .table .el-table td,.check .table .el-table th{
+.check .table .el-table td,
+.check .table .el-table th {
   text-align: center;
 }
 </style>

@@ -120,6 +120,7 @@ export default {
     do_searchbook(input_bookname) {
       var NewItems = [];
       if (!input_bookname) {
+        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的书名");
         return false;
       } else {
@@ -139,6 +140,7 @@ export default {
       var NewItemtimes = [];
       console.log(value_borrowtime)
       if (!value_borrowtime) {
+        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的借出日期");
         return false;
       } else {
@@ -178,10 +180,10 @@ export default {
                     _userId: gx.userid
                   }
                 }).then(res => {
-                  if( res.data.code === 200 ) {
+                  if (res.data.code === 200) {
                     gx.remainder_days += parseInt(renewal_time);
                     this.$message.success(res.data.msg);
-                  }else{
+                  } else {
                     this.$message.error(res.data.msg)
                   }
                 })
