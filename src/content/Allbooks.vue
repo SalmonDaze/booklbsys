@@ -16,6 +16,9 @@
         </li>
       </ul>
     </div>
+    <div class="loading"
+      v-loading="loading"
+      v-if='loading'></div>
     <!-- 分页 -->
     <div class="page">
       <el-pagination @size-change="handleSizeChange"
@@ -58,6 +61,7 @@ export default {
           borrowCycle: borrowCycle,
           _id: _id
         })
+        this.loading = false
       }
     })
   },
@@ -66,6 +70,7 @@ export default {
       books: [],
       pageNum: 1,//默认开始页面
       pagesize: 12,//每页的数据条数
+      loading: true,
     }
   },
   methods: {
@@ -97,6 +102,13 @@ export default {
 </script>
 
 <style>
+.loading {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  top: 200px;
+  left: 600px;
+}
 .allbooks {
   position: absolute;
   top: 120px;

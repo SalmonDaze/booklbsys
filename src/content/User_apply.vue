@@ -111,7 +111,8 @@
 export default {
   data() {
     return {
-      activeName: 'second',
+      // 控制初始显示第一个选项卡
+      activeName: 'first',
       tableData: [],
       tableData2: [],
       pageNum: 1,//默认开始页面
@@ -185,13 +186,10 @@ export default {
   width: 1600px;
 }
 .userapply .el-tabs {
-  margin: 50px 0px 0px 30px;
+  margin: 20px 0px 0px 30px;
 }
 .userapply .el-tabs__nav-wrap {
-  width: 185px;
-}
-.userapply .el-tabs__item {
-  font-size: 18px;
+  width: 153px;
 }
 .userapply .table {
   width: 1100px;
