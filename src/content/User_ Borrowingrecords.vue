@@ -91,6 +91,7 @@ export default {
         phone: this.$store.state.user.phone
       }
     }).then((res) => {
+      this.loading = false
       let borrow_history = res.data.data[0].borrow_history
       for (const book of borrow_history) {
         /**
@@ -104,6 +105,7 @@ export default {
          */
         let { title, borrowCycle, _id } = book.book;
         let { borrowTime, returnTime, isReturn } = book;
+        console.log(title)
         if (isReturn) {
           this.tableData.push({
             date: formatTime(borrowTime),
@@ -125,7 +127,7 @@ export default {
             yn: isReturn ? '是' : '否',
           })
         }
-        this.loading = false
+
       }
     });
     this.tableData1 = this.tableData;
@@ -229,22 +231,33 @@ export default {
       if (row.yn === "是") {
         this.$message.warning("书籍已归还，请勿重复操作！");
       } else {
-        this.$ajax({
-          url: '/api/applyReturnBook',
-          method: 'post',
-          data: {
-            _id: row.bookid,
-            _userId: this.$store.state.user._id
-          }
-        }).then(res => {
-          if (res.data.code === 200) {
-            row.remainder_days = "申请归还中";
-            row.yn = "是";
-            this.$message.success(res.data.msg);
-          } else {
-            this.$message.error(res.data.msg)
-          }
-        })
+        this.$confirm('是否确定归还该书？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // 确定
+          this.$ajax({
+            url: '/api/applyReturnBook',
+            method: 'post',
+            data: {
+              _id: row.bookid,
+              _userId: this.$store.state.user._id
+            }
+          }).then(res => {
+            if (res.data.code === 200) {
+              row.remainder_days = "申请归还中";
+              this.$message.success(res.data.msg);
+            } else {
+              this.$message.error(res.data.msg)
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消归还'
+          });
+        });
       }
     },
     // 分页
