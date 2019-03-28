@@ -113,7 +113,7 @@
             <router-link :to="{path:'/homepage/admin/check'}">
               <el-menu-item index="8">
                 <i class="el-icon-edit"></i>
-                <span slot="title">借阅审核</span>
+                <span slot="title">管理审核</span>
               </el-menu-item>
             </router-link>
           </el-submenu>

@@ -126,7 +126,7 @@ export default {
           { validator: validatePass2, trigger: 'blur' }
         ],
       },
-      // 记录输入是否正确，控制按钮禁用
+      // 记录输入是否正确，控制按钮禁用，true禁用
       tablename: true,
       tablephone: true,
       tablepass: true,

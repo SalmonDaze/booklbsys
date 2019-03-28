@@ -22,7 +22,8 @@
           @click="jump_register">立即注册</a>
         <el-form-item>
           <el-button type="primary"
-            @click="login">登录</el-button>
+            @click="login"
+            :disabled="pro">登录</el-button>
         </el-form-item>
 
       </el-form>
@@ -35,20 +36,20 @@ export default {
   data() {
     var checkPhone = (rule, value, callback) => {
       if (!value) {
-        this.tablephone = false;
+        this.tablephone = true;
         return callback(new Error('手机号不能为空'));
       }
       setTimeout(() => {
         if (!Number.isInteger(value)) {
-          this.tablephone = false;
+          this.tablephone = true;
           callback(new Error('请输入数字值'));
         } else {
           const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
           if (!reg.test(value)) {
-            this.tablephone = false
+            this.tablephone = true
             return callback(new Error('请输入正确的手机号'));
           } else {
-            this.tablephone = true;
+            this.tablephone = false;
             callback();
           }
         }
@@ -56,10 +57,10 @@ export default {
     };
     var validatePass = (rule, value, callback) => {
       if (value === '') {
-        this.tablephone = false;
+        this.tablepass = true;
         callback(new Error('请输入密码'));
       } else {
-        this.tablephone = true;
+        this.tablepass = false;
         callback();
       }
     };
@@ -78,13 +79,19 @@ export default {
           { validator: validatePass, trigger: 'blur' }
         ]
       },
-      tablephone: false,
-      tablepass: false
+      // 记录输入是否正确，控制按钮禁用，true禁用
+      tablephone: true,
+      tablepass: true
     };
   },
   // 从首页后退时，清空token，重新登录
   mounted() {
     this.$store.dispatch('logout');
+  },
+  computed: {
+    pro() {
+      return this.tablephone || this.tablepass;
+    }
   },
   methods: {
     login_close() {
@@ -95,35 +102,30 @@ export default {
     },
     // 登录
     login() {
-      const reg = /^1[0-9]{10}$/;
-      if (!reg.test(this.ruleForm2.phone) || !this.ruleForm2.phone || !this.ruleForm2.pass) {
-        return false;
-      } else {
-        this.$ajax({
-          method: 'post',
-          url: '/api/login',
-          data: {
-            phone: this.ruleForm2.phone,
-            password: this.ruleForm2.pass
-          }
-        }).then((res) => {
-          let { success, user, token } = res.data
-          console.log(res)
-          if (success) {
-            // 更新store.js里loginAsync方法的token
-            this.$store.dispatch('loginAsync', {
-              token,
-              data: user
-            });
-            window.sessionStorage.setItem('phone', JSON.stringify(parseInt(user.phone)))
-            window.sessionStorage.setItem('token', token)
-            // 跳转首页
-            this.$router.push('/homepage/hot')
-          } else {
-            this.$message.error(res.data.msg);
-          }
-        })
-      }
+      this.$ajax({
+        method: 'post',
+        url: '/api/login',
+        data: {
+          phone: this.ruleForm2.phone,
+          password: this.ruleForm2.pass
+        }
+      }).then((res) => {
+        let { success, user, token } = res.data
+        console.log(res)
+        if (success) {
+          // 更新store.js里loginAsync方法的token
+          this.$store.dispatch('loginAsync', {
+            token,
+            data: user
+          });
+          window.sessionStorage.setItem('phone', JSON.stringify(parseInt(user.phone)))
+          window.sessionStorage.setItem('token', token)
+          // 跳转首页
+          this.$router.push('/homepage/hot')
+        } else {
+          this.$message.error(res.data.msg);
+        }
+      })
     },
   }
 }
