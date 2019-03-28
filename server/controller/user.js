@@ -377,12 +377,12 @@ module.exports.returnBook = async (ctx) => {
                 doc.borrowTime = ''
                 doc.returnTime = ''
                 doc.borrowUser = null
-                for( const item of doc.borrow_history) {
-                    if( item.borrowTime === borrowTime ) {
-                        item.returnTime = moment().format('YYYY-MM-DD HH:mm:ss')
-                        item.isReturn = true
-                    }
-                }
+                doc.borrow_history.push({
+                    borrowTime: borrowTime,
+                    returnTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+                    isReturn: true,
+                    borrowUser: _userId
+                })
                 Model.user.findOne({ _id: _userId}).then( user => {
                     user.borrow_list.splice(user.borrow_list.indexOf( _id ), 1)
                     for(const item of user.borrow_history) {

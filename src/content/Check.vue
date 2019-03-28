@@ -94,7 +94,7 @@
               <el-table-column label="操作">
                 <template slot-scope="scope">
                   <el-button size="mini"
-                    @click="handlepass(scope.$index, scope.row)">通过</el-button>
+                    @click="handleReturnSuccess(scope.$index, scope.row)">通过</el-button>
                   <el-button size="mini"
                     type="danger"
                     @click="handleDelete(scope.$index, scope.row)">驳回</el-button>
@@ -152,7 +152,6 @@ export default {
           _id: row._id
         }
       }).then(res => {
-        console.log(res)
         if( !res.data.success ) {
           this.$message.error(res.data.msg)
         }else {
@@ -173,13 +172,45 @@ export default {
         this.getData()
       })
     },
+    handleReturnSuccess(index, row) {
+      this.$ajax({
+        url: '/admin/applyReturnSuccess',
+        method: 'post',
+        data: {
+          _id: row._id
+        }
+      }).then( res => {
+        this.$message.success('归还成功')
+        this.getData()
+      })
+    },
+    handleReturnFail(index, row) {
+      this.$ajax({
+        url: '/admin/applyReturnFail',
+        method: 'post',
+        data: {
+          _id: row._id
+        }
+      }).then( res => {
+        this.$message.success('拒绝归还成功')
+        this.getData()
+      })
+    },
     getData() {
+      this.tableData = []
+      this.tableData2 = []
       this.$ajax({
         url: '/admin/getApplyList',
         method: 'post'
       }).then(res => {
-        this.tableData = res.data.data;
-        console.log(this.tableData)
+        for( const item of res.data.data ) {
+          console.log(item)
+          if ( item.state === 'return' ) {
+            this.tableData2.push(item)
+          } else {
+            this.tableData.push(item)
+          }
+        }
       })
     }
   },

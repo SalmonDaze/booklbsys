@@ -2,11 +2,11 @@ const Model = require('../database/module')
 
 let auth = async (ctx, next) => {
     const authApi = ['/api/applyBorrowBook', '/api/bookBorrowContinue']
-    let id = ctx.header.id
+    let phone = ctx.header.phone
     let url = authApi.some( url => url === ctx.url )
     if( url ) {
         let anext = await new Promise((resolve, reject) => {
-            Model.user.findOne({ _id: id }).then( doc => {
+            Model.user.findOne({ phone }).then( doc => {
                 if( doc.isBanned ) {
                     resolve({
                         msg: '用户已被封禁',

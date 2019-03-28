@@ -3,16 +3,12 @@
     <div class="userlist1">
       <h3>用户信息管理</h3>
       <div class="operate">
-        <el-input v-model="phoneNumber"
+        <el-input v-model="phoneNumber" style='width: 300px;'
           prefix-icon="el-icon-search"
           placeholder="请输入用户手机号"></el-input>
-          <router-link :to="{name: 'userPhone', params:{userPhone: phoneNumber}}">
             <el-button type="primary"
             plain
             @click='getUserInfo'>查询</el-button>
-          </router-link>
-        <h3 v-if='!user'
-          style='margin-left: 400px;margin-top: 100px;'>暂无数据</h3>
       </div>
     </div>
     <v-user v-if='user'
@@ -49,7 +45,19 @@ export default {
           phone: this.phoneNumber
         }
       }).then(res => {
-        this.user = res.data.data[0]
+        console.log(res)
+        if(res.data.success) {
+          this.user = res.data.data[0]
+          this.$router.push({
+            name: 'userPhone',
+            params: {
+              userPhone: this.phoneNumber
+            }
+          })
+        }else {
+          this.$message.error('查询失败')
+        }
+       
       })
     }
   }
@@ -72,5 +80,10 @@ export default {
 .userlist .el-input {
   width: 180px;
   margin-right: 20px;
+}
+.operate {
+  position: relative;
+  left: 250px;
+  top: 100px;
 }
 </style>

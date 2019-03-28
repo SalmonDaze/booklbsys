@@ -361,6 +361,13 @@ module.exports.getOneUserInfo = async (ctx) => {
     let anext = async () => {
         return new Promise((resolve, reject) => {
             Model.user.find({phone}).populate('borrow_list borrow_history.book apply_borrow_list.apply_book apply_return_list.apply_book').exec(( err, doc ) => {
+                if(doc.length === 0) {
+                    resolve({
+                        msg: '查询失败',
+                        code: 1,
+                        success: false
+                    })
+                }
                 resolve({
                     msg: '查询成功',
                     code: 200,
@@ -480,8 +487,9 @@ module.exports.applyReturnSuccess = async (ctx) => {
             Model.tempList.findOne({ _id }).populate('borrowBook borrowUser').exec( (err, tempdoc) => {
                 Model.user.findOne({ phone: tempdoc.borrowUser.phone }).then( userdoc => {
                     for( const item of userdoc.borrow_history ) {
-                        if( String(item.book) === String(tempdoc.borrowBook) ) {
+                        if( String(item.book) === String(tempdoc.borrowBook._id) ) {
                             item.returnTime = moment().format('YYYY-MM-DD HH:mm:ss')
+                            item.isReturn = true
                         }
                     }
                     for( const item in userdoc.borrow_list ) {

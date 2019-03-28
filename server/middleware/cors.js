@@ -8,7 +8,7 @@ let corso = cors({
     maxAge: 5,
     credentials: true,
     allowMethods: ['GET', 'POST', 'DELETE'],
-    allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'accessToken'],
+    allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'accessToken', 'phone'],
 })
 
 module.exports = corso

@@ -10,7 +10,6 @@ Vue.prototype.$http.defaults.withCredentials = true;
 
 Vue.prototype.$http.interceptors.response.use(
   response => {
-    console.log(response);
     if (response.data.resCode == "1000") {
       localStorage.clear();
       alert(response.data.resMsg);
@@ -55,7 +54,7 @@ export default new Vuex.Store({
       // localStorage.setItem('token', token)：将token存储到token字符串
       localStorage.setItem("token", payload.token);
       axios.defaults.headers.post["accessToken"] = payload.token;
-      axios.defaults.headers.post['id'] = payload.data._id
+      axios.defaults.headers.post['phone'] = payload.data.phone
       state.token = payload.token;
       state.user = payload.data;
     },
@@ -67,6 +66,7 @@ export default new Vuex.Store({
     },
     loginByToken: (state, payload) => {
       axios.defaults.headers.post["accessToken"] = payload.token;
+      axios.defaults.headers.post["phone"] = payload.phone;
       axios({
         url: "/api/loginByToken",
         method: "post",
