@@ -81,7 +81,7 @@ export default {
   width: 180px;
   margin-right: 20px;
 }
-.operate {
+.userlist .operate {
   position: relative;
   left: 250px;
   top: 100px;
