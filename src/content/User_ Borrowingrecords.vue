@@ -52,6 +52,10 @@
             </template>
           </el-table-column>
         </el-table>
+        <!-- 加载 -->
+        <div class="loading"
+          v-loading="loading"
+          v-if='loading'></div>
         <!-- 分页 -->
         <el-pagination @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -122,6 +126,7 @@ export default {
           })
         }
       }
+      this.loading = false
     });
     this.tableData1 = this.tableData;
   },
@@ -135,6 +140,7 @@ export default {
       multipleSelection: [],
       pageNum: 1,//默认开始页面
       pagesize: 10,//每页的数据条数
+      loading: true,
     }
   },
   methods: {

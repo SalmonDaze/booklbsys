@@ -16,6 +16,7 @@
         </li>
       </ul>
     </div>
+    <!-- 加载 -->
     <div class="loading"
       v-loading="loading"
       v-if='loading'></div>
@@ -102,13 +103,6 @@ export default {
 </script>
 
 <style>
-.loading {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  top: 200px;
-  left: 600px;
-}
 .allbooks {
   position: absolute;
   top: 120px;
@@ -117,6 +111,13 @@ export default {
 }
 .allbooks .book {
   display: inline-block;
+}
+.allbooks .loading {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  top: 200px;
+  left: 600px;
 }
 .allbooks .allbooks-book {
   width: 1500px;

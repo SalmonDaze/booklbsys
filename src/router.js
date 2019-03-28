@@ -13,7 +13,6 @@ import Userborrowingrecords from "./content/User_ Borrowingrecords.vue";
 import Hot from "./content/Hot.vue";
 import Newbooks from "./content/Newbooks.vue";
 import Setup from "./content/Set_up.vue";
-import Usersetup from "./content/User_set_up.vue";
 import store from "./store";
 
 Vue.use(Router);
@@ -63,12 +62,6 @@ let router = new Router({
           path: "allbooks",
           name: "allbooks",
           component: () => import("./content/Allbooks.vue")
-        },
-        {
-          // 用户书籍管理
-          path: "usersetup",
-          name: "usersetup",
-          component: Usersetup
         },
         {
           // 用户个人信息
