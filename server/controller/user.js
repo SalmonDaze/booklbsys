@@ -337,6 +337,7 @@ module.exports.bookBorrowContinue = async (ctx) => {
                         success: false,
                         code: 1
                     })
+                    return
                 }
                 doc.returnTime = returnTime
                 Model.user.findOne({ _id: _userId }).then( userdoc => {

@@ -124,6 +124,7 @@ let router = new Router({
               path: "userlist",
               name: "userlist",
               component: () => import("./content/Userlist.vue"),
+              children: []
             },
             {
               // 书籍管理

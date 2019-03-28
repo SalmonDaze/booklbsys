@@ -109,7 +109,7 @@ export default {
             bookid: _id,
             reader: borrowUser.username,
             can_days: borrowCycle,
-            remainder_days: remainTime(returnTime),
+            remainder_days: parseInt(remainTime(returnTime)),
             yn: isLending ? '否' : '是',
             userid: borrowUser._id
           })
@@ -178,8 +178,12 @@ export default {
                     _userId: gx.userid
                   }
                 }).then(res => {
-                  this.tableData1;
-                  this.$message.success(res.data.msg);
+                  if( res.data.code === 200 ) {
+                    gx.remainder_days += parseInt(renewal_time);
+                    this.$message.success(res.data.msg);
+                  }
+                  this.$message.error(res.data.msg)
+
                 })
               }
             }
