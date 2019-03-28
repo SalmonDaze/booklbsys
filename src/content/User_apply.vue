@@ -23,7 +23,7 @@
                 </template>
               </el-table-column>
               <el-table-column label="图书识别码"
-                width="180">
+                width="280">
                 <template slot-scope="scope">
                   <span style="margin-left: 10px">{{ scope.row.apply_book._id }}</span>
                 </template>
@@ -72,7 +72,7 @@
                 </template>
               </el-table-column>
               <el-table-column label="图书识别码"
-                width="180">
+                width="280">
                 <template slot-scope="scope">
                   <span style="margin-left: 10px">{{ scope.row.apply_book._id }}</span>
                 </template>
