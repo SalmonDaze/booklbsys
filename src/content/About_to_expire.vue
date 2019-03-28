@@ -116,6 +116,7 @@ export default {
     do_searchbook(input_bookname) {
       var NewItems = [];
       if (!input_bookname) {
+        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的书名");
         return false;
       } else {
@@ -135,6 +136,7 @@ export default {
       var NewItemtimes = [];
       console.log(value_borrowtime)
       if (!value_borrowtime) {
+        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的借出日期");
         return false;
       } else {
@@ -177,6 +179,11 @@ export default {
                   if (res.data.code === 200) {
                     gx.remainder_days += parseInt(renewal_time);
                     this.$message.success(res.data.msg);
+                    for (const item in this.tableData) {
+                      if (this.tableData[item].remainder_days > 7) {
+                        this.tableData.splice(item, 1)
+                      }
+                    }
                   } else {
                     this.$message.error(res.data.msg)
                   }
@@ -198,27 +205,33 @@ export default {
         this.$message.error("请勾选需要归还的书籍！");
         return false;
       } else {
-        for (const gx of this.multipleSelection) {
-          if (gx.yn === "是") {
-            this.$message.warning("书籍已归还，请勿重复操作！");
-          } else {
-            this.$ajax({
-              url: '/api/returnBook',
-              method: 'post',
-              data: {
-                _id: gx.bookid,
-                _userId: this.$store.state.user._id
+        this.$confirm('是否确定归还该书？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // 确定
+          this.$ajax({
+            url: '/api/returnBook',
+            method: 'post',
+            data: {
+              _id: gx.bookid,
+              _userId: gx.userid
+            }
+          }).then(res => {
+            this.$message.success(res.data.msg)
+            for (const item in this.tableData) {
+              if (this.tableData[item].bookid === gx.bookid) {
+                this.tableData.splice(item, 1)
               }
-            }).then(res => {
-              this.$message.success(res.data.msg)
-              for (const item in this.tableData) {
-                if (this.tableData[item].bookid === gx.bookid) {
-                  this.tableData.splice(item, 1)
-                }
-              }
-            })
-          }
-        }
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消归还'
+          });
+        });
       }
     },
     // 分页

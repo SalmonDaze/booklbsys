@@ -87,14 +87,14 @@
             <router-link to="/homepage/admin/userlist">
               <el-menu-item index="5">
                 <i class="el-icon-view"></i>
-                <span slot="title">用户信息（admin）</span>
+                <span slot="title">用户信息</span>
               </el-menu-item>
             </router-link>
             <router-link to="/homepage/admin/setup">
               <el-menu-item index="4"
                 v-if="$store.state.user.isAdmin">
                 <i class="el-icon-setting"></i>
-                <span slot="title">书籍管理（admin）</span>
+                <span slot="title">书籍管理</span>
               </el-menu-item>
             </router-link>
             <router-link :to="{path:'/homepage/admin/uploadBook'}">

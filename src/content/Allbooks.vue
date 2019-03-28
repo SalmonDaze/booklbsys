@@ -71,6 +71,7 @@ export default {
       books: [],
       pageNum: 1,//默认开始页面
       pagesize: 12,//每页的数据条数
+      // 加载
       loading: true,
     }
   },
@@ -114,8 +115,6 @@ export default {
 }
 .allbooks .loading {
   position: absolute;
-  width: 50px;
-  height: 50px;
   top: 200px;
   left: 600px;
 }

@@ -125,8 +125,8 @@ export default {
             yn: isReturn ? '是' : '否',
           })
         }
+        this.loading = false
       }
-      this.loading = false
     });
     this.tableData1 = this.tableData;
   },

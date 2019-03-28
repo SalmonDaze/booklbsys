@@ -13,6 +13,10 @@
         </li>
       </ul>
     </div>
+    <!-- 加载 -->
+    <div class="loading"
+      v-loading="loading"
+      v-if='loading'></div>
   </div>
 </template>
 
@@ -46,12 +50,15 @@ export default {
           borrowCycle: borrowCycle,
           _id: _id
         })
+        this.loading = false
       }
     })
   },
   data() {
     return {
-      books: []
+      books: [],
+      // 加载
+      loading: true,
     }
   },
   methods: {
@@ -84,6 +91,11 @@ export default {
   .newbooks .newbooks-book{
     width: 800px;
   }
+}
+.newbooks .loading {
+  position: absolute;
+  top: 200px;
+  left: 600px;
 }
 .newbooks .book {
   display: inline-block;

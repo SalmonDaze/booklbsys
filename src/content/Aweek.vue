@@ -208,21 +208,33 @@ export default {
           if (gx.yn === "是") {
             this.$message.warning("书籍已归还，请勿重复操作！");
           } else {
-            this.$ajax({
-              url: '/api/returnBook',
-              method: 'post',
-              data: {
-                _id: gx.bookid,
-                _userId: this.$store.state.user._id
-              }
-            }).then(res => {
-              this.$message.success(res.data.msg)
-              for (const item in this.tableData) {
-                if (this.tableData[item].bookid === gx.bookid) {
-                  this.tableData.splice(item, 1)
+            this.$confirm('是否确定归还该书？', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              // 确定
+              this.$ajax({
+                url: '/api/returnBook',
+                method: 'post',
+                data: {
+                  _id: gx.bookid,
+                  _userId: gx.userid
                 }
-              }
-            })
+              }).then(res => {
+                this.$message.success(res.data.msg)
+                for (const item in this.tableData) {
+                  if (this.tableData[item].bookid === gx.bookid) {
+                    this.tableData.splice(item, 1)
+                  }
+                }
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消归还'
+              });
+            });
           }
         }
       }
