@@ -41,6 +41,8 @@ adminRouter.post('/applySuccess', adminController.applySuccess)
 adminRouter.post('/applyFail', adminController.applyFail)
 // 同意归还图书
 adminRouter.post('/applyReturnSuccess', adminController.applyReturnSuccess)
+// 拒绝归还图书
+adminRouter.post('/applyReturnFail', adminController.applyReturnFail)
 // 获得申请借阅列表
 adminRouter.post('/getApplyList', adminController.getApplyList)
 module.exports = adminRouter

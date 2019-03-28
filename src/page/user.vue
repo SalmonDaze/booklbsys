@@ -8,6 +8,8 @@
         <li>手机号码: {{userInfo.phone}}</li>
         <li>账号状态: {{userInfo.isBanned ? '封禁' : '正常'}}</li>
         <li>创建日期: {{userInfo.create_at.slice(0, 10)}}</li>
+        <li v-if='auth'><el-button type='danger' style='width: 150px;' @click='banUser'>封禁用户</el-button></li>
+        <li v-if='unBan'><el-button type='warning' style='width: 150px' @click='unBanUser'>解除封禁</el-button></li>
       </ul>
     </div>
     <div class="borrow_list">
@@ -30,7 +32,7 @@
           :current-page.sync="pageNum"
           :page-size="pagesize"
           layout="total, prev, pager, next, jumper"
-          :total="length">
+          :total="userInfo.borrow_list.length">
         </el-pagination>
       </div>
     </div>
@@ -49,7 +51,15 @@ export default {
     return {
       pageNum: 1,//默认开始页面
       pagesize: 4,//每页的数据条数
-      userInfo: {},
+      userInfo: {
+        UID: 123456,
+        username:'default',
+        phone: '1234567890',
+        isBanned: false,
+        isAdmin: false,
+        create_at: '1970-01-01T00:00:00Z',
+        borrow_list: [],
+      },
     }
   },
   methods: {
@@ -72,13 +82,56 @@ export default {
       }).then( res => {
         this.userInfo = res.data.data[0]
       })
+    },
+    banUser() {
+      this.$confirm('确认封禁该用户吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$ajax({
+          url: '/admin/banUser',
+          method: 'post',
+          data: {
+            phone: this.userInfo.phone
+          }
+        }).then(() => {
+          this.$message.success('封禁成功')
+        })
+      })
+    },
+    unBanUser() {
+      this.$confirm('确认解封该用户吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$ajax({
+          url: '/admin/unBanUser',
+          method: 'post',
+          data: {
+            phone: this.userInfo.phone
+          }
+        }).then(() => {
+          this.$message.success('解封成功')
+        })
+      })
     }
   },
   computed: mapState({
     // 获取用户名
     user: state => state.user,
   }),
-  created() {
+  computed: {
+    auth(){
+      return this.$store.state.user.isAdmin && !this.userInfo.isBanned 
+        && this.userInfo._id !== this.$store.state.user._id
+    },
+    unBan() {
+      return this.$store.state.user.isAdmin && this.userInfo.isBanned 
+    }
+  },
+  mounted() {
     this.getDate()
   }
 }
@@ -89,7 +142,7 @@ export default {
   position: absolute;
   top: 150px;
   left: 250px;
-  height: 500px;
+  height: 550px;
   width: 400px;
   background: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
@@ -98,6 +151,7 @@ export default {
 .user_name {
   font-size: 3rem;
   text-align: center;
+
 }
 .user_info {
   margin-top: 20px;

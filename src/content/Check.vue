@@ -152,7 +152,12 @@ export default {
           _id: row._id
         }
       }).then(res => {
-        this.$message.success("已通过审核")
+        console.log(res)
+        if( !res.data.success ) {
+          this.$message.error(res.data.msg)
+        }else {
+          this.$message.success(res.data.msg)
+        }
         this.getData()
       })
     },

@@ -55,6 +55,7 @@ export default new Vuex.Store({
       // localStorage.setItem('token', token)：将token存储到token字符串
       localStorage.setItem("token", payload.token);
       axios.defaults.headers.post["accessToken"] = payload.token;
+      axios.defaults.headers.post['id'] = payload.data._id
       state.token = payload.token;
       state.user = payload.data;
     },

@@ -15,7 +15,6 @@ import Newbooks from "./content/Newbooks.vue";
 import Setup from "./content/Set_up.vue";
 import Usersetup from "./content/User_set_up.vue";
 import store from "./store";
-import axios from "axios";
 
 Vue.use(Router);
 
@@ -88,6 +87,7 @@ let router = new Router({
           path: "admin",
           name: "admin",
           component:()=>import("./content/Admin.vue"),
+          meta: { adminAuth: true},
           children: [
             {
               // 七天
@@ -172,6 +172,15 @@ router.beforeEach(async (to, from, next) => {
         phone: window.sessionStorage.getItem("phone"),
         token: window.sessionStorage.getItem("token")
       });
+    }
+    if( to.matched.some(record => record.meta.adminAuth )) {
+      if(store.state.user.isAdmin && window.sessionStorage.getItem('token')) {
+        next()
+      } else {
+        next({
+          path: '/homepage/hot'
+        })
+      }
     }
     if (!window.sessionStorage.getItem("token")) {
       next({
