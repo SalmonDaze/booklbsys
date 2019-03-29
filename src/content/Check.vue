@@ -97,7 +97,7 @@
                     @click="handleReturnSuccess(scope.$index, scope.row)">通过</el-button>
                   <el-button size="mini"
                     type="danger"
-                    @click="handleDelete(scope.$index, scope.row)">驳回</el-button>
+                    @click="handleReturnFail(scope.$index, scope.row)">驳回</el-button>
                 </template>
               </el-table-column>
             </el-table>

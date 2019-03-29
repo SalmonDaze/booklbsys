@@ -535,6 +535,7 @@ module.exports.applyReturnFail = async (ctx) => {
         return new Promise((resolve, reject) => {
             Model.tempList.findOne({ _id }).then( tempdoc => {
                 Model.user.findOne({ _id: tempdoc.borrowUser}).then( userdoc => {
+                    console.log(_id)
                     for( const item of userdoc.apply_return_list ) {
                         if( String(tempdoc._id) == String(item.apply_item)) {
                             item.status = 'fail'

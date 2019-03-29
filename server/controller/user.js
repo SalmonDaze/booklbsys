@@ -542,6 +542,13 @@ module.exports.applyReturnBook = async ( ctx ) => {
                             success: false
                         })
                         return
+                    } else if ( doc.apply_return_list.findIndex(item => String(item.apply_book) == String(_id) && item.status === 'applying') > -1) {
+                        resolve({
+                            msg: '不能重复申请',
+                            code: 1,
+                            success: false
+                        })
+                        return
                     }
                     Model.tempList.create({
                         borrowBook: _id,
@@ -575,6 +582,7 @@ module.exports.cancelApplyReturn = async (ctx) => {
         return new Promise((resolve, reject) => {
             Model.tempList.findOne({ _id }).then( tempdoc => {
                 Model.user.findOne({ _id: tempdoc.borrowUser}).then( userdoc => {
+                    console.log(_id)
                     for(const index in userdoc.apply_return_list) {
                         if(String(userdoc.apply_return_list[index].apply_item) == String(_id)){
                             userdoc.apply_return_list.splice(index, 1)
