@@ -605,23 +605,43 @@ module.exports.cancelApplyReturn = async (ctx) => {
 }
 
 module.exports.sendMsg = async (ctx) => {
-    let { _id, _toId, content, title} = ctx.request.body
+    let { _id, phone, content, title} = ctx.request.body
     let anext = async () => {
         return new Promise((resolve, reject) => {
-            Model.messageList.create({
-                sendBy: _id,
-                sendTo: _toId,
-                create_at: moment().format('YYYY-MM-DD HH:mm:ss'),
-                title: title,
-                content: content,
-                isRead: false
-            }).then( doc => {
-                resolve({
-                    msg: '发送成功',
-                    code: 200,
-                    success: true
+                Model.user.findOne({ phone }).then(userdoc => {
+                    if( !userdoc || userdoc.length === 0 ) {
+                        resolve({
+                            msg: '用户不存在',
+                            code: 1,
+                            success: false
+                        })
+                        return
+                    }
+                    if( String(userdoc._id) === String(_id) ) {
+                        resolve({
+                            msg: '不能给自己发消息',
+                            code: 1,
+                            success: false
+                        })
+                        return
+                    }
+                    Model.messageList.create({
+                        sendBy: _id,
+                        sendToPhone: phone,
+                        create_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                        title: title,
+                        content: content,
+                        isRead: false
+                    }).then(doc => {
+                        doc.sendTo = userdoc._id
+                        doc.save()
+                    })
+                    resolve({
+                        msg: '发送成功',
+                        code: 200,
+                        success: true
+                    })
                 })
-            })
         })
     }
     let result = await anext()
@@ -634,6 +654,7 @@ module.exports.reciveMsg = async (ctx) => {
     let anext = async () => {
         return new Promise((resolve, reject) => {
             Model.messageList.findOne({ _id }).then( doc => {
+                if( doc.isRead ) return
                 doc.isRead = true
                 doc.save()
             })
@@ -641,6 +662,44 @@ module.exports.reciveMsg = async (ctx) => {
                 msg: '阅读成功',
                 code: 200,
                 success: true
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.getUserMsg = async (ctx) => {
+    let { _id } = ctx.request.body
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.messageList.find({sendTo: _id}).populate('sendBy sendTo').exec( (err, doc) => {
+                resolve({
+                    code: 200,
+                    msg: '查询成功',
+                    success: true,
+                    data: doc
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.getMsgContent = async (ctx) => {
+    let { _id } = ctx.request.body
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.messageList.findOne({ _id }).populate('sendBy sendTo').exec( (err, doc) => {
+                resolve({
+                    code: 200,
+                    msg: '查询成功',
+                    success: true,
+                    data: doc
+                })
             })
         })
     }

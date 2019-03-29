@@ -37,4 +37,8 @@ childRouter.post('/cancelApplyReturn', userController.cancelApplyReturn)
 childRouter.post('/sendMsg', userController.sendMsg)
 // 用户接收消息
 childRouter.post('/reciveMsg', userController.reciveMsg)
+// 获得用户收到的信息
+childRouter.post('/getUserMsg', userController.getUserMsg)
+// 获得消息内容
+childRouter.post('/getMsgContent', userController.getMsgContent)
 module.exports = childRouter

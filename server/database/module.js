@@ -183,7 +183,10 @@ const messageList = new Schema({
     sendTo: {
         type: Schema.Types.ObjectId,
         ref: 'user',
-        required: true
+    },
+    sendToPhone: {
+        type: String,
+        required: true,
     },
     isRead: {
         type: Boolean,

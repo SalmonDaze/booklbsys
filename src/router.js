@@ -69,6 +69,11 @@ let router = new Router({
           component: () => import("./content/userMsg.vue"),
         },
         {
+          path: 'sendMessage',
+          name: 'sendMessage',
+          component: () => import('./content/sendMsg.vue')
+        },
+        {
           // 用户个人信息
           path: "person",
           name: "person",
