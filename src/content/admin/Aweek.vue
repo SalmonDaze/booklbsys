@@ -1,7 +1,7 @@
 <template>
-  <div class="abouttoexpire">
-    <div class="abouttoexpire1">
-      <v-recordtitle title="即将到期的书籍"
+  <div class="aweek">
+    <div class="aweek1">
+      <v-recordtitle title="7天内借阅的书籍"
         input_txt="请输入书名，回车"
         v-on:doSearchbook="do_searchbook"
         v-on:doSearchtime="do_searchtime"
@@ -58,8 +58,8 @@
   </div>
 </template>
 <script>
-import vRecordtitle from "../page/record_title.vue";
-import { remainTime, formatTime, calendarTime } from '../utils/formatDate.js';
+import vRecordtitle from "../../page/record_title.vue";
+import { remainTime, formatTime, calendarTime } from '../../utils/formatDate.js';
 export default {
   components: {
     vRecordtitle
@@ -72,29 +72,7 @@ export default {
    * mounted模板渲染成HTML后调用
    */
   created() {
-    this.$ajax.post('/admin/delayingBookList').then((res) => {
-      console.log(res)
-      for (const book of res.data.data) {
-        /**
-         * title：书名
-         * borrowTime：借出时间
-         * borrowCycle：可借天数
-         * isLending：是否借出
-         * returnTime:剩余时间
-         */
-        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id } = book
-        this.tableData.push({
-          date: formatTime(borrowTime),
-          bookname: title,
-          bookid: _id,
-          reader: borrowUser.username,
-          can_days: borrowCycle,
-          remainder_days: remainTime(returnTime),
-          yn: isLending ? '否' : '是',
-          userid: borrowUser._id
-        })
-      }
-    });
+    this.getData()
     this.tableData1 = this.tableData;
   },
   data() {
@@ -112,6 +90,32 @@ export default {
     }
   },
   methods: {
+    // 请求后端数据
+    getData() {
+      this.$ajax.post('/admin/sevenDaysBorrow').then((res) => {
+        console.log(res)
+        for (const book of res.data.data) {
+          /**
+           * title：书名
+           * borrowTime：借出时间
+           * borrowCycle：可借天数
+           * isLending：是否借出
+           * returnTime:剩余时间
+           */
+          let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id, username } = book
+          this.tableData.push({
+            date: formatTime(borrowTime),
+            bookname: title,
+            bookid: _id,
+            reader: borrowUser.username,
+            can_days: borrowCycle,
+            remainder_days: parseInt(remainTime(returnTime)),
+            yn: isLending ? '否' : '是',
+            userid: borrowUser._id
+          })
+        }
+      });
+    },
     // 搜索书名
     do_searchbook(input_bookname) {
       var NewItems = [];
@@ -179,11 +183,6 @@ export default {
                   if (res.data.code === 200) {
                     gx.remainder_days += parseInt(renewal_time);
                     this.$message.success(res.data.msg);
-                    for (const item in this.tableData) {
-                      if (this.tableData[item].remainder_days > 7) {
-                        this.tableData.splice(item, 1)
-                      }
-                    }
                   } else {
                     this.$message.error(res.data.msg)
                   }
@@ -205,33 +204,39 @@ export default {
         this.$message.error("请勾选需要归还的书籍！");
         return false;
       } else {
-        this.$confirm('是否确定归还该书？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          // 确定
-          this.$ajax({
-            url: '/api/returnBook',
-            method: 'post',
-            data: {
-              _id: gx.bookid,
-              _userId: gx.userid
-            }
-          }).then(res => {
-            this.$message.success(res.data.msg)
-            for (const item in this.tableData) {
-              if (this.tableData[item].bookid === gx.bookid) {
-                this.tableData.splice(item, 1)
-              }
-            }
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消归还'
-          });
-        });
+        for (const gx of this.multipleSelection) {
+          if (gx.yn === "是") {
+            this.$message.warning("书籍已归还，请勿重复操作！");
+          } else {
+            this.$confirm('是否确定归还该书？', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              // 确定
+              this.$ajax({
+                url: '/api/returnBook',
+                method: 'post',
+                data: {
+                  _id: gx.bookid,
+                  _userId: gx.userid
+                }
+              }).then(res => {
+                this.$message.success(res.data.msg)
+                for (const item in this.tableData) {
+                  if (this.tableData[item].bookid === gx.bookid) {
+                    this.tableData.splice(item, 1)
+                  }
+                }
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消归还'
+              });
+            });
+          }
+        }
       }
     },
     // 分页
@@ -262,25 +267,28 @@ export default {
 }
 </script>
 <style>
-.abouttoexpire {
+.aweek {
   position: absolute;
   top: 120px;
   left: 230px;
   height: 830px;
 }
-.abouttoexpire1 {
+.aweek1 {
   width: 1600px;
 }
-.abouttoexpire .table {
+.aweek .table {
   position: absolute;
   top: 220px;
   width: 1500px;
 }
-.abouttoexpire .el-table td,
-.abouttoexpire .el-table th {
+.aweek .el-button {
+  margin-left: 30px;
+}
+.aweek .el-table td,
+.aweek .el-table th {
   text-align: center;
 }
-.abouttoexpire .el-pagination {
+.aweek .el-pagination {
   margin-top: 10px;
   text-align: center;
 }

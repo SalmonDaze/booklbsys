@@ -3,12 +3,13 @@
     <div class="userlist1">
       <h3>用户信息管理</h3>
       <div class="operate">
-        <el-input v-model="phoneNumber" style='width: 300px;'
+        <el-input v-model="phoneNumber"
+          style='width: 300px;'
           prefix-icon="el-icon-search"
           placeholder="请输入用户手机号"></el-input>
-            <el-button type="primary"
-            plain
-            @click='getUserInfo'>查询</el-button>
+        <el-button type="primary"
+          plain
+          @click='getUserInfo'>查询</el-button>
       </div>
     </div>
     <v-user v-if='user'
@@ -25,7 +26,7 @@
 </template>
 
 <script>
-import vUser from '../page/user.vue'
+import vUser from '../../page/user.vue'
 export default {
   components: {
     vUser
@@ -46,7 +47,7 @@ export default {
         }
       }).then(res => {
         console.log(res)
-        if(res.data.success) {
+        if (res.data.success) {
           this.user = res.data.data[0]
           this.$router.push({
             name: 'userPhone',
@@ -54,10 +55,10 @@ export default {
               userPhone: this.phoneNumber
             }
           })
-        }else {
+        } else {
           this.$message.error('查询失败')
         }
-       
+
       })
     }
   }

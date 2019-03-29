@@ -1,17 +1,12 @@
 <template>
-  <div class="set-up">
-    <div class="set-up1">
-      <v-recordtitle title="书籍管理"
+  <div class="ungive-back">
+    <div class="ungive-back1">
+      <v-recordtitle title="未归还的书籍"
         input_txt="请输入书名，回车"
         v-on:doSearchbook="do_searchbook"
         v-on:doSearchtime="do_searchtime"
         v-on:doRenewal="do_renewal"
         v-on:doReturn="do_return"></v-recordtitle>
-      <div class="delete">
-        <el-button type="danger"
-          plain
-          @click="deletebooks()">下架</el-button>
-      </div>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
@@ -22,7 +17,7 @@
           <el-table-column type="selection"
             width="55">
           </el-table-column>
-          <el-table-column label="上架日期"
+          <el-table-column label="借出日期"
             width="120">
             <template slot-scope="scope">{{ scope.row.date }}</template>
           </el-table-column>
@@ -40,8 +35,8 @@
             label="剩余天数（天）"
             show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="borrowCount"
-            label="借阅次数"
+          <el-table-column prop="reader"
+            label="借阅人"
             show-overflow-tooltip>
           </el-table-column>
           <el-table-column prop="yn"
@@ -58,13 +53,14 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="vals">
         </el-pagination>
+        
       </div>
     </div>
   </div>
 </template>
 <script>
-import vRecordtitle from "../page/record_title.vue";
-import { remainTime, formatTime, calendarTime } from '../utils/formatDate.js';
+import vRecordtitle from "../../page/record_title.vue";
+import { remainTime, formatTime, calendarTime } from '../../utils/formatDate.js';
 export default {
   components: {
     vRecordtitle
@@ -72,47 +68,25 @@ export default {
   props: {
     title: String
   },
-  /** 
-   * created模板渲染成HTML前调用
-   * mounted模板渲染成HTML后调用
-   */
-  created() {
-    this.$ajax.post('/admin/getAllBook').then((res) => {
-      console.log(res)
-      for (const book of res.data.data) {
-        /**
-         * title：书名
-         * create_time：上架时间
-         * borrowCycle：可借天数
-         * isLending：是否借出
-         * returnTime:剩余时间
-         * borrowCount：借阅次数
-         */
-        let { title, create_time, borrowUser, borrowCycle, isLending, returnTime, _id, borrowCount } = book
-        if (!isLending) {
+  created(){
+    this.$ajax.post('http://192.168.2.73:3000/admin/unReturnBookList').then((res) => {
+
+      for( const book of res.data.data) {
+        // 判断未归还
+          let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id} = book
           this.tableData.push({
-            date: formatTime(create_time),
+            date: formatTime(borrowTime),
             bookname: title,
-            bookid: _id,
+            reader: borrowUser.username,
             can_days: borrowCycle,
-            borrowCount: borrowCount,
-            remainder_days: '无人借阅',
-            yn: isLending ? '否' : '是'
-          })
-        } else {
-          this.tableData.push({
-            date: formatTime(create_time),
-            bookname: title,
             bookid: _id,
-            can_days: borrowCycle,
-            borrowCount: borrowCount,
             remainder_days: remainTime(returnTime),
-            yn: isLending ? '否' : '是'
+            yn: isLending ? '否' : '是',
+            userid: borrowUser._id
           })
-        }
       }
     });
-    this.tableData1 = this.tableData;
+    this.tableData1=this.tableData;
   },
   data() {
     return {
@@ -122,7 +96,7 @@ export default {
       value_borrowtime: '',
       // 表单
       tableData: [],
-      tableData1: [],
+      tableData1:[],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
       pagesize: 10,//每页的数据条数
@@ -133,6 +107,7 @@ export default {
     do_searchbook(input_bookname) {
       var NewItems = [];
       if (!input_bookname) {
+        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的书名");
         return false;
       } else {
@@ -152,6 +127,7 @@ export default {
       var NewItemtimes = [];
       console.log(value_borrowtime)
       if (!value_borrowtime) {
+        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的借出日期");
         return false;
       } else {
@@ -187,10 +163,17 @@ export default {
                   method: 'post',
                   data: {
                     time: renewal_time,
-                    _id: gx.bookid
+                    _id: gx.bookid,
+                    _userId: gx.userid
                   }
-                }).then(res => console.log(res))
-                this.$message.error("续借成功！");
+                }).then(res => {
+                  if (res.data.code === 200) {
+                    gx.remainder_days += parseInt(renewal_time);
+                    this.$message.success(res.data.msg);
+                  } else {
+                    this.$message.error(res.data.msg)
+                  }
+                });
               }
             }
           }
@@ -212,66 +195,33 @@ export default {
           if (gx.yn === "是") {
             this.$message.warning("书籍已归还，请勿重复操作！");
           } else {
-            this.$ajax({
-              url: '/api/returnBook',
-              method: 'post',
-              data: {
-                _id: gx.bookid,
-                _userId: this.$store.state.user._id
-              }
-            }).then(res => console.log(res))
-          }
-        }
-      }
-    },
-    // 下架
-    deletebooks() {
-      // 将勾选内容的长度赋值在select，判断是否勾选书籍
-      var select = this.multipleSelection.length;
-      if (select === 0) {
-        this.$message.error("请勾选需要下架的书籍！");
-        return false;
-      } else {
-        for (const gx of this.multipleSelection) {
-          if (gx.yn === "否") {
-            this.$message.error("该书暂未归还，无法下架！");
-          } else {
-            if (gx.borrowCount > 1) {
-              this.$confirm('该书多次被借阅，是否继续？', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-              }).then(() => {
-                this.$ajax({
-                  url: '/admin/deleteBook',
-                  method: 'post',
-                  data: {
-                    _id: gx.bookid,
-                  }
-                }).then(res => console.log(res))
-                this.$message({
-                  type: 'success',
-                  message: '删除成功！'
-                });
-              }).catch(() => {
-                this.$message({
-                  type: 'info',
-                  message: '已取消删除'
-                });
-              });
-            } else {
+            this.$confirm('是否确定归还该书？', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              // 确定
               this.$ajax({
-                url: '/admin/deleteBook',
+                url: '/api/returnBook',
                 method: 'post',
                 data: {
                   _id: gx.bookid,
+                  _userId: gx.userid
                 }
-              }).then(res => console.log(res))
+              }).then(res => {
+                this.$message.success(res.data.msg)
+                for (const item in this.tableData) {
+                  if (this.tableData[item].bookid === gx.bookid) {
+                    this.tableData.splice(item, 1)
+                  }
+                }
+              })
+            }).catch(() => {
               this.$message({
-                type: 'success',
-                message: '删除成功！'
+                type: 'info',
+                message: '已取消归还'
               });
-            }
+            });
           }
         }
       }
@@ -304,32 +254,28 @@ export default {
 }
 </script>
 <style>
-.set-up {
+.ungive-back {
   position: absolute;
   top: 120px;
   left: 230px;
   height: 830px;
 }
-.set-up1 {
+.ungive-back1 {
   width: 1600px;
 }
-.set-up .delete {
-  position: relative;
-  top: 190px;
-}
-.set-up .table {
+.ungive-back .table {
   position: absolute;
-  top: 240px;
+  top: 220px;
   width: 1500px;
 }
-.set-up .el-button {
+.ungive-back .el-button {
   margin-left: 30px;
 }
-.set-up .el-table td,
-.set-up .el-table th {
+.ungive-back .el-table td,
+.ungive-back .el-table th {
   text-align: center;
 }
-.set-up .el-pagination {
+.ungive-back .el-pagination {
   margin-top: 10px;
   text-align: center;
 }

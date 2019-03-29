@@ -1,10 +1,10 @@
 <template>
-  <div class="giveback">
-    <div class="giveback1">
-      <v-recordtitle title="已归还书籍"
+  <div class="blacklist">
+    <div class="blacklist1">
+      <v-recordtitle title="逾期名单"
+        input_txt="请输入人名，回车"
         :return_show="false"
         :renewal_show="false"
-        input_txt="请输入书名，回车"
         v-on:doSearchbook="do_searchbook"
         v-on:doSearchtime="do_searchtime"></v-recordtitle>
       <div class="table">
@@ -17,7 +17,7 @@
           <el-table-column type="selection"
             width="55">
           </el-table-column>
-          <el-table-column label="上架日期"
+          <el-table-column label="借出日期"
             width="120">
             <template slot-scope="scope">{{ scope.row.date }}</template>
           </el-table-column>
@@ -25,13 +25,18 @@
             label="书名">
           </el-table-column>
           <el-table-column prop="bookid"
-            label="图书识别码"></el-table-column>
+            label="图书识别码">
+          </el-table-column>
           <el-table-column prop="can_days"
             label="可借天数（天）"
             show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="borrowCount"
-            label="借阅次数（天）"
+          <el-table-column prop="remainder_days"
+            label="逾期天数（天）"
+            show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column prop="reader"
+            label="借阅人"
             show-overflow-tooltip>
           </el-table-column>
           <el-table-column prop="yn"
@@ -53,41 +58,14 @@
   </div>
 </template>
 <script>
-import vRecordtitle from "../page/record_title.vue";
-import { remainTime, formatTime, calendarTime } from '../utils/formatDate.js';
+import vRecordtitle from "../../page/record_title.vue";
+import { remainTime, formatTime, calendarTime } from '../../utils/formatDate'
 export default {
   components: {
     vRecordtitle
   },
   props: {
     title: String
-  },
-  created() {
-    this.$ajax.post('/admin/getUnlendingList').then((res) => {
-      console.log(res)
-      for (const book of res.data.data) {
-        // 判断已归还
-        /**
-         * title：书名
-         * create_time：上架时间
-         * borrowCycle：可借天数
-         * borrowCount：借阅次数
-         * isLending：是否借出
-         * returnTime:剩余时间
-         */
-        console.log(book)
-        let { title,_id, create_time, borrowUser, borrowCycle, borrowCount, isLending } = book
-        this.tableData.push({
-          date: formatTime(create_time),
-          bookname: title,
-          bookid: _id,
-          borrowCount: borrowCount,
-          can_days: borrowCycle,
-          yn: isLending ? '否' : '是'
-        })
-      }
-    });
-    this.tableData1 = this.tableData;
   },
   data() {
     return {
@@ -96,24 +74,46 @@ export default {
       // 选择借书时间
       value_borrowtime: '',
       tableData: [],
-      tableData1:[],
+      tableData1: [],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
       pagesize: 10,//每页的数据条数
     }
+  },
+  created() {
+    this.$ajax({
+      url: '/admin/getDelayList',
+      method: 'post',
+
+    }).then(res => {
+      console.log(res)
+      for (const book of res.data.data) {
+        // 判断未归还
+        let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id } = book
+        this.tableData.push({
+          date: formatTime(borrowTime),
+          bookname: title,
+          reader: borrowUser.username,
+          can_days: borrowCycle,
+          bookid: _id,
+          remainder_days: remainTime(returnTime),
+          yn: isLending ? '否' : '是'
+        })
+      }
+    });
+    this.tableData1 = this.tableData;
   },
   methods: {
     // 搜索书名
     do_searchbook(input_bookname) {
       var NewItems = [];
       if (!input_bookname) {
-        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的书名");
         return false;
       } else {
         this.tableData.map(function (item) {
           // 数组里的书名和输入框书名一致
-          if (item.bookname === input_bookname) {
+          if (item.reader === input_bookname) {
             NewItems.push(item);
           } else {
             return false;
@@ -127,7 +127,6 @@ export default {
       var NewItemtimes = [];
       console.log(value_borrowtime)
       if (!value_borrowtime) {
-        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的借出日期");
         return false;
       } else {
@@ -168,34 +167,37 @@ export default {
       /**
        * 数组过滤
        * es6
-       * 得到tableData3里面yn为true的数组的长度
+       * 得到tableData1里面yn为true的数组的长度
        *  */
-      return this.tableData1.length
+      return this.tableData.length
     }
   }
 }
 </script>
 <style>
-.giveback {
+.blacklist {
   position: absolute;
   top: 120px;
   left: 230px;
   height: 830px;
 }
-.giveback1 {
+.blacklist1 {
   width: 1200px;
 }
-.giveback .table {
+.blacklist .table {
   position: absolute;
   top: 160px;
   width: 1500px;
 }
-.giveback .el-pagination {
+.blacklist .el-button {
+  margin-left: 30px;
+}
+.blacklist .el-pagination {
   margin-top: 10px;
   text-align: center;
 }
-.giveback .el-table td,
-.giveback .el-table th {
+.blacklist .el-table td,
+.blacklist .el-table th {
   text-align: center;
 }
 </style>
