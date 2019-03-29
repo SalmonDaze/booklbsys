@@ -6,7 +6,7 @@
           <el-button plain class='send_msg'>发送消息</el-button>
       </router-link>
       <ul class='msg_list'>
-          <li v-for='msg in msgList' :key='msg._id'>
+          <li v-for='msg in msgList' :key='msg._id' @click='recheck(msg.isRead)'>
               <router-link :to="{name: 'msgContent', params: {msgid: msg._id}}">
                   <div class='msg_container'>
                     <div class='msg_from'>
@@ -28,6 +28,7 @@
 
 <script>
 import { formatTime } from '../utils/formatDate.js'
+import { bus } from '../main.js'
 export default {
   data() {
     return {
@@ -35,7 +36,11 @@ export default {
     }
   },
   methods: {
-    
+    recheck(isRead) {
+        if( !isRead) {
+            bus.$emit('recheck')
+        }
+    }
   },
   computed: {
     

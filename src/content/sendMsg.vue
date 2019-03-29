@@ -35,6 +35,7 @@ export default {
                     title: this.title
                 }
             }).then( res => {
+                this.$socket.emit('sendMsg', this.recipient)
                 if(!res.data.success) {
                     this.$message.error(res.data.msg)
                 } else {
@@ -48,7 +49,7 @@ export default {
     },
     created() {
         this.recipient = this.$route.query.to || ''
-    }
+    },
 }
 </script>
 <style scoped>

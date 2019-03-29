@@ -1,9 +1,11 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
+import io from 'socket.io-client'
+import router from 'vue-router'
 
 Vue.use(Vuex);
-
+let socket = io()
 // 根据http状态码渲染404页面，500页面
 Vue.prototype.$http = axios;
 Vue.prototype.$http.defaults.withCredentials = true;
@@ -55,6 +57,7 @@ export default new Vuex.Store({
       localStorage.setItem("token", payload.token);
       axios.defaults.headers.post["accessToken"] = payload.token;
       axios.defaults.headers.post['phone'] = payload.data.phone
+      socket.emit('new user', payload.data.phone)
       state.token = payload.token;
       state.user = payload.data;
     },
@@ -67,6 +70,7 @@ export default new Vuex.Store({
     loginByToken: (state, payload) => {
       axios.defaults.headers.post["accessToken"] = payload.token;
       axios.defaults.headers.post["phone"] = payload.phone;
+      socket.emit('new user', payload.phone)
       axios({
         url: "/api/loginByToken",
         method: "post",

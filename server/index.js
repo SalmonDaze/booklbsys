@@ -22,10 +22,22 @@ app.use(router.routes()).use(router.allowedMethods())
 router.use('/api', userRouter.routes(), userRouter.allowedMethods())
 router.use('/admin', adminRouter.routes(), adminRouter.allowedMethods())
 
+let userSocket = {}
 io.on('connection', (socket) => {
-    console.log('one user connect')
-    socket.emit('chat message', 'hello from server')
+    socket.on('new user', (phone) => {
+        if( !(phone in userSocket) ){
+            socket.phone = phone
+            userSocket[ phone ] = socket
+        } else {
+            userSocket[ phone ].emit('relogin')
+        }
+    })
+    socket.on('sendMsg', (recipient) => {
+        console.log(recipient)
+        console.log(recipient in userSocket)
+        console.log(userSocket[ recipient ])
+        userSocket[ recipient ].emit('refresh')
+    })
 })
-
 
 server.listen(3000)

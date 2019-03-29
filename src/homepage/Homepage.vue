@@ -54,7 +54,7 @@
           </el-menu-item>
         </router-link>
         <router-link to="/homepage/userMsg">
-          <el-menu-item index="11">
+          <el-menu-item index="5">
             <i class="el-icon-bell"></i>
             <span slot="title">消息中心<div class='badget' v-if='unreadMsg'><span>{{unreadMsg > 99 ? '99+' : unreadMsg}}</span></div></span>
           </el-menu-item>
@@ -125,6 +125,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { bus } from '../main.js'
 export default {
   components: {
   },
@@ -143,13 +144,7 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     },
-  },
-  computed: mapState({
-    // 获取用户名
-    user: state => state.user.username
-  }),
-  mounted() {
-    if(this.$store.state.user) {
+    getUserMsg() {
       this.$ajax({
       url: '/api/getUserMsg',
       method: 'post',
@@ -159,8 +154,23 @@ export default {
     }).then(res => {
       this.unreadMsg = res.data.data.filter( item => !item.isRead ).length
     })
+    }
+  },
+  computed: mapState({
+    // 获取用户名
+    user: state => state.user.username
+  }),
+  mounted() {
+    this.$socket.on('refresh', () => {
+            console.log('11')
+        })
+    bus.$on('recheck', () => {
+      this.unreadMsg -= 1
+    })
+    if(this.$store.state.user) {
+      this.getUserMsg()
   }
-} 
+}
 }
 </script>
 <style>

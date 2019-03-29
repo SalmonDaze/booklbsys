@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const SECRET = require('../config/default').SECRET
 const crypto = require('crypto')
 const moment = require('moment')
+let io = require('../index.js')
 
 function cryptPwd(password, key) {
     const cipher = crypto.createCipher('aes192', key);
@@ -679,7 +680,7 @@ module.exports.getUserMsg = async (ctx) => {
                     code: 200,
                     msg: '查询成功',
                     success: true,
-                    data: doc
+                    data: doc,
                 })
             })
         })

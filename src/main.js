@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import axios from 'axios';
 import io from 'socket.io-client'
+import VueSocket from 'vue-socket.io'
 
 // 调用element-ui封装组件
 import ElementUI from "element-ui";
@@ -20,14 +21,17 @@ axios.interceptors.response.use((response) => {
 })
 
 Vue.use(ElementUI);
-let socket = io()
+let socket = io.connect('http://192.168.2.73:3000')
 Vue.config.productionTip = false;
-Vue.prototype.$ajax = axios;
 Vue.prototype.$socket = socket
+Vue.prototype.$ajax = axios;
+
 
 new Vue({
   router,
   store,
   render: h => h(App)
 }).$mount("#app");
+
+export let bus = new Vue()
 

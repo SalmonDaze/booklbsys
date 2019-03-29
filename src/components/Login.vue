@@ -122,6 +122,7 @@ export default {
           window.sessionStorage.setItem('token', token)
           // 跳转首页
           this.$router.push('/homepage/hot')
+          
         } else {
           this.$message.error(res.data.msg);
         }
