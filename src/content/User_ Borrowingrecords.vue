@@ -25,8 +25,14 @@
             width="120">
             <template slot-scope="scope">{{ scope.row.return_data }}</template>
           </el-table-column>
-          <el-table-column prop="bookname"
-            label="书名">
+          <el-table-column label="书名"
+            width="120">
+            <template slot-scope="scope">
+              <div @click='borrowbook(scope.$index, scope.row)'
+                class="hover">
+                {{ scope.row.bookname }}
+              </div>
+            </template>
           </el-table-column>
           <el-table-column prop="bookid"
             label="图书识别码">
@@ -77,7 +83,8 @@ export default {
     vRecordtitle
   },
   props: {
-    title: String
+    title: String,
+    bookid: String,
   },
   /** 
    * created模板渲染成HTML前调用
@@ -105,7 +112,6 @@ export default {
          */
         let { title, borrowCycle, _id } = book.book;
         let { borrowTime, returnTime, isReturn } = book;
-        console.log(title)
         if (isReturn) {
           this.tableData.push({
             date: formatTime(borrowTime),
@@ -146,22 +152,24 @@ export default {
     }
   },
   methods: {
-    // 搜索书名
+    // 搜索书名（部分搜索）
     do_searchbook(input_bookname) {
-      var NewItems = [];
       if (!input_bookname) {
         this.$message.warning("请输入要查询的书名");
         return false;
       } else {
-        this.tableData.map(function (item) {
-          // 数组里的书名和输入框书名一致
-          if (item.bookname === input_bookname) {
-            NewItems.push(item);
-          } else {
-            return false;
+        //逻辑-->根据input的value值筛选books中的数据
+        var arrByZM = []; //声明一个空数组来存放数据
+        for (var i = 0; i < this.tableData.length; i++) {
+          //for循环数据中的每一项（根据name值）
+          if (this.tableData[i].bookname.search(input_bookname) != -1) {
+            //判断输入框中的值是否可以匹配到数据，如果匹配成功
+            arrByZM.push(this.tableData[i]);
+            //向空数组中添加数据
           }
-        });
-        return this.tableData1 = NewItems;
+        }
+        //一定要记得返回筛选后的数据
+        return this.tableData1 = arrByZM;
       }
     },
     // 搜索日期
@@ -260,6 +268,15 @@ export default {
         });
       }
     },
+    // 点击书名跳转书籍详情借阅页
+    borrowbook(index, row) {
+      this.$router.push({
+        name: 'borrowbook',
+        params: {
+          bookid: row.bookid
+        }
+      });
+    },
     // 分页
     handleSizeChange(val) {
       this.pagesize = val;
@@ -308,6 +325,10 @@ export default {
 .userborrow .el-table td,
 .userborrow .el-table th {
   text-align: center;
+}
+.hover:hover {
+  color: #409eff;
+  cursor: pointer;
 }
 .userborrow .el-pagination {
   margin-top: 10px;

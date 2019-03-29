@@ -6,12 +6,11 @@
         <el-input v-model="vbookname"
           style='width: 300px;'
           prefix-icon="el-icon-search"
-          placeholder="请输入书名"></el-input>
-        <el-button type="primary" plain icon="el-icon-sort-up"
-          @click='do_up()'></el-button>
-          <el-button type="primary"
-          plain icon="el-icon-sort-down"
-          @click='do_up()'></el-button>
+          placeholder="请输入要查找的书名"></el-input>
+        <el-button type="primary"
+          plain @click="reorder('borrowCount', false)" title="借阅次数由低到高">↑</el-button>
+        <el-button type="primary"
+          plain @click="reorder('borrowCount', true)" title="借阅次数由高到低">↓</el-button>
       </div>
       <ul class="allbooks-book">
         <li class="book"
@@ -62,8 +61,9 @@ export default {
          * author：作者
          * cover：图片
          * bookInfo：简介
+         * borrowCount：借阅次数
          */
-        let { author, title, cover, bookInfo, borrowCycle, _id } = book
+        let { author, title, cover, bookInfo, borrowCycle, _id, borrowCount } = book
         // 图片路径
         this.books.push({
           author: author,
@@ -71,7 +71,8 @@ export default {
           cover: cover,
           bookInfo: bookInfo,
           borrowCycle: borrowCycle,
-          _id: _id
+          _id: _id,
+          borrowCount: borrowCount
         })
         this.loading = false
       }
@@ -81,6 +82,8 @@ export default {
     return {
       // 书名
       vbookname: '',
+      letter: '', //默认不排序
+      original: false, //默认从小到大排列
       books: [],
       pageNum: 1,//默认开始页面
       pagesize: 12,//每页的数据条数
@@ -89,28 +92,40 @@ export default {
     }
   },
   //通过计算属性过滤数据
-    computed: {
-      list: function() {
-        var _this = this;
-        //逻辑-->根据input的value值筛选books中的数据
-        var arrByZM = []; //声明一个空数组来存放数据
-        for (var i = 0; i < this.books.length; i++) {
-          //for循环数据中的每一项（根据name值）
-          if (this.books[i].title.search(this.vbookname) != -1) {
-            //判断输入框中的值是否可以匹配到数据，如果匹配成功
-            arrByZM.push(this.books[i]);
-            //向空数组中添加数据
-          }
+  computed: {
+    list: function () {
+      //逻辑-->根据input的value值筛选books中的数据
+      var arrByZM = []; //声明一个空数组来存放数据
+      for (var i = 0; i < this.books.length; i++) {
+        //for循环数据中的每一项（根据name值）
+        if (this.books[i].title.search(this.vbookname) != -1) {
+          //判断输入框中的值是否可以匹配到数据，如果匹配成功
+          arrByZM.push(this.books[i]);
+          //向空数组中添加数据
         }
-        
-        //一定要记得返回筛选后的数据
-        return arrByZM;
       }
-    },
+      //逻辑-->升序降序排列 false: 默认从小到大 true：默认从大到小
+      //判断，如果要letter不为空，说明要进行排序
+      if (this.letter != '') {
+        arrByZM.sort(function (a, b) {
+          if (_this.original) {
+            return b[_this.letter] - a[_this.letter];
+          } else {
+            return a[_this.letter] - b[_this.letter];
+          }
+        });
+      }
+      //一定要记得返回筛选后的数据
+      return arrByZM;
+    }
+  },
   methods: {
-    // 搜索书名
-    do_searchbook() {
-
+    // 次数排序
+    reorder(letter, original) {
+      // 排序字段borrowcount
+      this.letter = letter;
+      // 排序方式，up或down
+      this.original = original
     },
     do_borrowbook(book) {
       // 跳转借书页
@@ -151,7 +166,7 @@ export default {
   margin-left: 20px;
 }
 .allbooks .el-button--primary.is-plain {
-  margin-left: 20px;
+  margin-left: 10px;
 }
 .allbooks .book {
   display: inline-block;
@@ -168,5 +183,10 @@ export default {
   position: absolute;
   top: 680px;
   left: 500px;
+}
+.allbooks .operate .el-button{
+  width: 25px;
+  height: 40px;
+  padding: 0px;
 }
 </style>
