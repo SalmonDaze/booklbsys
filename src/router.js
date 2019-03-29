@@ -4,15 +4,15 @@ import Cover from "@/components/Cover.vue";
 import Login from "./components/Login.vue";
 import Register from "./components/Register.vue";
 import Homepage from "./homepage/Homepage.vue";
-import Aweek from "./content/Aweek.vue";
-import Abouttoexpire from "./content/About_to_expire.vue";
-import Giveback from "./content/Give_back.vue";
-import Ungiveback from "./content/Ungive_back.vue";
-import Blacklist from "./content/Blacklist.vue";
+import Aweek from "./content/admin/Aweek.vue";
+import Abouttoexpire from "./content/admin/About_to_expire.vue";
+import Giveback from "./content/admin/Give_back.vue";
+import Ungiveback from "./content/admin/Ungive_back.vue";
+import Blacklist from "./content/admin/Blacklist.vue";
 import Userborrowingrecords from "./content/User_ Borrowingrecords.vue";
 import Hot from "./content/Hot.vue";
 import Newbooks from "./content/Newbooks.vue";
-import Setup from "./content/Set_up.vue";
+import Setup from "./content/admin/Set_up.vue";
 import store from "./store";
 
 Vue.use(Router);
@@ -116,7 +116,7 @@ let router = new Router({
               // 用户信息管理
               path: "userlist",
               name: "userlist",
-              component: () => import("./content/Userlist.vue")
+              component: () => import("./content/admin/Userlist.vue")
             },
             {
               // 书籍管理
@@ -128,13 +128,13 @@ let router = new Router({
               // 书籍上架
               path: "uploadBook",
               name: "uploadBook",
-              component: () => import("./content/uploadBook.vue")
+              component: () => import("./content/admin/uploadBook.vue")
             },
             {
               // 借阅审核
               path: "check",
               name: "check",
-              component: () => import("./content/Check.vue")
+              component: () => import("./content/admin/Check.vue")
             },
           ]
         },

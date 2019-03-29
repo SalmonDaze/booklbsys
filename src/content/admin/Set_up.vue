@@ -1,12 +1,17 @@
 <template>
-  <div class="aweek">
-    <div class="aweek1">
-      <v-recordtitle title="7天内借阅的书籍"
+  <div class="set-up">
+    <div class="set-up1">
+      <v-recordtitle title="书籍管理"
         input_txt="请输入书名，回车"
         v-on:doSearchbook="do_searchbook"
         v-on:doSearchtime="do_searchtime"
         v-on:doRenewal="do_renewal"
         v-on:doReturn="do_return"></v-recordtitle>
+      <div class="delete">
+        <el-button type="danger"
+          plain
+          @click="deletebooks()">下架</el-button>
+      </div>
       <div class="table">
         <!-- 表格 -->
         <el-table ref="multipleTable"
@@ -17,7 +22,7 @@
           <el-table-column type="selection"
             width="55">
           </el-table-column>
-          <el-table-column label="借出日期"
+          <el-table-column label="上架日期"
             width="120">
             <template slot-scope="scope">{{ scope.row.date }}</template>
           </el-table-column>
@@ -35,8 +40,8 @@
             label="剩余天数（天）"
             show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="reader"
-            label="借阅人"
+          <el-table-column prop="borrowCount"
+            label="借阅次数"
             show-overflow-tooltip>
           </el-table-column>
           <el-table-column prop="yn"
@@ -58,8 +63,8 @@
   </div>
 </template>
 <script>
-import vRecordtitle from "../page/record_title.vue";
-import { remainTime, formatTime, calendarTime } from '../utils/formatDate.js';
+import vRecordtitle from "../../page/record_title.vue";
+import { remainTime, formatTime, calendarTime } from '../../utils/formatDate.js';
 export default {
   components: {
     vRecordtitle
@@ -72,7 +77,41 @@ export default {
    * mounted模板渲染成HTML后调用
    */
   created() {
-    this.getData()
+    this.$ajax.post('/admin/getAllBook').then((res) => {
+      console.log(res)
+      for (const book of res.data.data) {
+        /**
+         * title：书名
+         * create_time：上架时间
+         * borrowCycle：可借天数
+         * isLending：是否借出
+         * returnTime:剩余时间
+         * borrowCount：借阅次数
+         */
+        let { title, create_time, borrowUser, borrowCycle, isLending, returnTime, _id, borrowCount } = book
+        if (!isLending) {
+          this.tableData.push({
+            date: formatTime(create_time),
+            bookname: title,
+            bookid: _id,
+            can_days: borrowCycle,
+            borrowCount: borrowCount,
+            remainder_days: '无人借阅',
+            yn: isLending ? '否' : '是'
+          })
+        } else {
+          this.tableData.push({
+            date: formatTime(create_time),
+            bookname: title,
+            bookid: _id,
+            can_days: borrowCycle,
+            borrowCount: borrowCount,
+            remainder_days: remainTime(returnTime),
+            yn: isLending ? '否' : '是'
+          })
+        }
+      }
+    });
     this.tableData1 = this.tableData;
   },
   data() {
@@ -90,37 +129,10 @@ export default {
     }
   },
   methods: {
-    // 请求后端数据
-    getData() {
-      this.$ajax.post('/admin/sevenDaysBorrow').then((res) => {
-        console.log(res)
-        for (const book of res.data.data) {
-          /**
-           * title：书名
-           * borrowTime：借出时间
-           * borrowCycle：可借天数
-           * isLending：是否借出
-           * returnTime:剩余时间
-           */
-          let { title, borrowTime, borrowUser, borrowCycle, isLending, returnTime, _id, username } = book
-          this.tableData.push({
-            date: formatTime(borrowTime),
-            bookname: title,
-            bookid: _id,
-            reader: borrowUser.username,
-            can_days: borrowCycle,
-            remainder_days: parseInt(remainTime(returnTime)),
-            yn: isLending ? '否' : '是',
-            userid: borrowUser._id
-          })
-        }
-      });
-    },
     // 搜索书名
     do_searchbook(input_bookname) {
       var NewItems = [];
       if (!input_bookname) {
-        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的书名");
         return false;
       } else {
@@ -140,7 +152,6 @@ export default {
       var NewItemtimes = [];
       console.log(value_borrowtime)
       if (!value_borrowtime) {
-        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的借出日期");
         return false;
       } else {
@@ -176,17 +187,10 @@ export default {
                   method: 'post',
                   data: {
                     time: renewal_time,
-                    _id: gx.bookid,
-                    _userId: gx.userid
+                    _id: gx.bookid
                   }
-                }).then(res => {
-                  if (res.data.code === 200) {
-                    gx.remainder_days += parseInt(renewal_time);
-                    this.$message.success(res.data.msg);
-                  } else {
-                    this.$message.error(res.data.msg)
-                  }
-                })
+                }).then(res => console.log(res))
+                this.$message.error("续借成功！");
               }
             }
           }
@@ -208,33 +212,66 @@ export default {
           if (gx.yn === "是") {
             this.$message.warning("书籍已归还，请勿重复操作！");
           } else {
-            this.$confirm('是否确定归还该书？', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              // 确定
+            this.$ajax({
+              url: '/api/returnBook',
+              method: 'post',
+              data: {
+                _id: gx.bookid,
+                _userId: this.$store.state.user._id
+              }
+            }).then(res => console.log(res))
+          }
+        }
+      }
+    },
+    // 下架
+    deletebooks() {
+      // 将勾选内容的长度赋值在select，判断是否勾选书籍
+      var select = this.multipleSelection.length;
+      if (select === 0) {
+        this.$message.error("请勾选需要下架的书籍！");
+        return false;
+      } else {
+        for (const gx of this.multipleSelection) {
+          if (gx.yn === "否") {
+            this.$message.error("该书暂未归还，无法下架！");
+          } else {
+            if (gx.borrowCount > 1) {
+              this.$confirm('该书多次被借阅，是否继续？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.$ajax({
+                  url: '/admin/deleteBook',
+                  method: 'post',
+                  data: {
+                    _id: gx.bookid,
+                  }
+                }).then(res => console.log(res))
+                this.$message({
+                  type: 'success',
+                  message: '删除成功！'
+                });
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消删除'
+                });
+              });
+            } else {
               this.$ajax({
-                url: '/api/returnBook',
+                url: '/admin/deleteBook',
                 method: 'post',
                 data: {
                   _id: gx.bookid,
-                  _userId: gx.userid
                 }
-              }).then(res => {
-                this.$message.success(res.data.msg)
-                for (const item in this.tableData) {
-                  if (this.tableData[item].bookid === gx.bookid) {
-                    this.tableData.splice(item, 1)
-                  }
-                }
-              })
-            }).catch(() => {
+              }).then(res => console.log(res))
               this.$message({
-                type: 'info',
-                message: '已取消归还'
+                type: 'success',
+                message: '删除成功！'
               });
-            });
+            }
           }
         }
       }
@@ -259,7 +296,7 @@ export default {
       /**
        * 数组过滤
        * es6
-       * 得到tableData1里面yn为true的数组的长度
+       * 得到tableData3里面yn为true的数组的长度
        *  */
       return this.tableData1.length
     }
@@ -267,28 +304,32 @@ export default {
 }
 </script>
 <style>
-.aweek {
+.set-up {
   position: absolute;
   top: 120px;
   left: 230px;
   height: 830px;
 }
-.aweek1 {
+.set-up1 {
   width: 1600px;
 }
-.aweek .table {
+.set-up .delete {
+  position: relative;
+  top: 190px;
+}
+.set-up .table {
   position: absolute;
-  top: 220px;
+  top: 240px;
   width: 1500px;
 }
-.aweek .el-button {
+.set-up .el-button {
   margin-left: 30px;
 }
-.aweek .el-table td,
-.aweek .el-table th {
+.set-up .el-table td,
+.set-up .el-table th {
   text-align: center;
 }
-.aweek .el-pagination {
+.set-up .el-pagination {
   margin-top: 10px;
   text-align: center;
 }
