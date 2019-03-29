@@ -33,4 +33,8 @@ childRouter.post('/cancelApply', userController.cancelApply)
 childRouter.post('/applyReturnBook', userController.applyReturnBook)
 // 取消申请归还
 childRouter.post('/cancelApplyReturn', userController.cancelApplyReturn)
+// 用户发送消息
+childRouter.post('/sendMsg', userController.sendMsg)
+// 用户接收消息
+childRouter.post('/reciveMsg', userController.reciveMsg)
 module.exports = childRouter

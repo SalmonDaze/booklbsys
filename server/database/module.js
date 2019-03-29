@@ -171,9 +171,38 @@ const tempList = new Schema({
     }
 })
 
+const messageList = new Schema({
+    title: {
+        type: String,
+    },
+    sendBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'user',
+        required: true
+    },
+    sendTo: {
+        type: Schema.Types.ObjectId,
+        ref: 'user',
+        required: true
+    },
+    isRead: {
+        type: Boolean,
+        default: false
+    },
+    content: {
+        type: String,
+        required: true
+    },
+    create_at: {
+        type: String,
+        default: moment().format('YYYY-MM-DD HH:mm:ss')
+    }
+})
+
 let Model = {
     user: mongoose.model('user', userSchema),
     book: mongoose.model('book', bookSchema),
-    tempList: mongoose.model('tempList', tempList)
+    tempList: mongoose.model('tempList', tempList),
+    messageList: mongoose.model('messageList', messageList)
 }
 module.exports = Model

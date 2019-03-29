@@ -9,16 +9,23 @@ const static = require('koa-static')
 const jsonwebtoken = require('./middleware/jsonwebtoken')
 const corso = require('./middleware/cors')
 const auth = require('./middleware/auth')
+const server = require('http').createServer(app.callback())
+const io = require('socket.io')(server)
 
 app.use(static(__dirname + '/public/uploads'))
 app.use(corso)
 app.use(jsonwebtoken)
 app.use(auth)
 app.use(bodyParser())
+app.use(router.routes()).use(router.allowedMethods())
 
 router.use('/api', userRouter.routes(), userRouter.allowedMethods())
 router.use('/admin', adminRouter.routes(), adminRouter.allowedMethods())
-app.use(router.routes()).use(router.allowedMethods())
+
+io.on('connection', (socket) => {
+    console.log('one user connect')
+    socket.emit('chat message', 'hello from server')
+})
 
 
-app.listen(3000)
+server.listen(3000)

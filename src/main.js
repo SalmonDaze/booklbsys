@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import axios from 'axios';
+import io from 'socket.io-client'
 
 // 调用element-ui封装组件
 import ElementUI from "element-ui";
@@ -19,9 +20,10 @@ axios.interceptors.response.use((response) => {
 })
 
 Vue.use(ElementUI);
+let socket = io()
 Vue.config.productionTip = false;
 Vue.prototype.$ajax = axios;
-
+Vue.prototype.$socket = socket
 
 new Vue({
   router,

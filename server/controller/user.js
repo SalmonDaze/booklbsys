@@ -603,3 +603,48 @@ module.exports.cancelApplyReturn = async (ctx) => {
     ctx.statsu = 200
     ctx.body = result
 }
+
+module.exports.sendMsg = async (ctx) => {
+    let { _id, _toId, content, title} = ctx.request.body
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.messageList.create({
+                sendBy: _id,
+                sendTo: _toId,
+                create_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                title: title,
+                content: content,
+                isRead: false
+            }).then( doc => {
+                resolve({
+                    msg: '发送成功',
+                    code: 200,
+                    success: true
+                })
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}
+
+module.exports.reciveMsg = async (ctx) => {
+    let { _id } = ctx.request.body
+    let anext = async () => {
+        return new Promise((resolve, reject) => {
+            Model.messageList.findOne({ _id }).then( doc => {
+                doc.isRead = true
+                doc.save()
+            })
+            resolve({
+                msg: '阅读成功',
+                code: 200,
+                success: true
+            })
+        })
+    }
+    let result = await anext()
+    ctx.status = 200
+    ctx.body = result
+}

@@ -64,6 +64,11 @@ let router = new Router({
           component: () => import("./content/Allbooks.vue")
         },
         {
+          path: "userMsg",
+          name: "userMsg",
+          component: () => import("./content/userMsg.vue"),
+        },
+        {
           // 用户个人信息
           path: "person",
           name: "person",
@@ -149,6 +154,11 @@ let router = new Router({
           name: 'userPhone',
           component: () => import('./page/user.vue')
         },
+        {
+          path: 'msgContent/:msgid',
+          name: 'msgContent',
+          component: () => import('./content/msgContent.vue')
+        }
       ]
     }
   ]

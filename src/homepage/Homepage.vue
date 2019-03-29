@@ -53,6 +53,12 @@
             <span slot="title">我的申请</span>
           </el-menu-item>
         </router-link>
+        <router-link to="/homepage/userMsg">
+          <el-menu-item index="11">
+            <i class="el-icon-bell"></i>
+            <span slot="title">消息中心</span>
+          </el-menu-item>
+        </router-link>
         <!-- 管理员 -->
           <el-submenu index="7"
             v-if="$store.state.user.isAdmin">
@@ -136,7 +142,7 @@ export default {
   computed: mapState({
     // 获取用户名
     user: state => state.user.username
-  })
+  }),
 }
 </script>
 <style>
