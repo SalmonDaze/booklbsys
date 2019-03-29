@@ -13,7 +13,8 @@
           :data="tableData1.slice((pageNum-1)*pagesize,pageNum*pagesize)"
           tooltip-effect="dark"
           style="width: 100%"
-          @selection-change="handleSelectionChange">
+          @selection-change="handleSelectionChange"
+          :default-sort = "{prop: 'date', order: 'descending'}">
           <el-table-column type="selection"
             width="55">
           </el-table-column>
@@ -21,8 +22,14 @@
             width="120">
             <template slot-scope="scope">{{ scope.row.date }}</template>
           </el-table-column>
-          <el-table-column prop="bookname"
-            label="书名">
+          <el-table-column label="书名"
+            width="120">
+            <template slot-scope="scope">
+              <div @click='borrowbook(scope.$index, scope.row)'
+                class="hover">
+                {{ scope.row.bookname }}
+              </div>
+            </template>
           </el-table-column>
           <el-table-column prop="bookid"
             label="图书识别码"></el-table-column>
@@ -32,6 +39,7 @@
           </el-table-column>
           <el-table-column prop="borrowCount"
             label="借阅次数（天）"
+            sortable
             show-overflow-tooltip>
           </el-table-column>
           <el-table-column prop="yn"
@@ -76,14 +84,14 @@ export default {
          * returnTime:剩余时间
          */
         console.log(book)
-        let { title,_id, create_time, borrowUser, borrowCycle, borrowCount, isLending } = book
+        let { title, _id, create_time, borrowUser, borrowCycle, borrowCount, isLending } = book
         this.tableData.push({
           date: formatTime(create_time),
           bookname: title,
           bookid: _id,
           borrowCount: borrowCount,
           can_days: borrowCycle,
-          yn: isLending ? '否' : '是'
+          yn: isLending ? '否' : '是',
         })
       }
     });
@@ -96,30 +104,31 @@ export default {
       // 选择借书时间
       value_borrowtime: '',
       tableData: [],
-      tableData1:[],
+      tableData1: [],
       multipleSelection: [],
       pageNum: 1,//默认开始页面
       pagesize: 10,//每页的数据条数
     }
   },
   methods: {
-    // 搜索书名
+    // 搜索书名（部分搜索）
     do_searchbook(input_bookname) {
-      var NewItems = [];
       if (!input_bookname) {
-        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的书名");
         return false;
       } else {
-        this.tableData.map(function (item) {
-          // 数组里的书名和输入框书名一致
-          if (item.bookname === input_bookname) {
-            NewItems.push(item);
-          } else {
-            return false;
+        //逻辑-->根据input的value值筛选books中的数据
+        var arrByZM = []; //声明一个空数组来存放数据
+        for (var i = 0; i < this.tableData.length; i++) {
+          //for循环数据中的每一项（根据name值）
+          if (this.tableData[i].bookname.search(input_bookname) != -1) {
+            //判断输入框中的值是否可以匹配到数据，如果匹配成功
+            arrByZM.push(this.tableData[i]);
+            //向空数组中添加数据
           }
-        });
-        return this.tableData1 = NewItems;
+        }
+        //一定要记得返回筛选后的数据
+        return this.tableData1 = arrByZM;
       }
     },
     // 搜索日期
@@ -137,6 +146,15 @@ export default {
         });
         return this.tableData1 = NewItemtimes;
       }
+    },
+    // 点击书名跳转书籍详情借阅页
+    borrowbook(index, row) {
+      this.$router.push({
+        name: 'borrowbook',
+        params: {
+          bookid: row.bookid
+        }
+      });
     },
     // 分页
     handleSizeChange(val) {
