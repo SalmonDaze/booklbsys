@@ -126,6 +126,8 @@
 <script>
 import { mapState } from 'vuex'
 import { bus } from '../main.js'
+import io from 'socket.io-client' 
+import Vue from 'vue'
 export default {
   components: {
   },
@@ -160,9 +162,20 @@ export default {
     // 获取用户名
     user: state => state.user.username
   }),
+  created() {
+    let socket = io.connect('http://192.168.2.73:3000')
+    Vue.prototype.$socket = socket
+  },
   mounted() {
-    this.$socket.on('refresh', () => {
-        console.log('11')
+    
+    this.$socket.on('refresh', (recipient) => {
+      if( this.$store.state.user && this.$store.state.user.phone === recipient)
+        this.getUserMsg()
+    })
+    this.$socket.on('relogin', (phone) => {
+      if( this.$store.state.user && this.$store.state.user.phone === phone ) {
+        console.log('relogin')
+      }
     })
     bus.$on('recheck', () => {
       this.unreadMsg -= 1

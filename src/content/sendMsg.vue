@@ -42,7 +42,7 @@ export default {
                     this.$message.success(res.data.msg)
                     setTimeout(() => {
                         window.location.reload()
-                    }, 1000)
+                    }, 100000)
                 }
             })
         }

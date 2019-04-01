@@ -22,28 +22,20 @@ app.use(router.routes()).use(router.allowedMethods())
 router.use('/api', userRouter.routes(), userRouter.allowedMethods())
 router.use('/admin', adminRouter.routes(), adminRouter.allowedMethods())
 
-let userSocket = {}
+let onlineUser = [],
+    sockets = {}
 io.on('connection', (socket) => {
     socket.on('new user', (phone) => {
-
-        if( !(phone in userSocket) ){
-            socket.phone = phone
-            userSocket[ phone ] = socket
-        } else {
-            userSocket[ phone ].emit('relogin')
-        }
+        socket.phone = phone
+        onlineUser.push(socket)
+        sockets[ phone ] = socket.id
     })
     socket.on('sendMsg', (recipient) => {
-        console.log(recipient)
-        console.log(recipient in userSocket)
-        if (recipient in userSocket) {
-            userSocket[ recipient ].emit('refresh')
-        }
+        socket.broadcast.emit('refresh', recipient)
     })
-    socket.on('disconnection', () => {
-        console.log('git disconnect')
+    socket.on('disconnect', () => {
+        delete sockets[ socket.phone ]
     })
 })
-
 
 server.listen(3000)
