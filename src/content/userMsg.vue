@@ -61,7 +61,7 @@ export default {
 </script>
 
 <style scope>
-a {
+.msg_list li a {
     color: black;
 }
 .send_msg {

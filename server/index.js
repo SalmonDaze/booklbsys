@@ -25,6 +25,7 @@ router.use('/admin', adminRouter.routes(), adminRouter.allowedMethods())
 let userSocket = {}
 io.on('connection', (socket) => {
     socket.on('new user', (phone) => {
+
         if( !(phone in userSocket) ){
             socket.phone = phone
             userSocket[ phone ] = socket
@@ -35,9 +36,14 @@ io.on('connection', (socket) => {
     socket.on('sendMsg', (recipient) => {
         console.log(recipient)
         console.log(recipient in userSocket)
-        console.log(userSocket[ recipient ])
-        userSocket[ recipient ].emit('refresh')
+        if (recipient in userSocket) {
+            userSocket[ recipient ].emit('refresh')
+        }
+    })
+    socket.on('disconnection', () => {
+        console.log('git disconnect')
     })
 })
+
 
 server.listen(3000)

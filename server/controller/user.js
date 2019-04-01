@@ -618,14 +618,14 @@ module.exports.sendMsg = async (ctx) => {
                         })
                         return
                     }
-                    if( String(userdoc._id) === String(_id) ) {
-                        resolve({
-                            msg: '不能给自己发消息',
-                            code: 1,
-                            success: false
-                        })
-                        return
-                    }
+                    // if( String(userdoc._id) === String(_id) ) {
+                    //     resolve({
+                    //         msg: '不能给自己发消息',
+                    //         code: 1,
+                    //         success: false
+                    //     })
+                    //     return
+                    // }
                     Model.messageList.create({
                         sendBy: _id,
                         sendToPhone: phone,

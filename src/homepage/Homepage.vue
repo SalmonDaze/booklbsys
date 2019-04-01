@@ -162,8 +162,8 @@ export default {
   }),
   mounted() {
     this.$socket.on('refresh', () => {
-            console.log('11')
-        })
+        console.log('11')
+    })
     bus.$on('recheck', () => {
       this.unreadMsg -= 1
     })
