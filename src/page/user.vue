@@ -18,6 +18,10 @@
             style='width: 150px'
             @click='unBanUser'>解除封禁</el-button>
         </li>
+        <li v-if='userInfo.phone !== this.$store.state.user.phone'>
+          <el-button type='success'
+          style='width: 150px' @click='sendMsg'>发送消息</el-button>
+        </li>
       </ul>
     </div>
     <div class="borrow_list">
@@ -75,6 +79,14 @@ export default {
     }
   },
   methods: {
+    sendMsg() {
+      this.$router.push({
+          name: 'sendMessage',
+          query: {
+              to:this.$router.currentRoute.params.userPhone
+          }
+      })
+    },
     // 分页
     handleSizeChange(val) {
       this.pagesize = val;
@@ -156,7 +168,7 @@ export default {
   position: absolute;
   top: 150px;
   left: 250px;
-  height: 550px;
+  height: 630px;
   width: 400px;
   background: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);

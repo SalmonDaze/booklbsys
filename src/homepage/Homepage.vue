@@ -126,8 +126,6 @@
 <script>
 import { mapState } from 'vuex'
 import { bus } from '../main.js'
-import io from 'socket.io-client' 
-import Vue from 'vue'
 export default {
   components: {
   },
@@ -163,8 +161,6 @@ export default {
     user: state => state.user.username
   }),
   created() {
-    let socket = io.connect('http://192.168.2.73:3000')
-    Vue.prototype.$socket = socket
   },
   mounted() {
     
