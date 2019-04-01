@@ -2,9 +2,9 @@
   <div class="giveback">
     <div class="giveback1">
       <v-recordtitle title="管内书籍"
+        :searchreader_show="false"
         :return_show="false"
         :renewal_show="false"
-        input_txt="请输入书名，回车"
         v-on:doSearchbook="do_searchbook"
         v-on:doSearchtime="do_searchtime"></v-recordtitle>
       <div class="table">
@@ -14,7 +14,7 @@
           tooltip-effect="dark"
           style="width: 100%"
           @selection-change="handleSelectionChange"
-          :default-sort = "{prop: 'date', order: 'descending'}">
+          :default-sort="{prop: 'date', order: 'descending'}">
           <el-table-column type="selection"
             width="55">
           </el-table-column>
@@ -114,6 +114,7 @@ export default {
     // 搜索书名（部分搜索）
     do_searchbook(input_bookname) {
       if (!input_bookname) {
+        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的书名");
         return false;
       } else {
@@ -134,7 +135,6 @@ export default {
     // 搜索日期
     do_searchtime(value_borrowtime) {
       var NewItemtimes = [];
-      console.log(value_borrowtime)
       if (!value_borrowtime) {
         this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的借出日期");

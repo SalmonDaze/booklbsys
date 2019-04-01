@@ -2,7 +2,7 @@
   <div class="abouttoexpire">
     <div class="abouttoexpire1">
       <v-recordtitle title="即将到期的书籍"
-        input_txt="请输入书名，回车"
+        :searchreader_show="false"
         v-on:doSearchbook="do_searchbook"
         v-on:doSearchtime="do_searchtime"
         v-on:doRenewal="do_renewal"
@@ -14,7 +14,7 @@
           tooltip-effect="dark"
           style="width: 100%"
           @selection-change="handleSelectionChange"
-          :default-sort = "{prop: 'date', order: 'descending'}">
+          :default-sort="{prop: 'date', order: 'descending'}">
           <el-table-column type="selection"
             width="55">
           </el-table-column>
@@ -131,6 +131,7 @@ export default {
     // 搜索书名（部分搜索）
     do_searchbook(input_bookname) {
       if (!input_bookname) {
+        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的书名");
         return false;
       } else {
@@ -222,33 +223,39 @@ export default {
         this.$message.error("请勾选需要归还的书籍！");
         return false;
       } else {
-        this.$confirm('是否确定归还该书？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          // 确定
-          this.$ajax({
-            url: '/api/returnBook',
-            method: 'post',
-            data: {
-              _id: gx.bookid,
-              _userId: gx.userid
-            }
-          }).then(res => {
-            this.$message.success(res.data.msg)
-            for (const item in this.tableData) {
-              if (this.tableData[item].bookid === gx.bookid) {
-                this.tableData.splice(item, 1)
-              }
-            }
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消归还'
-          });
-        });
+        for (const gx of this.multipleSelection) {
+          if (gx.yn === "是") {
+            this.$message.warning("书籍已归还，请勿重复操作！");
+          } else {
+            this.$confirm('是否确定归还该书？', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              // 确定
+              this.$ajax({
+                url: '/api/returnBook',
+                method: 'post',
+                data: {
+                  _id: gx.bookid,
+                  _userId: gx.userid
+                }
+              }).then(res => {
+                this.$message.success(res.data.msg)
+                for (const item in this.tableData) {
+                  if (this.tableData[item].bookid === gx.bookid) {
+                    this.tableData.splice(item, 1)
+                  }
+                }
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消归还'
+              });
+            });
+          }
+        }
       }
     },
     // 点击书名跳转书籍详情借阅页

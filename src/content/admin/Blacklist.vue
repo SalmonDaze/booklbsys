@@ -2,10 +2,10 @@
   <div class="blacklist">
     <div class="blacklist1">
       <v-recordtitle title="逾期名单"
-        input_txt="请输入人名，回车"
         :return_show="false"
         :renewal_show="false"
         v-on:doSearchbook="do_searchbook"
+        v-on:doSearchreader="do_searchreader"
         v-on:doSearchtime="do_searchtime"></v-recordtitle>
       <div class="table">
         <!-- 表格 -->
@@ -118,6 +118,7 @@ export default {
     // 搜索书名（部分搜索）
     do_searchbook(input_bookname) {
       if (!input_bookname) {
+        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的书名");
         return false;
       } else {
@@ -135,11 +136,33 @@ export default {
         return this.tableData1 = arrByZM;
       }
     },
+    // 搜索人名
+    do_searchreader(input_reader){
+      if (!input_reader) {
+        this.tableData1 = this.tableData;
+        this.$message.warning("请输入要查询的书名");
+        return false;
+      } else {
+        //逻辑-->根据input的value值筛选books中的数据
+        var arrByZM = []; //声明一个空数组来存放数据
+        for (var i = 0; i < this.tableData.length; i++) {
+          //for循环数据中的每一项（根据name值）
+          if (this.tableData[i].reader.search(input_reader) != -1) {
+            //判断输入框中的值是否可以匹配到数据，如果匹配成功
+            arrByZM.push(this.tableData[i]);
+            //向空数组中添加数据
+          }
+        }
+        //一定要记得返回筛选后的数据
+        return this.tableData1 = arrByZM;
+      }
+    },
     // 搜索日期
     do_searchtime(value_borrowtime) {
       var NewItemtimes = [];
       console.log(value_borrowtime)
       if (!value_borrowtime) {
+        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的借出日期");
         return false;
       } else {

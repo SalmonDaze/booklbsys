@@ -3,10 +3,16 @@
     <div class="record-title1">
       <h3>{{title}}</h3>
       <div class="operate">
-        <el-input :placeholder="input_txt"
+        <el-input placeholder="请输入书名，回车"
           prefix-icon="el-icon-search"
           v-model="input_bookname"
-          @keyup.enter.native="searchEnterFun">
+          @keyup.enter.native="searchEnterFunbook">
+        </el-input>
+        <el-input placeholder="请输入人名，回车"
+          prefix-icon="el-icon-search"
+          v-model="input_reader"
+          v-if="searchreader_show"
+          @keyup.enter.native="searchEnterFunreader">
         </el-input>
         <el-date-picker v-model="value_borrowtime"
           type="date"
@@ -18,8 +24,10 @@
       </div>
       <div style="margin-top: 20px;margin-left:20px;">
         <el-input v-model="renewal_time"
-          placeholder="请输入续借天数" v-if="renewal_show"></el-input>
-        <el-button @click="renewal()" v-if="renewal_show">续借</el-button>
+          placeholder="请输入续借天数"
+          v-if="renewal_show"></el-input>
+        <el-button @click="renewal()"
+          v-if="renewal_show">续借</el-button>
         <el-button @click="returnbook()"
           v-if="return_show">归还</el-button>
         <p v-if="renewal_show">
@@ -34,20 +42,25 @@ import { calendarTime } from '../utils/formatDate.js';
 export default {
   props: {
     title: String,
-    input_txt: String,
+    searchreader_show: {
+      type: Boolean,
+      default: true
+    },
     return_show: {
       type: Boolean,
       default: true
     },
     renewal_show: {
       type: Boolean,
-      default:true
+      default: true
     }
   },
   data() {
     return {
       // 书名查询
       input_bookname: '',
+      // 人名查询
+      input_reader: '',
       // 选择借书时间
       value_borrowtime: '',
       // 续借时间
@@ -82,13 +95,18 @@ export default {
   },
   methods: {
     // 书名查询
-    searchEnterFun() {
+    searchEnterFunbook() {
       console.log(this.input_bookname)
       this.$emit('doSearchbook', this.input_bookname);
     },
+    // 人名查询
+    searchEnterFunreader() {
+      console.log(this.input_reader)
+      this.$emit('doSearchreader', this.input_reader);
+    },
     // 时间查询
     seek() {
-      this.$emit('doSearchtime',this.value_borrowtime);
+      this.$emit('doSearchtime', this.value_borrowtime);
     },
     // 续借
     renewal() {
@@ -114,16 +132,17 @@ export default {
 }
 .record-title .el-input {
   width: 180px;
+  margin-right: 20px;
+}
+.record-title .el-button {
+  margin-left: 10px;
 }
 .record-title .operate {
   margin-top: 30px;
   margin-left: 20px;
 }
 .record-title .el-input--suffix {
-  margin-left: 30px;
-}
-.record-title .el-button {
-  margin-left: 30px;
+  margin-left: 10px;
 }
 .record-title p {
   color: red;

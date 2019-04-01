@@ -2,7 +2,7 @@
   <div class="userborrow">
     <div class="userborrow1">
       <v-recordtitle title="借阅的书籍"
-        input_txt="请输入书名，回车"
+        :searchreader_show="false"
         :return_show="false"
         v-on:doSearchbook="do_searchbook"
         v-on:doSearchtime="do_searchtime"
@@ -155,6 +155,7 @@ export default {
     // 搜索书名（部分搜索）
     do_searchbook(input_bookname) {
       if (!input_bookname) {
+        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的书名");
         return false;
       } else {
@@ -177,6 +178,7 @@ export default {
       var NewItemtimes = [];
       console.log(value_borrowtime)
       if (!value_borrowtime) {
+        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的借出日期");
         return false;
       } else {

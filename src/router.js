@@ -89,7 +89,7 @@ let router = new Router({
         {
           path: "admin",
           name: "admin",
-          component:()=>import("./content/Admin.vue"),
+          component:()=>import("./content/admin/Admin.vue"),
           meta: { adminAuth: true},
           children: [
             {

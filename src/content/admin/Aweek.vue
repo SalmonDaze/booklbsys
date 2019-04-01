@@ -2,7 +2,7 @@
   <div class="aweek">
     <div class="aweek1">
       <v-recordtitle title="7天内借阅的书籍"
-        input_txt="请输入书名，回车"
+        :searchreader_show="false"
         v-on:doSearchbook="do_searchbook"
         v-on:doSearchtime="do_searchtime"
         v-on:doRenewal="do_renewal"
@@ -133,6 +133,7 @@ export default {
     // 搜索书名(部分搜索)
     do_searchbook(input_bookname) {
       if (!input_bookname) {
+        this.tableData1 = this.tableData;
         this.$message.warning("请输入要查询的书名");
         return false;
       } else {
@@ -153,7 +154,17 @@ export default {
     // 搜索日期
     do_searchtime(value_borrowtime) {
       var NewItemtimes = [];
-      return this.list;
+      if (!value_borrowtime) {
+        this.tableData1 = this.tableData;
+        this.$message.warning("请输入要查询的借出日期");
+        return false;
+      } else {
+        var date_value = calendarTime(value_borrowtime);
+        NewItemtimes = this.tableData.filter(function (item1) {
+          return item1.date === date_value
+        });
+        return this.tableData1 = NewItemtimes;
+      }
     },
     // 续借书籍
     do_renewal(renewal_time) {
@@ -285,7 +296,7 @@ export default {
        *  */
       return this.tableData1.length
     },
-    
+
   }
 }
 </script>
@@ -303,9 +314,6 @@ export default {
   position: absolute;
   top: 220px;
   width: 1500px;
-}
-.aweek .el-button {
-  margin-left: 30px;
 }
 .aweek .el-table td,
 .aweek .el-table th {
