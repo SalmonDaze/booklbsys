@@ -173,7 +173,7 @@ export default {
         console.log('relogin')
       }
     })
-    bus.$on('recheck', () => {
+    bus && bus.$on('recheck', () => {
       this.unreadMsg -= 1
     })
     if(this.$store.state.user) {
