@@ -23,10 +23,11 @@
 <script>
 import vBooklist from "../page/booklist.vue"
 import { formatPath } from '../utils/formatDate.js'
+
 export default {
   components: {
-    vBooklist
-  },
+    vBooklist,
+},
   created() {
     this.$ajax({
       url: '/api/getNewBook',

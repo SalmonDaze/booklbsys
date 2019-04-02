@@ -30,6 +30,9 @@
       @change='uploadCover'
       ref='upload'
       class="uploadfile" />
+      <div class='upload_select'>
+        <img class='preview' ref='preview' v-if='file_value'/>
+      </div>
     <el-button type="primary"
       @click='uploadBook'
       class="unload">上传</el-button>
@@ -37,6 +40,7 @@
   </div>
 </template>
  <script>
+ import uploadImg from '../../components/imgupload.vue'
 export default {
   data() {
     return {
@@ -94,6 +98,8 @@ export default {
           }
         }).then(res => {
           console.log(res)
+          this.bookInfo = this.file_value = this.title = this.author = this.borrowCycle = this.path = ''
+          this.data = null
         })
         this.$message({
           message: '上传书籍成功！',
@@ -119,11 +125,22 @@ export default {
       }
       this.data = new FormData()
       this.data.append('file', file)
+      let fileReader = new FileReader()
+      fileReader.readAsDataURL(file)
+      fileReader.onload = function(){
+        _this.$refs.preview.src = this.result
+      }
     }
   }
 }
 </script>
  <style>
+ .preview {
+   width: 200px;
+   height: 200px;
+   position: relative;
+   top: -13px;
+ }
 .upload_container {
   width: 800px;
   height: 600px;
@@ -134,6 +151,29 @@ export default {
 .upload_container .table{
   margin-top: 80px;
   margin-left: 20px;
+}
+.uploadfile {
+  opacity: 0;
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  z-index: 1;
+  left: 300px;
+  top: 400px;
+}
+.uploadfile:hover {
+  cursor: pointer;
+}
+.uploadfile:hover ~ .upload_select {
+  border-color: rgb(115, 142, 216);
+}
+.upload_select {
+  width: 200px;
+  height: 200px;
+  border: dashed 2px skyblue;
+  position: relative;
+  left: 280px;
+  top: 45px;
 }
 .input_box {
   float: right;
@@ -174,14 +214,10 @@ export default {
   height: 178px;
   display: block;
 }
-.uploadfile {
-  position: relative;
-  top: 20px;
-  left: 200px;
-}
 .unload {
   position: relative;
   top: 80px;
+  left: 350px;
 }
 </style>
  
