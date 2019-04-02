@@ -13,109 +13,110 @@
       </div>
     </div>
     <div class="navigation-bar">
-      <el-menu default-active="2"
+      <el-menu :default-active="activedMenu($route.path)"
         class="el-menu-vertical-demo"
         @open="handleOpen"
         @close="handleClose">
         <router-link to="/homepage/Userborrowingrecords">
-          <el-menu-item index="1">
+          <el-menu-item index="Userborrowingrecords">
             <i class="el-icon-location"></i>
             <span slot="title">借阅记录</span>
           </el-menu-item>
         </router-link>
         <router-link to="/homepage/hot">
-          <el-menu-item index="2">
+          <el-menu-item index="hot">
             <i class="el-icon-menu"></i>
             <span slot="title">热门书籍</span>
           </el-menu-item>
         </router-link>
         <router-link to="/homepage/newbooks">
-          <el-menu-item index="3">
+          <el-menu-item index="newbooks">
             <i class="el-icon-document"></i>
             <span slot="title">最新上架</span>
           </el-menu-item>
         </router-link>
         <router-link to="/homepage/allbooks">
-          <el-menu-item index="9">
+          <el-menu-item index="allbooks">
             <i class="el-icon-search"></i>
             <span slot="title">所有书籍</span>
           </el-menu-item>
         </router-link>
         <router-link :to="{name: 'userPhone', params:{userPhone: this.$store.state.user.phone}}">
-          <el-menu-item index="6">
+          <el-menu-item index="userlist/:userPhone">
             <i class="el-icon-info"></i>
             <span slot="title">个人信息</span>
           </el-menu-item>
         </router-link>
         <router-link to="/homepage/userapply">
-          <el-menu-item index="10">
+          <el-menu-item index="userapply">
             <i class="el-icon-loading"></i>
             <span slot="title">我的申请</span>
           </el-menu-item>
         </router-link>
         <router-link to="/homepage/userMsg">
-          <el-menu-item index="5">
+          <el-menu-item index="userMsg">
             <i class="el-icon-bell"></i>
-            <span slot="title">消息中心<div class='badget' v-if='unreadMsg'><span>{{unreadMsg > 99 ? '99+' : unreadMsg}}</span></div></span>
+            <span slot="title">消息中心<div class='badget'
+                v-if='unreadMsg'><span>{{unreadMsg > 99 ? '99+' : unreadMsg}}</span></div></span>
           </el-menu-item>
         </router-link>
         <!-- 管理员 -->
-          <el-submenu index="7"
-            v-if="$store.state.user.isAdmin">
+        <el-submenu index="7"
+          v-if="$store.state.user.isAdmin">
+          <template slot="title">
+            <i class="el-icon-location"></i>
+            <span>管理员</span>
+          </template>
+          <el-submenu index="8">
             <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>管理员</span>
+              <i class="el-icon-document"></i>
+              <span>借阅记录</span>
             </template>
-            <el-submenu index="8">
-              <template slot="title">
-                <i class="el-icon-document"></i>
-                <span>借阅记录</span>
-              </template>
-              <router-link to="/homepage/admin/aweek">
-                <el-menu-item index="1-1">7天内</el-menu-item>
+            <router-link to="/homepage/admin/aweek">
+              <el-menu-item index="admin/aweek">7天内</el-menu-item>
+            </router-link>
+            <router-link to="/homepage/admin/abouttoexpire">
+              <el-menu-item index="admin/abouttoexpire">即将到期</el-menu-item>
+            </router-link>
+            <router-link to="/homepage/admin/giveback">
+              <el-menu-item index="admin/giveback">管内书籍</el-menu-item>
+            </router-link>
+            <el-submenu index="1-4">
+              <template slot="title">未归还书籍</template>
+              <router-link to="/homepage/admin/ungiveback">
+                <el-menu-item index="admin/ungiveback">未归还</el-menu-item>
               </router-link>
-              <router-link to="/homepage/admin/abouttoexpire">
-                <el-menu-item index="1-2">即将到期</el-menu-item>
+              <router-link to="/homepage/admin/blacklist">
+                <el-menu-item index="admin/blacklist">逾期</el-menu-item>
               </router-link>
-              <router-link to="/homepage/admin/giveback">
-                <el-menu-item index="1-3">管内书籍</el-menu-item>
-              </router-link>
-              <el-submenu index="1-4">
-                <template slot="title">未归还书籍</template>
-                <router-link to="/homepage/admin/ungiveback">
-                  <el-menu-item index="1-4-1">未归还</el-menu-item>
-                </router-link>
-                <router-link to="/homepage/admin/blacklist">
-                  <el-menu-item index="1-4-2">逾期</el-menu-item>
-                </router-link>
-              </el-submenu>
             </el-submenu>
-            <router-link to="/homepage/admin/userlist">
-              <el-menu-item index="5">
-                <i class="el-icon-view"></i>
-                <span slot="title">用户信息</span>
-              </el-menu-item>
-            </router-link>
-            <router-link to="/homepage/admin/setup">
-              <el-menu-item index="4"
-                v-if="$store.state.user.isAdmin">
-                <i class="el-icon-setting"></i>
-                <span slot="title">书籍管理</span>
-              </el-menu-item>
-            </router-link>
-            <router-link :to="{path:'/homepage/admin/uploadBook'}">
-              <el-menu-item index="7">
-                <i class="el-icon-upload2"></i>
-                <span slot="title">书籍上架</span>
-              </el-menu-item>
-            </router-link>
-            <router-link :to="{path:'/homepage/admin/check'}">
-              <el-menu-item index="8">
-                <i class="el-icon-edit"></i>
-                <span slot="title">管理审核</span>
-              </el-menu-item>
-            </router-link>
           </el-submenu>
+          <router-link to="/homepage/admin/userlist">
+            <el-menu-item index="5">
+              <i class="el-icon-view"></i>
+              <span slot="title">用户信息</span>
+            </el-menu-item>
+          </router-link>
+          <router-link to="/homepage/admin/setup">
+            <el-menu-item index="4"
+              v-if="$store.state.user.isAdmin">
+              <i class="el-icon-setting"></i>
+              <span slot="title">书籍管理</span>
+            </el-menu-item>
+          </router-link>
+          <router-link :to="{path:'/homepage/admin/uploadBook'}">
+            <el-menu-item index="7">
+              <i class="el-icon-upload2"></i>
+              <span slot="title">书籍上架</span>
+            </el-menu-item>
+          </router-link>
+          <router-link :to="{path:'/homepage/admin/check'}">
+            <el-menu-item index="8">
+              <i class="el-icon-edit"></i>
+              <span slot="title">管理审核</span>
+            </el-menu-item>
+          </router-link>
+        </el-submenu>
       </el-menu>
     </div>
     <router-view>
@@ -131,10 +132,31 @@ export default {
   },
   data() {
     return {
-      unreadMsg:0,
+      unreadMsg: 0,
     }
   },
   methods: {
+    // 根据路由绑定导航栏样式
+    activedMenu(val) {
+      if (val.indexOf('/homepage/Userborrowingrecords') == 0) {
+        return 'Userborrowingrecords'
+      } else if (val.indexOf('/homepage/hot') == 0) {
+        return 'hot'
+      } else if (val.indexOf('/homepage/newbooks') == 0) {
+        return 'newbooks'
+      } else if (val.indexOf('/homepage/allbooks') == 0) {
+        return 'allbooks'
+      } else if (val.indexOf('/homepage/userlist') == 0) {
+        return 'userlist/:userPhone'
+      } else if (val.indexOf('/homepage/userapply') == 0) {
+        return 'userapply'
+      } else if (val.indexOf('/homepage/userMsg') == 0) {
+        return 'userMsg'
+      } else {
+        return val
+      }
+    },
+
     loginout() {
       this.$router.push('/')
     },
@@ -146,14 +168,14 @@ export default {
     },
     getUserMsg() {
       this.$ajax({
-      url: '/api/getUserMsg',
-      method: 'post',
-      data: {
-        _id: this.$store.state.user._id
-      }
-    }).then(res => {
-      this.unreadMsg = res.data.data.filter( item => !item.isRead ).length
-    })
+        url: '/api/getUserMsg',
+        method: 'post',
+        data: {
+          _id: this.$store.state.user._id
+        }
+      }).then(res => {
+        this.unreadMsg = res.data.data.filter(item => !item.isRead).length
+      })
     }
   },
   computed: mapState({
@@ -163,23 +185,23 @@ export default {
   created() {
   },
   mounted() {
-    
+
     this.$socket.on('refresh', (recipient) => {
-      if( this.$store.state.user && this.$store.state.user.phone === recipient)
+      if (this.$store.state.user && this.$store.state.user.phone === recipient)
         this.getUserMsg()
     })
     this.$socket.on('relogin', (phone) => {
-      if( this.$store.state.user && this.$store.state.user.phone === phone ) {
+      if (this.$store.state.user && this.$store.state.user.phone === phone) {
         console.log('relogin')
       }
     })
     bus && bus.$on('recheck', () => {
       this.unreadMsg -= 1
     })
-    if(this.$store.state.user) {
+    if (this.$store.state.user) {
       this.getUserMsg()
+    }
   }
-}
 }
 </script>
 <style>
@@ -197,14 +219,14 @@ export default {
   height: 100px;
   width: 1900px;
 }
-@media screen and (max-width: 1220px) {
-  .homepage .header {
-    height: 100px;
-    width: 1200px;
-  }
+@media screen and (max-width: 1520px) {
   .homepage .header-content {
-    height: 100px;
-    width: 1200px;
+    width: 1500px;
+  }
+}
+@media screen and (max-width: 1320px) {
+  .homepage .header-content {
+    width: 1300px;
   }
 }
 .homepage .header-content .el-button {
@@ -255,7 +277,7 @@ export default {
   height: 900px;
   overflow: hidden;
 }
-.badget{
+.badget {
   width: 30px;
   height: 20px;
   background: rgb(255, 129, 129);
