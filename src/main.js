@@ -24,6 +24,7 @@ Vue.use(ElementUI);
 let socket = io.connect('http://192.168.2.73:3000')
 Vue.config.productionTip = false;
 Vue.prototype.$socket = socket
+
 Vue.prototype.$ajax = axios;
 
 

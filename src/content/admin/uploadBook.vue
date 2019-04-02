@@ -16,7 +16,7 @@
     </div>
     <div class='title'>
       <span>简介：</span>
-      <el-input v-model="bookInfo"
+      <el-input v-model="bookInfo" maxlength="180"
         placeholder="请输入书本简介"
         class='input_box'></el-input>
     </div>
