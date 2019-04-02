@@ -2,6 +2,7 @@
   <div class="set-up">
     <div class="set-up1">
       <v-recordtitle title="书籍管理"
+        :searchreader_show="false"
         v-on:doSearchbook="do_searchbook"
         v-on:doSearchtime="do_searchtime"
         v-on:doRenewal="do_renewal"

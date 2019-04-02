@@ -109,6 +109,7 @@
 
 <script>
 export default {
+  inject: ['reload'],
   data() {
     return {
       // 控制初始显示第一个选项卡
@@ -143,7 +144,7 @@ export default {
         data: {
           _id: row.apply_item
         }
-      }).then(res => console.log(res))
+      }).then(res => {this.reload();})
     },
     handleDelete2(index, row) {
       this.$ajax({
@@ -152,7 +153,7 @@ export default {
         data: {
           _id: row.apply_item
         }
-      }).then(res => console.log(res))
+      }).then(res => {this.reload();})
     }
   },
   computed: {
