@@ -74,12 +74,6 @@ let router = new Router({
           component: () => import('./content/sendMsg.vue')
         },
         {
-          // 用户个人信息
-          path: "person",
-          name: "person",
-          component: () => import("./content/Person.vue")
-        },
-        {
           // 我的申请
           path: "userapply",
           name: "userapply",
