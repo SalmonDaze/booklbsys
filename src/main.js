@@ -21,7 +21,7 @@ axios.interceptors.response.use((response) => {
 })
 
 Vue.use(ElementUI);
-let socket = io.connect('http://192.168.2.73:3000')
+let socket = io.connect('http://192.168.2.144:3000')
 Vue.config.productionTip = false;
 Vue.prototype.$socket = socket
 

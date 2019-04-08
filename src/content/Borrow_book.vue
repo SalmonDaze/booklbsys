@@ -71,7 +71,7 @@ export default {
   computed: {
     bookCover() {
       if (this.bookInfo.cover) {
-        return `http://192.168.2.73:3000/${formatPath(this.bookInfo.cover)}`
+        return `http://192.168.2.144:3000/${formatPath(this.bookInfo.cover)}`
       }
 
     }

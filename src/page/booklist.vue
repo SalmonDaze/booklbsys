@@ -45,7 +45,7 @@ export default {
   },
   computed: {
     bookCover() {
-      return `http://192.168.2.73:3000/${formatPath(this.booklist_img)}`
+      return `http://192.168.2.144:3000/${formatPath(this.booklist_img)}`
     }
   },
   methods: {

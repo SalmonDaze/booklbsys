@@ -98,6 +98,7 @@ export default {
         phone: this.$store.state.user.phone
       }
     }).then((res) => {
+      console.log(res)
       this.loading = false
       let borrow_history = res.data.data[0].borrow_history
       for (const book of borrow_history) {

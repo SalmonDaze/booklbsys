@@ -76,7 +76,7 @@ export default {
         let anext = async () => {
           return new Promise((resolve, reject) => {
             this.$ajax({
-              url: 'http://192.168.2.73:3000/admin/uploadCover',
+              url: 'http://192.168.2.144:3000/admin/uploadCover',
               method: 'POST',
               data: this.data
             }).then(res => {

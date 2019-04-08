@@ -120,6 +120,7 @@ module.exports.login = async (ctx) => {
                     })
                 }
                 const phoneReg = /^1[0-9]{10}$/
+                console.log('doc', doc.phone);
                 if( !doc || !phoneReg.test(phone)) {
                     resolve({
                         success: false,

@@ -80,7 +80,7 @@ export default {
     title: String
   },
   created() {
-    this.$ajax.post('http://192.168.2.73:3000/admin/unReturnBookList').then((res) => {
+    this.$ajax.post('http://192.168.2.144:3000/admin/unReturnBookList').then((res) => {
       for (const book of res.data.data) {
         /**
            * title：书名
